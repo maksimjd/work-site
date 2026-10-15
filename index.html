@@ -3,23 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Генератор комментариев</title>
+<title>Главная — Сайт-помощник</title>
 <style>
-  /* ============ БАЗОВЫЕ СТИЛИ ============ */
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
+  /* ============ ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ ============ */
   :root {
     --bg: #0a0c11;
     --panel: #171a21;
     --border: #262b36;
     --text: #e6e8ee;
     --muted: #8b93a7;
+    --input-bg: #0f1218;
     --accent1: #6366f1;
     --accent2: #a855f7;
-    --deepseek: #4f8ef7;
-    --pollinations: #f97316;
     --img-accent: #22d3ee;
   }
+
+  body.light {
+    --bg: #f4f6fb;
+    --panel: #ffffff;
+    --border: #d8dde8;
+    --text: #1a1f2b;
+    --muted: #6b7280;
+    --input-bg: #f9fafb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: var(--bg);
@@ -28,70 +36,174 @@
     font-size: 14px;
     line-height: 1.5;
     min-height: 100vh;
+    transition: background 0.25s, color 0.25s;
   }
 
-  .layout {
+  /* ============ ВЕРХНЯЯ ПАНЕЛЬ ============ */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.25s, border-color 0.25s;
+  }
+
+  .topbar-inner {
     display: flex;
-    min-height: 100vh;
-    max-width: 1400px;
-    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
   }
 
-  .main {
-    flex: 1;
-    padding: 24px;
-    min-width: 0;
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+
+  .logo {
+    font-size: 15px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    user-select: none;
   }
 
+  .menu-btn, .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .menu-btn:hover, .theme-btn:hover {
+    border-color: var(--accent1);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+  }
+  .theme-btn { padding: 8px 12px; font-size: 16px; min-width: 44px; }
+
+  /* ============ ОВЕРЛЕЙ ============ */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 90;
+  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+
+  /* ============ БОКОВОЕ МЕНЮ ============ */
   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 240px;
+    height: 100vh;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s, border-color 0.25s;
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
     flex-shrink: 0;
-    padding: 24px 18px;
-    border-left: 1px solid var(--border);
-    background: #0d1016;
   }
 
-  /* ============ САЙДБАР ============ */
-  .sidebar h3 {
+  .sidebar-title {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--muted);
-    margin-bottom: 10px;
+    font-weight: 700;
   }
 
-  .nav-btn {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-    background: var(--panel);
+  .sidebar-close {
+    background: transparent;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-size: 13px;
+    color: var(--muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    font-size: 14px;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
   }
-  .nav-btn:hover { border-color: var(--accent1); }
-  .nav-btn.active {
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    border-color: transparent;
-    color: #fff;
-    font-weight: 600;
+  .sidebar-close:hover { border-color: #fb7185; color: #fb7185; }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
   }
 
-  .online-box {
-    margin-top: 22px;
-    padding: 12px;
-    background: var(--panel);
-    border: 1px solid var(--border);
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 14px;
     border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .nav-link:hover {
+    background: var(--input-bg);
+    color: var(--accent1);
+    border-color: var(--border);
+  }
+  .nav-link.active {
+    background: var(--input-bg);
+    color: var(--accent1);
+    font-weight: 600;
+    border-color: var(--border);
+    box-shadow: inset 3px 0 0 var(--accent1);
+  }
+  .nav-link .nav-icon { font-size: 17px; flex-shrink: 0; }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
     font-size: 12px;
     color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
   }
-  .online-dot {
+  .sidebar-footer .online-dot {
     display: inline-block;
     width: 8px;
     height: 8px;
@@ -100,20 +212,7 @@
     margin-right: 6px;
     animation: blink 2s infinite;
   }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
-  }
-
-  .tg-box {
-    margin-top: 18px;
-    padding: 12px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 12px;
-  }
-  .tg-box a {
+  .sidebar-footer a {
     color: var(--accent2);
     text-decoration: none;
     font-weight: 600;
@@ -122,17 +221,19 @@
     animation: sparkle 1.6s infinite;
     display: inline-block;
   }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
   @keyframes sparkle {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.85); }
   }
 
-  /* ============ ЗАГОЛОВКИ / ПАНЕЛИ ============ */
-  h1 {
-    font-size: 20px;
-    margin-bottom: 18px;
-    font-weight: 700;
-  }
+  /* ============ ОСНОВНОЙ КОНТЕНТ ============ */
+  .main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+  h1 { font-size: 20px; margin-bottom: 18px; font-weight: 700; }
 
   .panel {
     background: var(--panel);
@@ -140,6 +241,7 @@
     border-radius: 14px;
     padding: 16px;
     margin-bottom: 16px;
+    transition: background 0.25s, border-color 0.25s;
   }
 
   .label {
@@ -150,15 +252,8 @@
   }
 
   /* ============ ГЛАВНАЯ ============ */
-  .home-hero {
-    text-align: center;
-    padding: 28px 20px 20px;
-  }
-  .home-hero .home-icon {
-    font-size: 44px;
-    display: block;
-    margin-bottom: 14px;
-  }
+  .home-hero { text-align: center; padding: 28px 20px 20px; }
+  .home-hero .home-icon { font-size: 44px; display: block; margin-bottom: 14px; }
   .home-hero h2 {
     font-size: 22px;
     font-weight: 700;
@@ -176,17 +271,14 @@
     margin: 0 auto 12px;
     line-height: 1.7;
   }
-  .home-hero p.muted {
-    color: var(--muted);
-    font-size: 13px;
-  }
+  .home-hero p.muted { color: var(--muted); font-size: 13px; }
   .home-status {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     margin-top: 10px;
     padding: 8px 16px;
-    background: #0f1218;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-left: 3px solid var(--accent2);
     border-radius: 8px;
@@ -195,16 +287,38 @@
   }
   .home-status b { color: #c4b5fd; }
 
+  /* ============ ПОЯСНЕНИЕ ============ */
+  .explain {
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .explain .explain-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .explain p { margin-bottom: 6px; }
+  .explain p:last-child { margin-bottom: 0; }
+
   /* ============ ВЫБОР ПРОВАЙДЕРА ============ */
   .provider-switch {
     display: flex;
     gap: 10px;
     margin-bottom: 16px;
     padding: 6px;
-    background: #0f1218;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
-    position: relative;
   }
 
   .provider-btn {
@@ -223,13 +337,10 @@
     cursor: pointer;
     font-family: inherit;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
   }
-
   .provider-btn .icon { font-size: 16px; }
-  .provider-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-  .provider-btn.active { color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .provider-btn:hover { color: var(--text); background: rgba(127,127,127,0.06); }
+  .provider-btn.active { color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
   .provider-btn.active[data-provider="deepseek"] {
     background: linear-gradient(135deg, #3b6fd4, #4f8ef7);
     box-shadow: 0 0 18px rgba(79, 142, 247, 0.45), 0 0 36px rgba(79, 142, 247, 0.2);
@@ -239,12 +350,77 @@
     box-shadow: 0 0 18px rgba(249, 115, 22, 0.45), 0 0 36px rgba(249, 115, 22, 0.2);
   }
 
+  /* ============ ВЫБОР КЛЮЧА (картинки) — карточки ============ */
+  .key-switch {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .key-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .key-btn:hover { border-color: var(--img-accent); }
+  .key-btn.active {
+    border-color: var(--img-accent);
+    background: rgba(34, 211, 238, 0.08);
+    box-shadow: 0 0 14px rgba(34, 211, 238, 0.25);
+  }
+  .key-btn .key-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .key-btn .key-sub { font-size: 11px; color: var(--muted); }
+  .key-btn.active .key-title { color: var(--img-accent); }
+
+  /* ============ ВЫБОР КЛЮЧА (комментарии Pollinations) — таблетки ============ */
+  .key-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .key-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .key-pill:hover { color: var(--text); border-color: var(--accent1); }
+  .key-pill.active {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.5), 0 0 28px rgba(168, 85, 247, 0.25);
+  }
+  .key-pill .pill-icon { font-size: 14px; }
+
   /* ============ ВКЛАДКИ ============ */
   .tabs {
     display: flex;
     gap: 10px;
     margin-bottom: 16px;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .tab-text {
@@ -258,6 +434,7 @@
     color: var(--text);
     font-size: 13px;
     cursor: pointer;
+    font-family: inherit;
   }
   .tab-text.active {
     background: linear-gradient(135deg, var(--accent1), var(--accent2));
@@ -279,6 +456,7 @@
     cursor: pointer;
     position: relative;
     padding-left: 14px;
+    font-family: inherit;
   }
   .tab-image::before {
     content: "";
@@ -293,10 +471,7 @@
   .tab-image.active::before {
     background: linear-gradient(180deg, var(--accent1), var(--accent2));
   }
-  .tab-image.active {
-    border-color: var(--accent1);
-    font-weight: 600;
-  }
+  .tab-image.active { border-color: var(--accent1); font-weight: 600; }
 
   /* ============ ИНПУТЫ ============ */
   input[type="text"],
@@ -305,7 +480,7 @@
   textarea,
   select {
     width: 100%;
-    background: #0f1218;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text);
@@ -313,6 +488,7 @@
     font-size: 13px;
     font-family: inherit;
     outline: none;
+    transition: background 0.25s, border-color 0.25s, color 0.25s;
   }
   input:focus, textarea:focus, select:focus { border-color: var(--accent1); }
   textarea { resize: vertical; min-height: 70px; }
@@ -325,17 +501,13 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #0f1218;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 4px 8px;
     width: 160px;
   }
-  .num-field label {
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
+  .num-field label { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .num-field input {
     width: 60px;
     border: none;
@@ -347,12 +519,7 @@
   }
 
   /* ============ ГАЛОЧКИ ============ */
-  .checks {
-    display: flex;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin: 12px 0;
-  }
+  .checks { display: flex; gap: 18px; flex-wrap: wrap; margin: 12px 0; }
   .check {
     display: flex;
     align-items: center;
@@ -410,7 +577,7 @@
   .status.success { color: #34d399; }
   .status.loading { color: #fbbf24; }
 
-  /* ============ ССЫЛКИ / ЗАМЕТКИ ============ */
+  /* ============ ССЫЛКИ ============ */
   .key-links {
     display: flex;
     gap: 12px;
@@ -419,36 +586,26 @@
     font-size: 12px;
   }
   .key-links a {
-    color: #a5b4fc;
+    color: #6366f1;
     text-decoration: none;
-    border-bottom: 1px dashed rgba(165, 180, 252, 0.5);
+    border-bottom: 1px dashed rgba(99, 102, 241, 0.5);
     transition: color 0.15s, border-color 0.15s;
   }
-  .key-links a:hover { color: #c4b5fd; border-bottom-color: #c4b5fd; }
-
-  .price-note {
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: #0f1218;
-    border-left: 3px solid var(--accent1);
-    border-radius: 6px;
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .price-note b { color: #c4b5fd; }
+  .key-links a:hover { color: var(--accent2); border-bottom-color: var(--accent2); }
+  body.light .key-links a { color: #4338ca; }
+  body.light .key-links a:hover { color: #7c3aed; }
 
   .hint-note {
     margin-top: 10px;
     padding: 10px 14px;
-    background: #0f1218;
+    background: var(--input-bg);
     border-left: 3px solid var(--img-accent);
     border-radius: 6px;
     font-size: 11px;
     color: var(--muted);
     line-height: 1.6;
   }
-  .hint-note b { color: #67e8f9; }
+  .hint-note b { color: var(--img-accent); }
 
   /* ============ КАРТИНКИ ============ */
   .image-grid {
@@ -457,9 +614,8 @@
     gap: 14px;
     margin-top: 18px;
   }
-
   .image-card {
-    background: #0d1016;
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
@@ -471,15 +627,13 @@
     border-color: var(--img-accent);
     box-shadow: 0 0 14px rgba(34, 211, 238, 0.25);
   }
-
   .image-card img {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
-    background: #0f1218;
+    background: var(--input-bg);
   }
-
   .image-card .image-footer {
     padding: 8px 10px;
     display: flex;
@@ -488,13 +642,7 @@
     gap: 8px;
     border-top: 1px solid var(--border);
   }
-
-  .image-card .image-num {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
+  .image-card .image-num { font-size: 11px; color: var(--muted); font-weight: 600; }
   .image-card .btn-download {
     display: inline-flex;
     align-items: center;
@@ -502,7 +650,7 @@
     padding: 5px 10px;
     border-radius: 7px;
     border: 1px solid var(--border);
-    background: #0f1218;
+    background: var(--panel);
     color: var(--muted);
     font-size: 11px;
     cursor: pointer;
@@ -511,14 +659,13 @@
   }
   .image-card .btn-download:hover {
     border-color: var(--img-accent);
-    color: #67e8f9;
+    color: var(--img-accent);
     box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
   }
   .image-card .btn-download:disabled { opacity: 0.5; cursor: wait; }
 
-  /* ============ СПИСОК КОММЕНТАРИЕВ ============ */
+  /* ============ КОММЕНТАРИИ ============ */
   .comments { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
-
   .comment {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -531,29 +678,18 @@
     align-items: center;
     margin-bottom: 6px;
   }
-  .comment-num {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 600;
-  }
-  .comment-text {
-    font-size: 13px;
-    line-height: 1.55;
-    word-break: break-word;
-  }
-  .comment-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
+  .comment-num { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .comment-text { font-size: 13px; line-height: 1.55; word-break: break-word; }
+  .comment-actions { display: flex; gap: 8px; margin-top: 10px; }
   .comment-actions button {
     font-size: 11px;
     padding: 5px 10px;
     border-radius: 7px;
     border: 1px solid var(--border);
-    background: #0f1218;
+    background: var(--input-bg);
     color: var(--muted);
     cursor: pointer;
+    font-family: inherit;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
   .comment-actions button:hover {
@@ -562,15 +698,102 @@
     box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
   }
 
-  /* ============ ЛОГ РАБОТЫ (ОБЫЧНЫЙ) ============ */
-  .log-box {
+  /* ============ ИСТОРИЯ ============ */
+  .history-box {
     margin-top: 18px;
-    background: linear-gradient(180deg, #0d1016 0%, #0b0e14 100%);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px 14px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
   }
+  .history-box h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .history-box h3 .h3-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+  .history-box h3 .h3-text::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+  .history-clear {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 400;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .history-clear:hover { border-color: #fb7185; color: #fb7185; }
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+  }
+  .history-item .history-text {
+    font-family: "SF Mono", Consolas, monospace;
+    flex: 1;
+    word-break: break-all;
+    color: var(--text);
+  }
+  .history-item .history-copy {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .history-item .history-copy:hover { border-color: var(--accent1); color: var(--text); }
+  .history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 12px; }
+
+  /* ============ ЛОГИ ============ */
+  .log-box {
+    margin-top: 18px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  body:not(.light) .log-box { background: linear-gradient(180deg, #0d1016 0%, #0b0e14 100%); }
   .log-box h3 {
     font-size: 12px;
     text-transform: uppercase;
@@ -595,7 +818,6 @@
     font-family: "SF Mono", Consolas, monospace;
     font-size: 12px;
     line-height: 1.8;
-    color: #cbd5e1;
   }
   .log-item {
     display: flex;
@@ -606,30 +828,32 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
-  .log-item .log-time {
-    color: #64748b;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  .log-item.info { border-left-color: #38bdf8; color: #bae6fd; }
-  .log-item.ok { border-left-color: #34d399; color: #a7f3d0; }
-  .log-item.err { border-left-color: #fb7185; color: #fecdd3; }
-  .log-item:not(.info):not(.ok):not(.err) { border-left-color: #475569; color: #cbd5e1; }
+  .log-item .log-time { color: var(--muted); flex-shrink: 0; user-select: none; }
+  .log-item.info { border-left-color: #38bdf8; color: #0284c7; }
+  .log-item.ok { border-left-color: #34d399; color: #059669; }
+  .log-item.err { border-left-color: #fb7185; color: #e11d48; }
+  body:not(.light) .log-item.info { color: #bae6fd; }
+  body:not(.light) .log-item.ok { color: #a7f3d0; }
+  body:not(.light) .log-item.err { color: #fecdd3; }
+  body:not(.light) .log-item .log-time { color: #64748b; }
+  .log-item:not(.info):not(.ok):not(.err) { border-left-color: #94a3b8; color: var(--text); }
 
-  /* ============ ЛОГ КАРТИНОК ============ */
   .img-log-box {
     margin-top: 18px;
-    background: linear-gradient(180deg, #0b1216 0%, #081013 100%);
-    border: 1px solid #1a4a55;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px 14px;
-    box-shadow: inset 0 1px 0 rgba(34, 211, 238, 0.08);
+  }
+  body:not(.light) .img-log-box {
+    background: linear-gradient(180deg, #0b1216 0%, #081013 100%);
+    border-color: #1a4a55;
   }
   .img-log-box h3 {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #67e8f9;
+    color: var(--img-accent);
     margin-bottom: 8px;
     display: flex;
     align-items: center;
@@ -649,7 +873,6 @@
     font-family: "SF Mono", Consolas, monospace;
     font-size: 12px;
     line-height: 1.8;
-    color: #a5f3fc;
   }
   .img-log-item {
     display: flex;
@@ -660,29 +883,17 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
-  .img-log-item .log-time {
-    color: #155e75;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  .img-log-item.info { border-left-color: #22d3ee; color: #a5f3fc; }
-  .img-log-item.ok { border-left-color: #2dd4bf; color: #99f6e4; }
-  .img-log-item.err { border-left-color: #f472b6; color: #fbcfe8; }
-  .img-log-item:not(.info):not(.ok):not(.err) { border-left-color: #155e75; color: #67e8f9; }
+  .img-log-item .log-time { color: var(--muted); flex-shrink: 0; user-select: none; }
+  .img-log-item.info { border-left-color: #22d3ee; color: #0e7490; }
+  .img-log-item.ok { border-left-color: #2dd4bf; color: #0d9488; }
+  .img-log-item.err { border-left-color: #f472b6; color: #db2777; }
+  body:not(.light) .img-log-item.info { color: #a5f3fc; }
+  body:not(.light) .img-log-item.ok { color: #99f6e4; }
+  body:not(.light) .img-log-item.err { color: #fbcfe8; }
+  body:not(.light) .img-log-item .log-time { color: #155e75; }
+  .img-log-item:not(.info):not(.ok):not(.err) { border-left-color: #155e75; color: var(--text); }
 
-  /* ============ ИНСТРУКЦИИ ============ */
-  .instr-empty {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--muted);
-    font-size: 13px;
-    background: var(--panel);
-    border: 1px dashed var(--border);
-    border-radius: 14px;
-  }
-  .instr-empty .icon { font-size: 32px; display: block; margin-bottom: 12px; }
-
-  /* ============ ГЕНЕРАТОР ПАРОЛЕЙ ============ */
+  /* ============ ПАРОЛИ ============ */
   .pwd-output { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
   .pwd-output input {
     font-family: "SF Mono", Consolas, monospace;
@@ -703,238 +914,290 @@
   .hidden { display: none !important; }
 
   @media (max-width: 760px) {
-    .layout { flex-direction: column-reverse; }
-    .sidebar {
-      width: 100%;
-      border-left: none;
-      border-bottom: 1px solid var(--border);
-    }
     .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .main { padding: 16px; }
+    .key-switch { flex-direction: column; }
   }
 </style>
 </head>
 <body>
 
-<div class="layout">
-  <main class="main">
+<div class="overlay" id="overlay"></div>
 
-    <!-- ===== РАЗДЕЛ: ГЛАВНАЯ ===== -->
-    <section id="section-home">
-      <h1>Главная</h1>
+<!-- ============ БОКОВОЕ МЕНЮ ============ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Разделы</span>
+    <button class="sidebar-close" id="sidebarClose" title="Закрыть меню">✕</button>
+  </div>
 
-      <div class="panel">
-        <div class="home-hero">
-          <span class="home-icon">👋</span>
-          <h2>Добро пожаловать!</h2>
+  <ul class="sidebar-nav">
+    <li><button class="nav-link active" data-section="home"><span class="nav-icon">🏠</span> Главная</button></li>
+    <li><button class="nav-link" data-section="comments"><span class="nav-icon">💬</span> Генератор комментариев</button></li>
+    <li><button class="nav-link" data-section="images"><span class="nav-icon">🎨</span> Генерация картинок</button></li>
+    <li><button class="nav-link" data-section="passwords"><span class="nav-icon">🔑</span> Генератор паролей</button></li>
+  </ul>
 
-          <p>Этот сайт был создан совсем недавно — он молодой и продолжает развиваться.</p>
+  <div class="sidebar-footer">
+    <span><span class="online-dot"></span>Онлайн: <b id="onlineCount">1</b></span>
+    <span><span class="tg-sparkle">✨</span>
+      <a href="https://t.me/guiiderr" target="_blank" rel="noopener">Телеграм канал проекта</a>
+    </span>
+  </div>
+</aside>
 
-          <p>Здесь будут появляться новые разделы, инструменты и улучшения. Что-то может работать не идеально — если заметишь баг, это нормально, всё постепенно доводится до ума.</p>
+<!-- ============ ВЕРХНЯЯ ПАНЕЛЬ ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <button class="menu-btn" id="menuBtn">☰ Меню</button>
+      <span class="logo">Сайт-помощник</span>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Переключить тему">🌙</button>
+  </div>
+</header>
 
-          <p class="muted">Заглядывай почаще — сайт регулярно обновляется. ✨</p>
+<!-- ============ ОСНОВНОЙ КОНТЕНТ ============ -->
+<main class="main">
 
-          <div class="home-status">
-            <span>🛠</span> <b>Статус:</b> в активной разработке. Обновления выходят по мере готовности.
-          </div>
+  <!-- ГЛАВНАЯ -->
+  <section id="section-home">
+    <h1>Главная</h1>
+    <div class="panel">
+      <div class="home-hero">
+        <span class="home-icon">👋</span>
+        <h2>Добро пожаловать!</h2>
+        <p>Этот сайт был создан совсем недавно — он молодой и продолжает развиваться.</p>
+        <p>Здесь будут появляться новые разделы, инструменты и улучшения. Что-то может работать не идеально — если заметишь баг, это нормально, всё постепенно доводится до ума.</p>
+        <p class="muted">Заглядывай почаще — сайт регулярно обновляется. ✨</p>
+        <div class="home-status">
+          <span>🛠</span> <b>Статус:</b> в активной разработке. Обновления выходят по мере готовности.
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ===== РАЗДЕЛ: ГЕНЕРАТОР КОММЕНТАРИЕВ ===== -->
-    <section id="section-comments" class="hidden">
-      <h1>Генератор комментариев</h1>
+  <!-- КОММЕНТАРИИ -->
+  <section id="section-comments" class="hidden">
+    <h1>Генератор комментариев</h1>
 
-      <div class="provider-switch">
-        <button class="provider-btn active" data-provider="deepseek">
-          <span class="icon">🤖</span> DeepSeek API
+    <div class="explain">
+      <div class="explain-title">💡 Зачем это?</div>
+      <p>Если не хочется придумывать комментарий по теме поста или видео — сайт может сгенерировать его за вас. Просто вставьте текст или опишите тему, а нейросеть предложит готовые варианты.</p>
+      <p>Сайт может быть полезен не всем, а в некоторых случаях — например, когда нужно быстро оставить осмысленный отзыв или поддержать обсуждение. Если он вам не нужен — ничего страшного, просто закройте вкладку.</p>
+    </div>
+
+    <div class="provider-switch">
+      <button class="provider-btn active" data-provider="deepseek">
+        <span class="icon">🤖</span> DeepSeek API
+      </button>
+      <button class="provider-btn" data-provider="pollinations">
+        <span class="icon">🌸</span> Pollinations API
+      </button>
+    </div>
+
+    <!-- DeepSeek -->
+    <div class="panel" id="deepseekKeyBox">
+      <label class="label">API-ключ DeepSeek</label>
+      <input type="password" id="deepseekKey" placeholder="sk-...">
+      <div class="status success" id="deepseekKeySaved" style="display:none;">✓ Сохранён</div>
+      <div class="key-links">
+        <a href="https://platform.deepseek.com" target="_blank" rel="noopener">🔑 Получить ключ DeepSeek</a>
+      </div>
+    </div>
+
+    <!-- Pollinations -->
+    <div class="panel hidden" id="pollinationsKeyBox">
+      <label class="label">Ключ Pollinations</label>
+      <div class="key-pills">
+        <button class="key-pill active" data-poll-key="free">
+          <span class="pill-icon">🎁</span> Системный ключ
         </button>
-        <button class="provider-btn" data-provider="pollinations">
-          <span class="icon">🌸</span> Pollinations API
+        <button class="key-pill" data-poll-key="own">
+          <span class="pill-icon">🔑</span> Свой ключ
         </button>
       </div>
 
-      <div class="panel">
-        <div id="deepseekKeyBox">
-          <label class="label">API-ключ DeepSeek</label>
-          <input type="password" id="deepseekKey" placeholder="sk-...">
-          <div class="status success" id="deepseekKeySaved" style="display:none;">✓ Сохранён</div>
-        </div>
-        <div id="pollinationsKeyBox" class="hidden">
-          <label class="label">API-ключ Pollinations</label>
-          <input type="password" id="pollinationsKey" placeholder="sk_... или pk_...">
-          <div class="status success" id="pollinationsKeySaved" style="display:none;">✓ Сохранён</div>
-        </div>
-
-        <div class="key-links" id="keyLinksDeepseek">
-          <a href="https://platform.deepseek.com" target="_blank" rel="noopener">🔑 Получить ключ DeepSeek</a>
-        </div>
-        <div class="key-links hidden" id="keyLinksPollinations">
+      <div id="pollOwnKeyBox" class="hidden" style="margin-top:12px;">
+        <label class="label">Введите ваш ключ Pollinations</label>
+        <input type="password" id="pollinationsKey" placeholder="sk_... или pk_...">
+        <div class="status success" id="pollinationsKeySaved" style="display:none;">✓ Сохранён</div>
+        <div class="key-links">
           <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
         </div>
       </div>
+    </div>
 
-      <div class="tabs">
-        <button class="tab-text active" id="tabText">💬 Текст</button>
-        <button class="tab-image" id="tabImage">🖼 Изображение</button>
+    <div class="tabs">
+      <button class="tab-text active" id="tabText">💬 Текст</button>
+      <button class="tab-image" id="tabImage">🖼 Изображение</button>
+    </div>
+
+    <div class="panel">
+      <label class="label">Текст поста или тема</label>
+      <textarea id="postText" placeholder="Вставьте текст поста или опишите тему..."></textarea>
+      <div style="margin-top:12px;">
+        <label class="label">Свой стиль комментария (необязательно)</label>
+        <input type="text" id="styleText" placeholder="Например: с юмором, официально...">
       </div>
-
-      <div class="panel">
-        <label class="label">Текст поста или тема</label>
-        <textarea id="postText" placeholder="Вставьте текст поста или опишите тему..."></textarea>
-        <div style="margin-top:12px;">
-          <label class="label">Свой стиль комментария (необязательно)</label>
-          <input type="text" id="styleText" placeholder="Например: с юмором, официально...">
-        </div>
-        <div id="imageBlock" class="hidden" style="margin-top:14px;">
-          <label class="label">Картинки (до 5)</label>
-          <div class="drop-zone" id="dropZone">Перетащите или кликните для загрузки</div>
-          <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
-          <div class="thumbs" id="thumbs"></div>
-        </div>
+      <div id="imageBlock" class="hidden" style="margin-top:14px;">
+        <label class="label">Картинки (до 5)</label>
+        <div class="drop-zone" id="dropZone">Перетащите или кликните для загрузки</div>
+        <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+        <div class="thumbs" id="thumbs"></div>
       </div>
+    </div>
 
-      <div class="panel">
-        <div class="row" style="margin-bottom:14px;">
-          <div class="num-field">
-            <label>Кол-во комментов</label>
-            <input type="number" id="countComments" min="1" max="50" value="10">
-          </div>
-          <div class="num-field">
-            <label>Предложений</label>
-            <input type="number" id="countSentences" min="1" max="10" value="3">
-          </div>
+    <div class="panel">
+      <div class="row" style="margin-bottom:14px;">
+        <div class="num-field">
+          <label>Кол-во комментов</label>
+          <input type="number" id="countComments" min="1" max="50" value="10">
         </div>
-        <div class="checks">
-          <label class="check"><input type="checkbox" id="optEmoji" checked> Со смайликами</label>
-          <label class="check"><input type="checkbox" id="optPositive"> Строго позитивный тон</label>
+        <div class="num-field">
+          <label>Предложений</label>
+          <input type="number" id="countSentences" min="1" max="10" value="3">
         </div>
       </div>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="optEmoji" checked> Со смайликами</label>
+        <label class="check"><input type="checkbox" id="optPositive"> Строго позитивный тон</label>
+      </div>
+    </div>
 
-      <div class="buttons">
-        <button class="btn btn-primary" id="btnGenerate">✨ Сгенерировать новые</button>
-        <button class="btn" id="btnClear">Очистить</button>
-        <button class="btn hidden" id="btnDownload">⬇ Скачать в TXT</button>
+    <div class="buttons">
+      <button class="btn btn-primary" id="btnGenerate">✨ Сгенерировать новые</button>
+      <button class="btn" id="btnClear">Очистить</button>
+      <button class="btn hidden" id="btnCopyAll">📋 Копировать все</button>
+      <button class="btn hidden" id="btnDownload">⬇ Скачать в TXT</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="comments" id="comments"></div>
+
+    <div class="log-box">
+      <h3>Лог работы</h3>
+      <div class="log-list" id="logList"></div>
+    </div>
+  </section>
+
+  <!-- КАРТИНКИ -->
+  <section id="section-images" class="hidden">
+    <h1>🎨 Генерация картинок</h1>
+
+    <div class="panel">
+      <label class="label">Ключ для генерации</label>
+      <div class="key-switch">
+        <button class="key-btn active" data-key="free">
+          <span class="key-title">🎁 Системный ключ</span>
+          <span class="key-sub">Использовать системный ключ — ничего вводить не нужно</span>
+        </button>
+        <button class="key-btn" data-key="own">
+          <span class="key-title">🔑 Свой ключ</span>
+          <span class="key-sub">Введу свой ключ Pollinations</span>
+        </button>
       </div>
 
-      <div class="status" id="status"></div>
-      <div class="comments" id="comments"></div>
-
-      <div class="log-box">
-        <h3>Лог работы</h3>
-        <div class="log-list" id="logList"></div>
-      </div>
-    </section>
-
-    <!-- ===== РАЗДЕЛ: ГЕНЕРАЦИЯ КАРТИНОК ===== -->
-    <section id="section-images" class="hidden">
-      <h1>🎨 Генерация картинок</h1>
-
-      <div class="panel">
-        <label class="label">API-ключ Pollinations</label>
+      <div id="ownKeyBox" class="hidden" style="margin-top:12px;">
+        <label class="label">Введите ваш ключ Pollinations</label>
         <input type="password" id="imgApiKey" placeholder="sk_... или pk_...">
         <div class="status success" id="imgKeySaved" style="display:none;">✓ Сохранён</div>
         <div class="key-links">
           <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
         </div>
-        <div class="price-note">
-          <b>Важно про ключи:</b> если у тебя ключ <code>sk_</code> (Secret) — он даёт безлимит, но <b>не должен быть в публичном коде</b>: любой сможет его украсть и тратить твой баланс. Ключ <code>pk_</code> (Publishable) безопаснее для фронтенда, но имеет лимит примерно <b>1 запрос в час на IP</b>.
+      </div>
+    </div>
+
+    <div class="panel">
+      <label class="label">Что нарисовать?</label>
+      <textarea id="imgPrompt" placeholder="Например: кот в космосе, неоновый город ночью, портрет девушки в стиле киберпанк..."></textarea>
+
+      <div class="row" style="margin-top:12px;">
+        <div class="num-field">
+          <label>Кол-во картинок</label>
+          <input type="number" id="imgCount" min="1" max="99999" value="4">
         </div>
       </div>
 
-      <div class="panel">
-        <label class="label">Что нарисовать?</label>
-        <textarea id="imgPrompt" placeholder="Например: кот в космосе, неоновый город ночью, портрет девушки в стиле киберпанк..."></textarea>
-
-        <div class="row" style="margin-top:12px;">
-          <div class="num-field">
-            <label>Кол-во картинок</label>
-            <input type="number" id="imgCount" min="1" max="99999" value="4">
-          </div>
-        </div>
-
-        <div class="hint-note">
-          <b>Совет:</b> можно запросить любое количество картинок — от 1 до 99999. Учти: чем больше картинок ты запросишь, тем дольше будет генерация. Если поставить очень много, Pollinations может отвечать медленнее обычного, а некоторые запросы — завершиться ошибкой. Если картинка не появилась за 30–60 секунд — это нормально, генерация иногда бывает медленной. Просто подожди.
-        </div>
+      <div class="hint-note">
+        <b>Совет:</b> можно запросить любое количество картинок — от 1 до 99999. Учти: чем больше картинок ты запросишь, тем дольше будет генерация. Если поставить очень много, сервис может отвечать медленнее обычного, а некоторые запросы — завершиться ошибкой. Если картинка не появилась за 30–60 секунд — это нормально, генерация иногда бывает медленной. Просто подожди.
       </div>
+    </div>
 
+    <div class="buttons">
+      <button class="btn btn-primary" id="btnGenerateImages">✨ Сгенерировать картинки</button>
+      <button class="btn hidden" id="btnDownloadAll">⬇ Скачать все</button>
+      <button class="btn" id="btnClearImages">Очистить</button>
+    </div>
+
+    <div class="status" id="imgStatus"></div>
+    <div class="image-grid" id="imageGrid"></div>
+
+    <div class="history-box">
+      <h3>
+        <span class="h3-text">Последние запросы</span>
+        <button class="history-clear" id="clearImgHistory">Очистить</button>
+      </h3>
+      <div class="history-list" id="imgHistory"></div>
+    </div>
+
+    <div class="img-log-box">
+      <h3>Лог генерации картинок</h3>
+      <div class="img-log-list" id="imgLogList"></div>
+    </div>
+  </section>
+
+  <!-- ПАРОЛИ -->
+  <section id="section-passwords" class="hidden">
+    <h1>Генератор паролей</h1>
+
+    <div class="explain">
+      <div class="explain-title">💡 Зачем это?</div>
+      <p>В интернете почти везде нужны пароли. И чем сложнее пароль, тем труднее его подобрать — а значит, тем безопаснее твой аккаунт.</p>
+      <p>Простые пароли вроде «123456», «qwerty» или «дата рождения» взламывают за секунды. А если ты используешь один и тот же пароль на разных сайтах — стоит утечь одному сервису, и под угрозой окажутся все остальные.</p>
+      <p>Генератор создаёт случайный пароль заданной длины с цифрами, буквами и символами. Скопируй его и используй — так надёжнее.</p>
+    </div>
+
+    <div class="panel">
+      <div class="pwd-output">
+        <input type="text" id="pwdOutput" readonly>
+        <button class="btn btn-primary" id="btnCopyPwd">Копировать</button>
+      </div>
+      <div class="strength" id="pwdStrength">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="status" id="pwdStrengthLabel" style="margin-top:4px;">Надёжность</div>
+    </div>
+    <div class="panel">
+      <label class="label">Длина пароля: <span class="slider-value" id="pwdLenVal">16</span></label>
+      <input type="range" id="pwdLen" min="4" max="64" value="16">
+      <div class="checks" style="margin-top:16px;">
+        <label class="check"><input type="checkbox" id="pwdUpper" checked> Заглавные</label>
+        <label class="check"><input type="checkbox" id="pwdLower" checked> Строчные</label>
+        <label class="check"><input type="checkbox" id="pwdDigits" checked> Цифры</label>
+        <label class="check"><input type="checkbox" id="pwdSymbols"> Символы</label>
+        <label class="check"><input type="checkbox" id="pwdNoSimilar"> Без похожих</label>
+        <label class="check"><input type="checkbox" id="pwdNoAmbiguous"> Без неоднозначных</label>
+      </div>
       <div class="buttons">
-        <button class="btn btn-primary" id="btnGenerateImages">✨ Сгенерировать картинки</button>
-        <button class="btn hidden" id="btnDownloadAll">⬇ Скачать все</button>
-        <button class="btn" id="btnClearImages">Очистить</button>
+        <button class="btn btn-primary" id="btnGenPwd">Сгенерировать</button>
       </div>
-
-      <div class="status" id="imgStatus"></div>
-      <div class="image-grid" id="imageGrid"></div>
-
-      <div class="img-log-box">
-        <h3>Лог генерации картинок</h3>
-        <div class="img-log-list" id="imgLogList"></div>
-      </div>
-    </section>
-
-    <!-- ===== РАЗДЕЛ: ГЕНЕРАТОР ПАРОЛЕЙ ===== -->
-    <section id="section-passwords" class="hidden">
-      <h1>Генератор паролей</h1>
-      <div class="panel">
-        <div class="pwd-output">
-          <input type="text" id="pwdOutput" readonly>
-          <button class="btn btn-primary" id="btnCopyPwd">Копировать</button>
-        </div>
-        <div class="strength" id="pwdStrength">
-          <span></span><span></span><span></span><span></span>
-        </div>
-        <div class="status" id="pwdStrengthLabel" style="margin-top:4px;">Надёжность</div>
-      </div>
-      <div class="panel">
-        <label class="label">Длина пароля: <span class="slider-value" id="pwdLenVal">16</span></label>
-        <input type="range" id="pwdLen" min="4" max="64" value="16">
-        <div class="checks" style="margin-top:16px;">
-          <label class="check"><input type="checkbox" id="pwdUpper" checked> Заглавные</label>
-          <label class="check"><input type="checkbox" id="pwdLower" checked> Строчные</label>
-          <label class="check"><input type="checkbox" id="pwdDigits" checked> Цифры</label>
-          <label class="check"><input type="checkbox" id="pwdSymbols"> Символы</label>
-          <label class="check"><input type="checkbox" id="pwdNoSimilar"> Без похожих</label>
-          <label class="check"><input type="checkbox" id="pwdNoAmbiguous"> Без неоднозначных</label>
-        </div>
-        <div class="buttons">
-          <button class="btn btn-primary" id="btnGenPwd">Сгенерировать</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== РАЗДЕЛ: ИНСТРУКЦИИ ===== -->
-    <section id="section-instructions" class="hidden">
-      <h1>Инструкции</h1>
-      <div class="instr-empty">
-        <span class="icon">📭</span>
-        Инструкций пока нет. Они появятся здесь позже.
-      </div>
-    </section>
-
-  </main>
-
-  <aside class="sidebar">
-    <h3>Разделы</h3>
-    <button class="nav-btn active" data-section="home">🏠 Главная</button>
-    <button class="nav-btn" data-section="comments">💬 Комментарии</button>
-    <button class="nav-btn" data-section="images">🎨 Генерация картинок</button>
-    <button class="nav-btn" data-section="passwords">🔑 Пароли</button>
-    <button class="nav-btn" data-section="instructions">📘 Инструкции</button>
-
-    <div class="online-box">
-      <span class="online-dot"></span>Онлайн: <b id="onlineCount">1</b>
     </div>
 
-    <div class="tg-box">
-      <span class="tg-sparkle">✨</span>
-      <a href="https://t.me/guiiderr" target="_blank" rel="noopener">Телеграм канал проекта</a>
+    <div class="history-box">
+      <h3>
+        <span class="h3-text">Последние пароли</span>
+        <button class="history-clear" id="clearPwdHistory">Очистить</button>
+      </h3>
+      <div class="history-list" id="pwdHistory"></div>
     </div>
-  </aside>
-</div>
+  </section>
+
+</main>
 
 <script>
 /* =========================================================================
-   ОБЩИЕ УТИЛИТЫ
+   УТИЛИТЫ
    ========================================================================= */
 
 const $ = (id) => document.getElementById(id);
@@ -953,35 +1216,123 @@ const rand = (min, max) => Math.random() * (max - min) + min;
 const randInt = (min, max) => Math.floor(rand(min, max + 1));
 const pick = (arr) => arr[randInt(0, arr.length - 1)];
 
+/* Системный ключ Pollinations */
+const MY_POLLINATIONS_KEY = 'sk_zHAhsuIg1ADYOAHn9pxgbLiiAJW5rGpb';
+
+/* =========================================================================
+   ЗАГОЛОВОК ВКЛАДКИ
+   ========================================================================= */
+
+const PAGE_TITLES = {
+  home: 'Главная',
+  comments: 'Генератор комментариев',
+  images: 'Генерация картинок',
+  passwords: 'Генератор паролей'
+};
+
+function updatePageTitle(section) {
+  const name = PAGE_TITLES[section] || 'Сайт-помощник';
+  document.title = `${name} — Сайт-помощник`;
+}
+
+/* =========================================================================
+   БОКОВОЕ МЕНЮ
+   ========================================================================= */
+
+const sidebar = $('sidebar');
+const menuBtn = $('menuBtn');
+const sidebarClose = $('sidebarClose');
+const overlay = $('overlay');
+
+function openMenu() {
+  sidebar.classList.add('open');
+  overlay.classList.add('show');
+}
+function closeMenu() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+menuBtn.addEventListener('click', () => {
+  if (sidebar.classList.contains('open')) closeMenu();
+  else openMenu();
+});
+
+sidebarClose.addEventListener('click', closeMenu);
+overlay.addEventListener('click', closeMenu);
+
+document.querySelectorAll('.nav-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    location.hash = btn.dataset.section;
+    closeMenu();
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && sidebar.classList.contains('open')) closeMenu();
+});
+
+let lastScrollY = window.scrollY;
+window.addEventListener('scroll', () => {
+  if (!sidebar.classList.contains('open')) {
+    lastScrollY = window.scrollY;
+    return;
+  }
+  const currentY = window.scrollY;
+  if (currentY > lastScrollY && currentY > 50) closeMenu();
+  lastScrollY = currentY;
+}, { passive: true });
+
+/* =========================================================================
+   ТЕМА
+   ========================================================================= */
+
+const themeBtn = $('themeBtn');
+
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.body.classList.add('light');
+    themeBtn.textContent = '☀️';
+    themeBtn.title = 'Включить тёмную тему';
+  } else {
+    document.body.classList.remove('light');
+    themeBtn.textContent = '🌙';
+    themeBtn.title = 'Включить светлую тему';
+  }
+}
+
+const savedTheme = storage.get('theme', 'dark');
+applyTheme(savedTheme);
+
+themeBtn.addEventListener('click', () => {
+  const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+  applyTheme(newTheme);
+  storage.set('theme', newTheme);
+});
+
 /* =========================================================================
    РОУТИНГ
    ========================================================================= */
 
-const SECTIONS = ['home', 'comments', 'images', 'passwords', 'instructions'];
+const SECTIONS = ['home', 'comments', 'images', 'passwords'];
 
 function showSection(section) {
   SECTIONS.forEach(s => {
     const el = $('section-' + s);
     if (el) el.classList.toggle('hidden', s !== section);
   });
-  document.querySelectorAll('.nav-btn').forEach(b => {
+  document.querySelectorAll('.nav-link').forEach(b => {
     b.classList.toggle('active', b.dataset.section === section);
   });
+  updatePageTitle(section);
 }
 
 function handleHash() {
   const hash = location.hash.replace(/^#/, '') || 'home';
   const section = hash.split('/')[0];
-  if (SECTIONS.includes(section)) {
-    showSection(section);
-  } else {
-    showSection('home');
-  }
+  if (SECTIONS.includes(section)) showSection(section);
+  else showSection('home');
 }
-
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => { location.hash = btn.dataset.section; });
-});
 
 window.addEventListener('hashchange', handleHash);
 
@@ -1011,49 +1362,41 @@ try {
 function updateOnline() { onlineCountEl.textContent = knownTabs.size; }
 
 /* =========================================================================
-   ЛОГ РАБОТЫ (комментарии)
+   ЛОГИ
    ========================================================================= */
 
 const logList = $('logList');
-
 function addLog(text, type = '') {
   const div = document.createElement('div');
   div.className = 'log-item ' + type;
-  const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-  const timeSpan = document.createElement('span');
-  timeSpan.className = 'log-time';
-  timeSpan.textContent = `[${time}]`;
-  const textSpan = document.createElement('span');
-  textSpan.textContent = text;
-  div.appendChild(timeSpan);
-  div.appendChild(textSpan);
+  const t = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+  const ts = document.createElement('span');
+  ts.className = 'log-time';
+  ts.textContent = `[${t}]`;
+  const xs = document.createElement('span');
+  xs.textContent = text;
+  div.appendChild(ts);
+  div.appendChild(xs);
   logList.appendChild(div);
   logList.scrollTop = logList.scrollHeight;
 }
-
 function clearLog() { logList.innerHTML = ''; }
 
-/* =========================================================================
-   ЛОГ КАРТИНОК
-   ========================================================================= */
-
 const imgLogList = $('imgLogList');
-
 function addImgLog(text, type = '') {
   const div = document.createElement('div');
   div.className = 'img-log-item ' + type;
-  const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-  const timeSpan = document.createElement('span');
-  timeSpan.className = 'log-time';
-  timeSpan.textContent = `[${time}]`;
-  const textSpan = document.createElement('span');
-  textSpan.textContent = text;
-  div.appendChild(timeSpan);
-  div.appendChild(textSpan);
+  const t = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+  const ts = document.createElement('span');
+  ts.className = 'log-time';
+  ts.textContent = `[${t}]`;
+  const xs = document.createElement('span');
+  xs.textContent = text;
+  div.appendChild(ts);
+  div.appendChild(xs);
   imgLogList.appendChild(div);
   imgLogList.scrollTop = imgLogList.scrollHeight;
 }
-
 function clearImgLog() { imgLogList.innerHTML = ''; }
 
 /* =========================================================================
@@ -1069,12 +1412,16 @@ let state = {
   provider: storage.get('provider', 'deepseek'),
   mode: 'text',
   deepseekKey: storage.get('deepseekKey', ''),
-  pollinationsKey: storage.get('pollinationsKey', ''),
+  pollKeyMode: storage.get('pollKeyMode', 'free'),
+  pollOwnKey: storage.get('pollOwnKey', ''),
   images: [],
   comments: [],
-  generating: false,
-  lastRequestTime: 0
+  generating: false
 };
+
+function getCommentPollinationsKey() {
+  return state.pollKeyMode === 'free' ? MY_POLLINATIONS_KEY : state.pollOwnKey;
+}
 
 function updateProviderUI() {
   document.querySelectorAll('.provider-btn').forEach(btn => {
@@ -1083,18 +1430,38 @@ function updateProviderUI() {
   const isDeep = state.provider === 'deepseek';
   $('deepseekKeyBox').classList.toggle('hidden', !isDeep);
   $('pollinationsKeyBox').classList.toggle('hidden', isDeep);
-  $('keyLinksDeepseek').classList.toggle('hidden', !isDeep);
-  $('keyLinksPollinations').classList.toggle('hidden', isDeep);
-  if (state.deepseekKey) { $('deepseekKey').value = state.deepseekKey; $('deepseekKeySaved').style.display = 'block'; }
-  if (state.pollinationsKey) { $('pollinationsKey').value = state.pollinationsKey; $('pollinationsKeySaved').style.display = 'block'; }
+  if (state.deepseekKey) {
+    $('deepseekKey').value = state.deepseekKey;
+    $('deepseekKeySaved').style.display = 'block';
+  }
 }
 
+function updatePollKeyUI() {
+  document.querySelectorAll('.key-pill[data-poll-key]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.pollKey === state.pollKeyMode);
+  });
+  $('pollOwnKeyBox').classList.toggle('hidden', state.pollKeyMode !== 'own');
+  if (state.pollOwnKey) {
+    $('pollinationsKey').value = state.pollOwnKey;
+    $('pollinationsKeySaved').style.display = 'block';
+  }
+}
+
+/* --- Переключение провайдера (без записи в лог) --- */
 document.querySelectorAll('.provider-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     state.provider = btn.dataset.provider;
     storage.set('provider', state.provider);
     updateProviderUI();
-    addLog(`Провайдер: ${btn.textContent.trim()}`, 'info');
+  });
+});
+
+/* --- Переключение ключа Pollinations (без записи в лог) --- */
+document.querySelectorAll('.key-pill[data-poll-key]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.pollKeyMode = btn.dataset.pollKey;
+    storage.set('pollKeyMode', state.pollKeyMode);
+    updatePollKeyUI();
   });
 });
 
@@ -1105,6 +1472,7 @@ function restoreSettings() {
   $('optEmoji').checked = storage.get('optEmoji', true);
   $('optPositive').checked = storage.get('optPositive', false);
   updateProviderUI();
+  updatePollKeyUI();
 }
 
 function saveSettings() {
@@ -1121,9 +1489,9 @@ $('deepseekKey').addEventListener('input', (e) => {
   $('deepseekKeySaved').style.display = state.deepseekKey ? 'block' : 'none';
 });
 $('pollinationsKey').addEventListener('input', (e) => {
-  state.pollinationsKey = e.target.value.trim();
-  storage.set('pollinationsKey', state.pollinationsKey);
-  $('pollinationsKeySaved').style.display = state.pollinationsKey ? 'block' : 'none';
+  state.pollOwnKey = e.target.value.trim();
+  storage.set('pollOwnKey', state.pollOwnKey);
+  $('pollinationsKeySaved').style.display = state.pollOwnKey ? 'block' : 'none';
 });
 
 $('tabText').addEventListener('click', () => {
@@ -1133,8 +1501,8 @@ $('tabText').addEventListener('click', () => {
   $('imageBlock').classList.add('hidden');
 });
 $('tabImage').addEventListener('click', () => {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
-  if (!hasKey) { setStatus('Для работы с изображениями нужен API-ключ', 'error'); addLog('Ошибка: нет ключа', 'err'); return; }
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
+  if (!hasKey) { setStatus('Для работы с изображениями нужен API-ключ', 'error'); return; }
   state.mode = 'image';
   $('tabImage').classList.add('active');
   $('tabText').classList.remove('active');
@@ -1195,33 +1563,29 @@ function buildSystemPrompt(opts) {
 
 async function callProvider(systemPrompt, userContent, useImages) {
   let url, headers, body;
-
   if (state.provider === 'deepseek') {
     if (!state.deepseekKey) throw new Error('Не указан ключ DeepSeek');
     url = 'https://api.deepseek.com/chat/completions';
     headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.deepseekKey };
     const messages = [{ role: 'system', content: systemPrompt }];
     if (useImages && state.images.length && state.mode === 'image') {
-      const contentParts = [{ type: 'text', text: userContent }];
-      state.images.forEach(src => contentParts.push({ type: 'image_url', image_url: { url: src } }));
-      messages.push({ role: 'user', content: contentParts });
-    } else {
-      messages.push({ role: 'user', content: userContent });
-    }
+      const c = [{ type: 'text', text: userContent }];
+      state.images.forEach(src => c.push({ type: 'image_url', image_url: { url: src } }));
+      messages.push({ role: 'user', content: c });
+    } else messages.push({ role: 'user', content: userContent });
     body = JSON.stringify({ model: 'deepseek-flash', messages, temperature: rand(0.9, 1.15) });
     addLog('Обращаюсь к DeepSeek API...', 'info');
   } else {
-    if (!state.pollinationsKey) throw new Error('Не указан ключ Pollinations');
+    const activeKey = getCommentPollinationsKey();
+    if (!activeKey) throw new Error('Не указан ключ Pollinations');
     url = 'https://gen.pollinations.ai/v1/chat/completions';
-    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.pollinationsKey };
+    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + activeKey };
     const messages = [{ role: 'system', content: systemPrompt }];
     if (useImages && state.images.length && state.mode === 'image') {
-      const contentParts = [{ type: 'text', text: userContent }];
-      state.images.forEach(src => contentParts.push({ type: 'image_url', image_url: { url: src } }));
-      messages.push({ role: 'user', content: contentParts });
-    } else {
-      messages.push({ role: 'user', content: userContent });
-    }
+      const c = [{ type: 'text', text: userContent }];
+      state.images.forEach(src => c.push({ type: 'image_url', image_url: { url: src } }));
+      messages.push({ role: 'user', content: c });
+    } else messages.push({ role: 'user', content: userContent });
     body = JSON.stringify({ model: 'openai', messages, temperature: rand(0.9, 1.15), seed: randInt(1, 999999) });
     addLog('Обращаюсь к Pollinations API...', 'info');
   }
@@ -1244,8 +1608,7 @@ async function generateComments() {
   if (state.generating) return;
   const postText = $('postText').value.trim();
   if (!postText && state.images.length === 0) { setStatus('Введите текст поста', 'error'); addLog('Ошибка: нет текста', 'err'); return; }
-
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
   if (!hasKey) { setStatus('Укажите ключ', 'error'); addLog('Ошибка: нет ключа', 'err'); return; }
 
   state.generating = true;
@@ -1253,6 +1616,7 @@ async function generateComments() {
   state.comments = [];
   renderComments();
   $('btnDownload').classList.add('hidden');
+  $('btnCopyAll').classList.add('hidden');
   clearLog();
   addLog('Старт генерации...', 'info');
 
@@ -1276,7 +1640,10 @@ async function generateComments() {
     renderComments();
     setStatus(`Готово: ${list.length} комментариев`, 'success');
     addLog(`✓ Готово: ${list.length} комментариев`, 'ok');
-    $('btnDownload').classList.toggle('hidden', list.length < 10);
+    if (list.length > 0) {
+      $('btnCopyAll').classList.remove('hidden');
+      if (list.length >= 10) $('btnDownload').classList.remove('hidden');
+    }
   } catch (err) {
     console.error(err);
     setStatus('Ошибка: ' + err.message, 'error');
@@ -1323,9 +1690,7 @@ function renderComments() {
           btn.textContent = '✓ Скопировано';
           setTimeout(() => btn.textContent = 'Копировать', 1500);
         });
-      } else if (btn.dataset.action === 'regen') {
-        regenOne(i);
-      }
+      } else if (btn.dataset.action === 'regen') regenOne(i);
     });
   });
 }
@@ -1335,7 +1700,7 @@ function escapeHtml(str) {
 }
 
 async function regenOne(index) {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
   if (!hasKey) { setStatus('Нет ключа', 'error'); return; }
   addLog(`Регенерация комментария ${index + 1}...`, 'info');
   setStatus('Генерация варианта...', 'loading');
@@ -1366,7 +1731,22 @@ $('btnClear').addEventListener('click', () => {
   renderComments(); renderThumbs();
   $('postText').value = '';
   $('btnDownload').classList.add('hidden');
+  $('btnCopyAll').classList.add('hidden');
   setStatus(''); clearLog(); addLog('Очищено', 'info');
+});
+
+$('btnCopyAll').addEventListener('click', () => {
+  if (!state.comments.length) return;
+  const text = state.comments.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = $('btnCopyAll');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Скопировано';
+    addLog(`Скопировано комментариев: ${state.comments.length}`, 'ok');
+    setTimeout(() => btn.textContent = orig, 1500);
+  }).catch(err => {
+    addLog(`Ошибка копирования: ${err.message}`, 'err');
+  });
 });
 
 $('btnDownload').addEventListener('click', () => {
@@ -1386,26 +1766,46 @@ $('btnGenerate').addEventListener('click', generateComments);
 });
 
 /* =========================================================================
-   ГЕНЕРАЦИЯ КАРТИНОК
+   КАРТИНКИ
    ========================================================================= */
 
 let imgState = {
-  apiKey: storage.get('imgApiKey', ''),
+  keyMode: storage.get('imgKeyMode', 'free'),
+  ownKey: storage.get('imgOwnKey', ''),
   images: [],
   generating: false,
-  downloadingAll: false
+  downloadingAll: false,
+  history: storage.get('imgHistory', [])
 };
 
-if (imgState.apiKey) {
-  $('imgApiKey').value = imgState.apiKey;
-  $('imgKeySaved').style.display = 'block';
+function updateKeyModeUI() {
+  document.querySelectorAll('.key-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.key === imgState.keyMode);
+  });
+  $('ownKeyBox').classList.toggle('hidden', imgState.keyMode !== 'own');
+  if (imgState.ownKey) {
+    $('imgApiKey').value = imgState.ownKey;
+    $('imgKeySaved').style.display = 'block';
+  }
 }
 
-$('imgApiKey').addEventListener('input', (e) => {
-  imgState.apiKey = e.target.value.trim();
-  storage.set('imgApiKey', imgState.apiKey);
-  $('imgKeySaved').style.display = imgState.apiKey ? 'block' : 'none';
+document.querySelectorAll('.key-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    imgState.keyMode = btn.dataset.key;
+    storage.set('imgKeyMode', imgState.keyMode);
+    updateKeyModeUI();
+  });
 });
+
+$('imgApiKey').addEventListener('input', (e) => {
+  imgState.ownKey = e.target.value.trim();
+  storage.set('imgOwnKey', imgState.ownKey);
+  $('imgKeySaved').style.display = imgState.ownKey ? 'block' : 'none';
+});
+
+function getActiveKey() {
+  return imgState.keyMode === 'free' ? MY_POLLINATIONS_KEY : imgState.ownKey;
+}
 
 $('imgCount').value = storage.get('imgCount', 4);
 $('imgCount').addEventListener('change', (e) => {
@@ -1418,13 +1818,45 @@ function setImgStatus(text, type = '') {
   el.className = 'status ' + type;
 }
 
-// Показать/скрыть кнопку «Скачать все» (только когда есть картинки)
 function updateDownloadAllBtn() {
-  const hasImages = imgState.images.length > 0;
-  $('btnDownloadAll').classList.toggle('hidden', !hasImages);
+  $('btnDownloadAll').classList.toggle('hidden', imgState.images.length === 0);
 }
 
-// Скачивание одной картинки через fetch + blob
+function renderImgHistory() {
+  const el = $('imgHistory');
+  if (!imgState.history.length) {
+    el.innerHTML = '<div class="history-empty">Пока ничего не сгенерировано</div>';
+    return;
+  }
+  el.innerHTML = '';
+  imgState.history.forEach((entry, i) => {
+    const row = document.createElement('div');
+    row.className = 'history-item';
+    row.innerHTML = `
+      <span class="history-text">${escapeHtml(entry.prompt)}</span>
+      <button class="history-copy" data-i="${i}">↻ Повторить</button>`;
+    row.querySelector('button').addEventListener('click', () => {
+      $('imgPrompt').value = entry.prompt;
+      $('imgCount').value = entry.count || 4;
+    });
+    el.appendChild(row);
+  });
+}
+
+function addImgHistory(prompt, count) {
+  imgState.history = imgState.history.filter(h => h.prompt !== prompt);
+  imgState.history.unshift({ prompt, count, ts: Date.now() });
+  imgState.history = imgState.history.slice(0, 10);
+  storage.set('imgHistory', imgState.history);
+  renderImgHistory();
+}
+
+$('clearImgHistory').addEventListener('click', () => {
+  imgState.history = [];
+  storage.set('imgHistory', []);
+  renderImgHistory();
+});
+
 async function downloadSingle(url, filename, btn) {
   try {
     if (btn) { btn.disabled = true; btn.textContent = '...'; }
@@ -1455,39 +1887,27 @@ async function downloadSingle(url, filename, btn) {
   }
 }
 
-// Скачивание всех картинок по очереди
 async function downloadAll() {
   if (imgState.downloadingAll) return;
-  if (!imgState.images.length) {
-    setImgStatus('Сначала сгенерируй картинки', 'error');
-    addImgLog('Нечего скачивать', 'err');
-    return;
-  }
-
+  if (!imgState.images.length) { setImgStatus('Сначала сгенерируй картинки', 'error'); addImgLog('Нечего скачивать', 'err'); return; }
   imgState.downloadingAll = true;
   $('btnDownloadAll').disabled = true;
   addImgLog(`Начинаю скачивание всех (${imgState.images.length} шт.)...`, 'info');
-
   let ok = 0, err = 0;
   for (let i = 0; i < imgState.images.length; i++) {
     setImgStatus(`Скачиваю ${i + 1} из ${imgState.images.length}...`, 'loading');
     addImgLog(`Скачиваю картинку ${i + 1} из ${imgState.images.length}...`, 'info');
-
-    const randomName = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
-    const success = await downloadSingle(imgState.images[i].url, randomName, null);
+    const name = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
+    const success = await downloadSingle(imgState.images[i].url, name, null);
     if (success) ok++; else err++;
-
     if (i < imgState.images.length - 1) await new Promise(r => setTimeout(r, 400));
   }
-
   imgState.downloadingAll = false;
   $('btnDownloadAll').disabled = false;
-
   setImgStatus(`Скачано: ${ok}, ошибок: ${err}`, ok > 0 ? 'success' : 'error');
   addImgLog(`Готово. Успешно: ${ok}, с ошибкой: ${err}`, ok > 0 ? 'ok' : 'err');
 }
 
-// Отрисовка картинок (без управления кнопкой «Скачать все»)
 function renderImages() {
   const grid = $('imageGrid');
   grid.innerHTML = '';
@@ -1502,8 +1922,8 @@ function renderImages() {
       </div>`;
     const btn = card.querySelector('.btn-download');
     btn.addEventListener('click', () => {
-      const randomName = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
-      downloadSingle(item.url, randomName, btn);
+      const name = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
+      downloadSingle(item.url, name, btn);
     });
     grid.appendChild(card);
   });
@@ -1511,44 +1931,31 @@ function renderImages() {
 
 async function generateImages() {
   if (imgState.generating) return;
-
-  if (!imgState.apiKey) {
-    setImgStatus('Укажи API-ключ Pollinations', 'error');
-    addImgLog('Ошибка: нет ключа', 'err');
-    return;
-  }
-
+  const activeKey = getActiveKey();
+  if (!activeKey) { setImgStatus('Введите свой ключ или выберите «Системный ключ»', 'error'); addImgLog('Ошибка: нет ключа', 'err'); return; }
   const prompt = $('imgPrompt').value.trim();
-  if (!prompt) {
-    setImgStatus('Введи описание картинки', 'error');
-    addImgLog('Ошибка: пустое описание', 'err');
-    return;
-  }
+  if (!prompt) { setImgStatus('Введи описание картинки', 'error'); addImgLog('Ошибка: пустое описание', 'err'); return; }
 
   const count = Math.max(1, parseInt($('imgCount').value) || 1);
+  const modeLabel = imgState.keyMode === 'free' ? 'системный ключ' : 'свой ключ';
 
   imgState.generating = true;
   $('btnGenerateImages').disabled = true;
-  // На время генерации скрываем кнопку «Скачать все»
   $('btnDownloadAll').classList.add('hidden');
   imgState.images = [];
   renderImages();
   clearImgLog();
-  addImgLog(`Старт: ${count} картинок по описанию «${prompt.slice(0, 50)}...»`, 'info');
+  addImgLog(`Старт: ${count} картинок, режим: ${modeLabel}`, 'info');
+  addImgLog(`Описание: «${prompt.slice(0, 60)}${prompt.length > 60 ? '...' : ''}»`, 'info');
   setImgStatus('Генерация...', 'loading');
 
-  let okCount = 0;
-  let errCount = 0;
-
+  let okCount = 0, errCount = 0;
   for (let i = 1; i <= count; i++) {
     try {
       addImgLog(`Генерирую картинку ${i} из ${count}...`, 'info');
       setImgStatus(`Картинка ${i} из ${count}...`, 'loading');
-
       const seed = randInt(1, 999999);
-      const encoded = encodeURIComponent(prompt);
-      const url = `https://gen.pollinations.ai/image/${encoded}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(imgState.apiKey)}`;
-
+      const url = `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(activeKey)}`;
       await new Promise((resolve, reject) => {
         const testImg = new Image();
         const timeout = setTimeout(() => reject(new Error('Таймаут загрузки (60 сек)')), 60000);
@@ -1556,32 +1963,27 @@ async function generateImages() {
         testImg.onerror = () => { clearTimeout(timeout); reject(new Error('Не удалось загрузить')); };
         testImg.src = url;
       });
-
       imgState.images.push({ url, prompt, id: i });
       renderImages();
       okCount++;
       addImgLog(`✓ Картинка ${i} готова`, 'ok');
-
       if (i < count) await new Promise(r => setTimeout(r, 1200));
-
     } catch (err) {
       errCount++;
       addImgLog(`✗ Картинка ${i}: ${err.message}`, 'err');
     }
   }
-
   imgState.generating = false;
   $('btnGenerateImages').disabled = false;
 
   if (okCount > 0) {
     setImgStatus(`Готово: ${okCount} из ${count}`, 'success');
     addImgLog(`Завершено: ${okCount} успешно, ${errCount} с ошибкой`, okCount === count ? 'ok' : 'info');
+    addImgHistory(prompt, count);
   } else {
     setImgStatus('Не удалось сгенерировать ни одной картинки', 'error');
     addImgLog('Все запросы завершились ошибкой', 'err');
   }
-
-  // Показываем кнопку «Скачать все» ТОЛЬКО после завершения всей генерации
   updateDownloadAllBtn();
 }
 
@@ -1594,13 +1996,12 @@ $('btnClearImages').addEventListener('click', () => {
   $('imgPrompt').value = '';
   setImgStatus('');
   clearImgLog();
-  // При очистке скрываем кнопку «Скачать все»
   $('btnDownloadAll').classList.add('hidden');
   addImgLog('Очищено', 'info');
 });
 
 /* =========================================================================
-   ГЕНЕРАТОР ПАРОЛЕЙ
+   ПАРОЛИ
    ========================================================================= */
 
 const pwdOutput = $('pwdOutput');
@@ -1613,7 +2014,47 @@ const CHARS = {
 const SIMILAR = 'il1Lo0O';
 const AMBIGUOUS = '{}[]()/\\\'"`~,;:.<>';
 
-function generatePassword() {
+let pwdHistory = storage.get('pwdHistory', []);
+
+function renderPwdHistory() {
+  const el = $('pwdHistory');
+  if (!pwdHistory.length) {
+    el.innerHTML = '<div class="history-empty">Пока ничего не сгенерировано</div>';
+    return;
+  }
+  el.innerHTML = '';
+  pwdHistory.forEach((pwd, i) => {
+    const row = document.createElement('div');
+    row.className = 'history-item';
+    row.innerHTML = `
+      <span class="history-text">${escapeHtml(pwd)}</span>
+      <button class="history-copy" data-i="${i}">Копировать</button>`;
+    row.querySelector('button').addEventListener('click', () => {
+      navigator.clipboard.writeText(pwd).then(() => {
+        const btn = row.querySelector('button');
+        btn.textContent = '✓';
+        setTimeout(() => btn.textContent = 'Копировать', 1200);
+      });
+    });
+    el.appendChild(row);
+  });
+}
+
+function addPwdHistory(pwd) {
+  pwdHistory = pwdHistory.filter(p => p !== pwd);
+  pwdHistory.unshift(pwd);
+  pwdHistory = pwdHistory.slice(0, 10);
+  storage.set('pwdHistory', pwdHistory);
+  renderPwdHistory();
+}
+
+$('clearPwdHistory').addEventListener('click', () => {
+  pwdHistory = [];
+  storage.set('pwdHistory', []);
+  renderPwdHistory();
+});
+
+function generatePassword(saveToHistory = true) {
   const len = parseInt($('pwdLen').value);
   let pool = '';
   if ($('pwdUpper').checked) pool += CHARS.upper;
@@ -1630,6 +2071,7 @@ function generatePassword() {
   for (let i = 0; i < len; i++) pwd += pool[arr[i] % pool.length];
   pwdOutput.value = pwd;
   updateStrength(pwd);
+  if (saveToHistory) addPwdHistory(pwd);
 }
 
 function updateStrength(pwd) {
@@ -1651,15 +2093,18 @@ function updateStrength(pwd) {
 
 $('pwdLen').addEventListener('input', (e) => {
   $('pwdLenVal').textContent = e.target.value;
-  generatePassword();
+  generatePassword(false);
   storage.set('pwdLen', e.target.value);
 });
 
 ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous'].forEach(id => {
-  $(id).addEventListener('change', () => { generatePassword(); storage.set(id, $(id).checked); });
+  $(id).addEventListener('change', () => {
+    generatePassword(false);
+    storage.set(id, $(id).checked);
+  });
 });
 
-$('btnGenPwd').addEventListener('click', generatePassword);
+$('btnGenPwd').addEventListener('click', () => generatePassword(true));
 
 $('btnCopyPwd').addEventListener('click', () => {
   if (!pwdOutput.value) return;
@@ -1679,7 +2124,7 @@ function restorePwdSettings() {
     const def = id === 'pwdUpper' || id === 'pwdLower' || id === 'pwdDigits';
     $(id).checked = storage.get(id, def);
   });
-  generatePassword();
+  generatePassword(false);
 }
 
 /* =========================================================================
@@ -1688,12 +2133,12 @@ function restorePwdSettings() {
 
 restoreSettings();
 restorePwdSettings();
+updateKeyModeUI();
+renderImgHistory();
+renderPwdHistory();
 handleHash();
 
-// Если в URL нет хэша — ставим #home, чтобы кнопка «назад» работала корректно
-if (!location.hash) {
-  history.replaceState(null, '', '#home');
-}
+if (!location.hash) history.replaceState(null, '', '#home');
 
 setStatus('');
 addLog('Готов к работе', 'info');

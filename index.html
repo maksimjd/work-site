@@ -144,6 +144,7 @@
     padding-right: 40px;
   }
   .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   .key-wrapper { position: relative; margin-bottom: 16px; }
   .key-wrapper input { margin-bottom: 0; padding-right: 110px; }
@@ -165,25 +166,79 @@
   }
   .key-link:hover { color: #38bdf8; }
 
-  .mode-switch {
-    display: flex; gap: 5px; background: #0a0c10;
-    padding: 4px; border-radius: 12px;
-    border: 1px solid #262b36; margin-bottom: 20px;
+  /* ===== Верхние вкладки — разный вид ===== */
+  .top-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: stretch;
   }
-  .mode-btn {
-    flex: 1; padding: 10px 14px;
-    background: transparent; color: #8b93a5;
-    border: none; border-radius: 8px;
-    font-size: 13px; font-weight: 700;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    font-family: inherit;
-  }
-  .mode-btn:hover { color: #c5cad6; }
-  .mode-btn.active {
+  /* Первая вкладка — закруглённая кнопка с иконкой */
+  .top-tab-text {
+    flex: 1;
+    padding: 11px 18px;
     background: linear-gradient(135deg, #6366f1, #a855f7);
     color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    transition: opacity 0.15s;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  }
+  .top-tab-text:hover { opacity: 0.92; }
+  .top-tab-text:not(.active) {
+    background: transparent;
+    color: #8b93a5;
+    border: 1px solid #2d3340;
+    box-shadow: none;
+  }
+
+  /* Вторая вкладка — прямоугольная с полоской сверху */
+  .top-tab-image {
+    flex: 1;
+    padding: 11px 18px 11px 22px;
+    background: transparent;
+    color: #8b93a5;
+    border: 1px solid #2d3340;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .top-tab-image::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    background: #2d3340;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+  .top-tab-image:hover { color: #c5cad6; border-color: #3d4455; }
+  .top-tab-image.active {
+    background: rgba(168, 85, 247, 0.08);
+    color: #c084fc;
+    border-color: rgba(168, 85, 247, 0.4);
+  }
+  .top-tab-image.active::before {
+    background: #a855f7;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
   }
 
   .auth-switch {
@@ -278,6 +333,28 @@
     transition: background 0.15s;
   }
   .btn-secondary:hover { background: rgba(220, 38, 38, 0.2); }
+
+  /* Кнопка скачивания TXT */
+  .btn-download {
+    margin-top: 10px;
+    width: 100%;
+    padding: 13px 22px;
+    background: rgba(34, 197, 94, 0.12);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .btn-download:hover { background: rgba(34, 197, 94, 0.22); }
+  .btn-download svg { width: 15px; height: 15px; }
 
   .comments { margin-top: 20px; }
   .comment {
@@ -448,7 +525,7 @@
     .nav-item svg { margin: 0; }
     .container { padding: 20px; }
     h1 { font-size: 20px; }
-    .row-3, .options-grid { grid-template-columns: 1fr; }
+    .row-3, .row-2, .options-grid { grid-template-columns: 1fr; }
     .comment { flex-direction: column; }
     .comment .actions { width: 100%; }
     .comment .actions button { flex: 1; justify-content: center; }
@@ -465,14 +542,12 @@
         <h1>Генератор комментариев</h1>
         <p class="hint">Выбери режим: текст или изображения. Работаем с ключом или без него.</p>
 
-        <!-- Переключатель: есть ключ / нет ключа -->
         <label>Режим работы</label>
         <div class="auth-switch">
           <button class="auth-btn active" id="authNoKey" onclick="setAuthMode('noKey')">Без ключа</button>
           <button class="auth-btn" id="authKey" onclick="setAuthMode('key')">С ключом</button>
         </div>
 
-        <!-- Блок для режима "с ключом" -->
         <div id="keyBlock" class="hidden">
           <label for="apiKey">API-ключ Pollinations</label>
           <div class="key-wrapper">
@@ -482,19 +557,37 @@
           <a class="key-link" href="https://enter.pollinations.ai" target="_blank" rel="noopener">Получить бесплатный ключ →</a>
         </div>
 
-        <!-- Подсказка для режима "без ключа" -->
         <div id="hintBlock" class="auth-hint">
           <strong>Без ключа:</strong> работаем только с текстом. <span class="warn">Ограничение: 1 запрос в 15 секунд</span>. Если нужно быстрее и с изображениями — переключись на режим «С ключом» и получи бесплатный ключ на <a href="https://enter.pollinations.ai" target="_blank" rel="noopener" style="color:#7dd3fc">enter.pollinations.ai</a>.
         </div>
 
-        <div class="mode-switch">
-          <button class="mode-btn active" id="modeText" onclick="setMode('text')">Текст</button>
-          <button class="mode-btn" id="modeImage" onclick="setMode('image')">Изображение</button>
+        <!-- РАЗНЫЕ ПО ВИДУ ВЕРХНИЕ ВКЛАДКИ -->
+        <div class="top-tabs">
+          <button class="top-tab-text active" id="modeText" onclick="setMode('text')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Текст
+          </button>
+          <button class="top-tab-image" id="modeImage" onclick="setMode('image')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            Изображение
+          </button>
         </div>
 
         <div id="textBlock">
           <label for="postText">Текст поста или тема</label>
           <textarea id="postText" placeholder="Вставь сюда текст поста или тему..."></textarea>
+
+          <label for="styleHint">Свой стиль комментария (необязательно)</label>
+          <textarea id="styleHint" placeholder="Например: разговорный, с юмором, дружеский, поддерживающий, короткий и живой..." style="min-height: 60px;"></textarea>
         </div>
 
         <div id="imageBlock" class="hidden">
@@ -519,7 +612,7 @@
             <input type="number" id="countInput" min="1" max="50" value="5" onchange="saveCount()" />
           </div>
           <div>
-            <label for="sentences">Предложений</label>
+            <label for="sentences">Предложений (шаблон)</label>
             <select id="sentences">
               <option value="1">1 предложение</option>
               <option value="2" selected>2 предложения</option>
@@ -527,6 +620,13 @@
               <option value="4">4 предложения</option>
             </select>
           </div>
+          <div>
+            <label for="sentencesCustom">Своё кол-во предложений</label>
+            <input type="number" id="sentencesCustom" min="1" max="10" placeholder="напр. 2" onchange="saveSentencesCustom()" />
+          </div>
+        </div>
+
+        <div class="row-2">
           <div>
             <label for="name">Имя автора</label>
             <select id="name">
@@ -537,17 +637,19 @@
               <option value="Иван">Иван</option>
             </select>
           </div>
-        </div>
-
-        <div class="checks-row">
-          <label class="check-item">
-            <input type="checkbox" id="useEmoji">
-            <span>Со смайликами</span>
-          </label>
-          <label class="check-item">
-            <input type="checkbox" id="strictTone" checked>
-            <span>Строго позитивный тон</span>
-          </label>
+          <div>
+            <label style="visibility:hidden">.</label>
+            <div class="checks-row" style="margin-bottom:0">
+              <label class="check-item">
+                <input type="checkbox" id="useEmoji">
+                <span>Со смайликами</span>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" id="strictTone" checked>
+                <span>Строго позитивный тон</span>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="btn-row">
@@ -555,6 +657,14 @@
           <button class="btn-secondary" onclick="clearComments()">Очистить</button>
         </div>
         <div class="status" id="status"></div>
+        <button class="btn-download hidden" id="downloadBtn" onclick="downloadTxt()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Скачать в TXT
+        </button>
         <div class="comments" id="comments"></div>
       </div>
 
@@ -655,7 +765,6 @@
     document.getElementById("navPasswords").classList.toggle("active", name === "passwords");
   }
 
-  /* ===== Онлайн-счётчик ===== */
   let onlineCount = 1;
   function updateOnline() {
     try {
@@ -670,9 +779,7 @@
         };
       }
       window._bc.postMessage({ type: "ping" });
-    } catch (e) {
-      onlineCount = 1;
-    }
+    } catch (e) { onlineCount = 1; }
     renderOnline();
   }
   function renderOnline() {
@@ -681,23 +788,27 @@
   updateOnline();
   setInterval(() => { onlineCount = 1; updateOnline(); }, 60000);
 
-  /* ===== Режим авторизации ===== */
   let authMode = "noKey";
-
   function setAuthMode(mode) {
     authMode = mode;
     document.getElementById("authNoKey").classList.toggle("active", mode === "noKey");
     document.getElementById("authKey").classList.toggle("active", mode === "key");
     document.getElementById("keyBlock").classList.toggle("hidden", mode !== "key");
     document.getElementById("hintBlock").classList.toggle("hidden", mode === "key");
+    localStorage.setItem("auth_mode", mode);
   }
+  (function initAuthMode() {
+    const saved = localStorage.getItem("auth_mode");
+    if (saved) setAuthMode(saved);
+    else setAuthMode("noKey");
+  })();
 
-  /* ===== Сохранение настроек ===== */
   const KEY_STORAGE = "pollinations_api_key";
   const COUNT_STORAGE = "comment_count";
   const EMOJI_STORAGE = "use_emoji";
   const SENTENCES_STORAGE = "sentences_count";
-  const AUTH_STORAGE = "auth_mode";
+  const SENTENCES_CUSTOM_STORAGE = "sentences_custom";
+  const STYLE_STORAGE = "style_hint";
 
   function saveApiKey() {
     const key = document.getElementById("apiKey").value.trim();
@@ -716,27 +827,6 @@
     if (saved) document.getElementById("apiKey").value = saved;
   }
   loadApiKey();
-
-  function loadAuthMode() {
-    const saved = localStorage.getItem(AUTH_STORAGE);
-    if (saved) {
-      setAuthMode(saved);
-    } else {
-      setAuthMode("noKey");
-    }
-  }
-  loadAuthMode();
-
-  function saveAuthMode(mode) {
-    localStorage.setItem(AUTH_STORAGE, mode);
-  }
-
-  // Перехватываем установку режима, чтобы сохранять
-  const originalSetAuthMode = setAuthMode;
-  setAuthMode = function(mode) {
-    originalSetAuthMode(mode);
-    saveAuthMode(mode);
-  };
 
   function saveCount() {
     const val = document.getElementById("countInput").value;
@@ -765,6 +855,27 @@
     if (saved) document.getElementById("sentences").value = saved;
   }
   loadSentences();
+
+  function saveSentencesCustom() {
+    const val = document.getElementById("sentencesCustom").value;
+    if (val) localStorage.setItem(SENTENCES_CUSTOM_STORAGE, val);
+    else localStorage.removeItem(SENTENCES_CUSTOM_STORAGE);
+  }
+  function loadSentencesCustom() {
+    const saved = localStorage.getItem(SENTENCES_CUSTOM_STORAGE);
+    if (saved) document.getElementById("sentencesCustom").value = saved;
+  }
+  loadSentencesCustom();
+
+  function saveStyle() {
+    localStorage.setItem(STYLE_STORAGE, document.getElementById("styleHint").value);
+  }
+  function loadStyle() {
+    const saved = localStorage.getItem(STYLE_STORAGE);
+    if (saved) document.getElementById("styleHint").value = saved;
+  }
+  loadStyle();
+  document.getElementById("styleHint").addEventListener("input", saveStyle);
 
   document.querySelectorAll(".option input").forEach(cb => {
     cb.addEventListener("change", () => {
@@ -930,30 +1041,24 @@
 
   function randomAngle() { return ANGLES[Math.floor(Math.random() * ANGLES.length)]; }
 
-  /* ===== ВЫРЕЗАЕМ ССЫЛКИ ИЗ ТЕКСТА ===== */
   function extractLinks(text) {
     const links = [];
-    // Markdown-ссылки [текст](url) — оставляем только текст
     let clean = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => {
       links.push(url);
       return label;
     });
-    // URL в круглых скобках (url) — удаляем и ссылку, и скобки
     clean = clean.replace(/\((https?:\/\/[^\s)]+|www\.[^\s)]+)\)/g, (m, url) => {
       links.push(url);
       return "";
     });
-    // Обычные URL без скобок
     clean = clean.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, (url) => {
       links.push(url);
       return "";
     });
-    // Убираем пустые скобки и лишние пробелы
     clean = clean.replace(/\(\s*\)/g, "").replace(/\s{2,}/g, " ").trim();
     return { cleanText: clean, links: Array.from(new Set(links)) };
   }
 
-  /* ===== ПОДСТАВЛЯЕМ ССЫЛКИ ОБРАТНО ===== */
   function injectLinks(comments, links) {
     if (links.length === 0) return comments;
     let linkIndex = 0;
@@ -967,7 +1072,7 @@
     });
   }
 
-  function buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks) {
+  function buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks, styleHint) {
     const angles = [];
     for (let i = 0; i < count; i++) angles.push(randomAngle());
     angles.sort(() => Math.random() - 0.5);
@@ -985,6 +1090,10 @@
       ? `8. В тексте поста есть ссылки. Ты НЕ пишешь ссылки сам. Вместо любой ссылки, если она тебе нужна в комментарии, ставь ровно такой маркер: {LINK}. Ничего больше. Сайт сам подставит ссылку. Не пиши никаких URL, никаких скобок с ссылками, никаких markdown-ссылок.`
       : `8. Никаких ссылок, URL, @упоминаний и хэштегов в комментариях не пиши.`;
 
+    const styleRule = styleHint
+      ? `11. ВАЖНО: пользователь указал желаемый стиль комментариев: "${styleHint}". Строго следуй этому стилю.`
+      : `11. Стиль комментариев — живой, разговорный, естественный, как будто человек пишет от себя.`;
+
     return `Ты — ${name}. Пишешь позитивные комментарии.
 Требования:
 1. Каждый комментарий — ровно ${sentences} ${sentences === 1 ? "предложение" : sentences < 5 ? "предложения" : "предложений"}.
@@ -998,6 +1107,7 @@ ${linkRule}
 9. Для каждого комментария используй свой ракурс из списка ниже:
 ${angleList}
 10. Верни РОВНО ${count} комментариев, каждый с новой строки. Не нумеруй их. Не добавляй пояснений. Только сами комментарии.
+${styleRule}
 
 Случайный код генерации: ${seed}`;
   }
@@ -1013,7 +1123,7 @@ ${angleList}
     return lines.slice(0, limit);
   }
 
-  async function callAPI(userContent, count, name, useVision, sentences, useEmoji, strictTone, hasLinks) {
+  async function callAPI(userContent, count, name, useVision, sentences, useEmoji, strictTone, hasLinks, styleHint) {
     const url = useVision ? API_URL_GEN : API_URL_TEXT;
     const apiKey = getApiKey();
     const headers = { "Content-Type": "application/json" };
@@ -1028,11 +1138,11 @@ ${angleList}
       body: JSON.stringify({
         model: MODEL,
         messages: [
-          { role: "system", content: buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks) },
+          { role: "system", content: buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks, styleHint) },
           { role: "user", content: userContent }
         ],
         temperature: temperature,
-        max_tokens: 1200,
+        max_tokens: 1400,
         seed: seed
       })
     });
@@ -1050,16 +1160,16 @@ ${angleList}
   function clearComments() {
     comments = [];
     document.getElementById("comments").innerHTML = "";
+    document.getElementById("downloadBtn").classList.add("hidden");
     setStatus("");
   }
 
-  /* ===== ЗАДЕРЖКА ДЛЯ АНОНИМНОГО РЕЖИМА (1 запрос в 15 сек) ===== */
   let lastRequestTime = 0;
   async function waitForRateLimit() {
-    if (authMode === "key") return; // с ключом задержка не нужна
+    if (authMode === "key") return;
     const now = Date.now();
     const timeSinceLast = now - lastRequestTime;
-    const minInterval = 15500; // 15.5 секунд (с запасом)
+    const minInterval = 15500;
     if (timeSinceLast < minInterval) {
       const waitTime = minInterval - timeSinceLast;
       setStatus(`Ограничение анонимного режима. Ждём ${Math.ceil(waitTime / 1000)} сек...`, false, true);
@@ -1068,12 +1178,25 @@ ${angleList}
     lastRequestTime = Date.now();
   }
 
+  function getSentencesCount() {
+    const custom = parseInt(document.getElementById("sentencesCustom").value, 10);
+    if (custom && custom > 0) return custom;
+    return parseInt(document.getElementById("sentences").value, 10) || 2;
+  }
+
+  function updateDownloadBtn() {
+    const btn = document.getElementById("downloadBtn");
+    if (comments.length >= 10) btn.classList.remove("hidden");
+    else btn.classList.add("hidden");
+  }
+
   async function generateAll() {
     const count = parseInt(document.getElementById("countInput").value, 10) || 5;
     const name = document.getElementById("name").value;
-    const sentences = parseInt(document.getElementById("sentences").value, 10) || 2;
+    const sentences = getSentencesCount();
     const useEmoji = document.getElementById("useEmoji").checked;
     const strictTone = document.getElementById("strictTone").checked;
+    const styleHint = document.getElementById("styleHint").value.trim();
     const btn = document.getElementById("generateBtn");
 
     if (mode === "text") {
@@ -1092,15 +1215,14 @@ ${angleList}
 
         const prompt = `Пост: ${cleanText}\n\nСгенерируй ${count} уникальных комментариев.` +
           (hasLinks ? `\n\nВ тексте поста были ссылки. Если уместно — вставь маркер {LINK} в комментарий, сайт сам подставит ссылку.` : "");
-        let result = await callAPI(prompt, count, name, false, sentences, useEmoji, strictTone, hasLinks);
+        let result = await callAPI(prompt, count, name, false, sentences, useEmoji, strictTone, hasLinks, styleHint);
         if (result.length === 0) throw new Error("Не удалось получить комментарии.");
 
-        if (hasLinks) {
-          result = injectLinks(result, links);
-        }
+        if (hasLinks) result = injectLinks(result, links);
 
         comments = result;
         renderComments();
+        updateDownloadBtn();
         setStatus(`Готово! Сгенерировано: ${comments.length}.`);
       } catch (e) {
         setStatus(e.message, true);
@@ -1130,9 +1252,10 @@ ${angleList}
         uploadedImages.forEach(img => {
           contentParts.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
         });
-        comments = await callAPI(contentParts, count, name, true, sentences, useEmoji, strictTone, false);
+        comments = await callAPI(contentParts, count, name, true, sentences, useEmoji, strictTone, false, styleHint);
         if (comments.length === 0) throw new Error("Не удалось получить комментарии по изображению.");
         renderComments();
+        updateDownloadBtn();
         setStatus(`Готово! Сгенерировано: ${comments.length}.`);
       } catch (e) {
         setStatus(e.message, true);
@@ -1144,9 +1267,10 @@ ${angleList}
 
   async function regenerateOne(index) {
     const name = document.getElementById("name").value;
-    const sentences = parseInt(document.getElementById("sentences").value, 10) || 2;
+    const sentences = getSentencesCount();
     const useEmoji = document.getElementById("useEmoji").checked;
     const strictTone = document.getElementById("strictTone").checked;
+    const styleHint = document.getElementById("styleHint").value.trim();
     const btns = document.querySelectorAll('.regen');
     if (btns[index]) btns[index].disabled = true;
     setStatus(`Перегенерирую комментарий №${index + 1}...`, false, true);
@@ -1163,7 +1287,7 @@ ${angleList}
         userContent = `Пост: ${cleanText}\n\nУже есть комментарии (НЕ повторяй их):\n${existing}\n\n` +
           (hasLinks ? `В тексте поста были ссылки. Если уместно, используй маркер {LINK}, сайт сам подставит ссылку.\n\n` : "") +
           `Верни РОВНО ОДИН новый уникальный комментарий. Только текст, без нумерации.`;
-        const result = await callAPI(userContent, 1, name, false, sentences, useEmoji, strictTone, hasLinks);
+        const result = await callAPI(userContent, 1, name, false, sentences, useEmoji, strictTone, hasLinks, styleHint);
         if (result.length > 0) {
           let finalComment = result[0];
           if (hasLinks) {
@@ -1172,6 +1296,7 @@ ${angleList}
           }
           comments[index] = finalComment;
           renderComments();
+          updateDownloadBtn();
           setStatus(`Комментарий №${index + 1} перегенерирован.`);
         } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
       } else {
@@ -1188,10 +1313,11 @@ ${angleList}
         uploadedImages.forEach(img => {
           userContent.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
         });
-        const result = await callAPI(userContent, 1, name, useVision, sentences, useEmoji, strictTone, false);
+        const result = await callAPI(userContent, 1, name, useVision, sentences, useEmoji, strictTone, false, styleHint);
         if (result.length > 0) {
           comments[index] = result[0];
           renderComments();
+          updateDownloadBtn();
           setStatus(`Комментарий №${index + 1} перегенерирован.`);
         } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
       }
@@ -1211,6 +1337,22 @@ ${angleList}
         setTimeout(() => { btnEl.classList.remove('copied'); btnEl.innerHTML = original; }, 1400);
       }
     }).catch(() => setStatus("Не удалось скопировать.", true));
+  }
+
+  /* ===== СКАЧИВАНИЕ TXT ===== */
+  function downloadTxt() {
+    if (comments.length === 0) return;
+    const content = comments.map((c, i) => `${i + 1}. ${c}`).join("\n");
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "comments.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setStatus("Файл comments.txt скачан.");
   }
 
   function setStatus(msg, isError = false, isLoading = false) {

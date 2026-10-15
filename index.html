@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Главная — Сайт-помощник</title>
 <style>
-  /* ============ ЦВЕТОВЫЕ ПЕРЕМЕННЫЕ ============ */
   :root {
     --bg: #0a0c11;
     --panel: #171a21;
@@ -46,18 +45,14 @@
     z-index: 100;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
-    transition: background 0.25s, border-color 0.25s;
   }
-
   .topbar-inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
   }
-
   .topbar-left { display: flex; align-items: center; gap: 10px; }
-
   .logo {
     font-size: 15px;
     font-weight: 700;
@@ -68,7 +63,6 @@
     color: transparent;
     user-select: none;
   }
-
   .menu-btn, .theme-btn {
     display: inline-flex;
     align-items: center;
@@ -82,7 +76,7 @@
     font-size: 13px;
     cursor: pointer;
     font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   .menu-btn:hover, .theme-btn:hover {
     border-color: var(--accent1);
@@ -115,11 +109,10 @@
     display: flex;
     flex-direction: column;
     transform: translateX(-100%);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s, border-color 0.25s;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
   }
   .sidebar.open { transform: translateX(0); }
-
   .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -128,7 +121,6 @@
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
   }
-
   .sidebar-title {
     font-size: 12px;
     text-transform: uppercase;
@@ -136,7 +128,6 @@
     color: var(--muted);
     font-weight: 700;
   }
-
   .sidebar-close {
     background: transparent;
     border: 1px solid var(--border);
@@ -153,7 +144,6 @@
     transition: border-color 0.15s, color 0.15s;
   }
   .sidebar-close:hover { border-color: #fb7185; color: #fb7185; }
-
   .sidebar-nav {
     list-style: none;
     padding: 10px 10px;
@@ -162,7 +152,6 @@
     gap: 4px;
     flex: 1;
   }
-
   .nav-link {
     display: flex;
     align-items: center;
@@ -192,7 +181,6 @@
     box-shadow: inset 3px 0 0 var(--accent1);
   }
   .nav-link .nav-icon { font-size: 17px; flex-shrink: 0; }
-
   .sidebar-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border);
@@ -212,44 +200,22 @@
     margin-right: 6px;
     animation: blink 2s infinite;
   }
-  .sidebar-footer a {
-    color: var(--accent2);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .tg-sparkle {
-    animation: sparkle 1.6s infinite;
-    display: inline-block;
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
-  }
-  @keyframes sparkle {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
-  }
+  .sidebar-footer a { color: var(--accent2); text-decoration: none; font-weight: 600; }
+  .tg-sparkle { animation: sparkle 1.6s infinite; display: inline-block; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+  @keyframes sparkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
   /* ============ ОСНОВНОЙ КОНТЕНТ ============ */
   .main { max-width: 1400px; margin: 0 auto; padding: 24px; }
-
   h1 { font-size: 20px; margin-bottom: 18px; font-weight: 700; }
-
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 16px;
     margin-bottom: 16px;
-    transition: background 0.25s, border-color 0.25s;
   }
-
-  .label {
-    display: block;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
+  .label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 
   /* ============ ГЛАВНАЯ ============ */
   .home-hero { text-align: center; padding: 28px 20px 20px; }
@@ -320,7 +286,6 @@
     border: 1px solid var(--border);
     border-radius: 16px;
   }
-
   .provider-btn {
     flex: 1;
     display: flex;
@@ -351,14 +316,7 @@
   }
 
   /* ============ ВКЛАДКИ ============ */
-  .tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
+  .tabs { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
   .tab-text {
     display: inline-flex;
     align-items: center;
@@ -378,7 +336,6 @@
     color: #fff;
     font-weight: 600;
   }
-
   .tab-image {
     display: inline-flex;
     align-items: center;
@@ -397,9 +354,7 @@
   .tab-image::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    left: 0; top: 0; bottom: 0;
     width: 4px;
     border-radius: 8px 0 0 8px;
     background: var(--border);
@@ -424,7 +379,6 @@
     font-size: 13px;
     font-family: inherit;
     outline: none;
-    transition: background 0.25s, border-color 0.25s, color 0.25s;
   }
   input:focus, textarea:focus, select:focus { border-color: var(--accent1); }
   textarea { resize: vertical; min-height: 70px; }
@@ -432,7 +386,6 @@
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   .row > * { flex: 1; min-width: 140px; }
 
-  /* ============ ЧИСЛОВЫЕ ПОЛЯ ============ */
   .num-field {
     display: flex;
     align-items: center;
@@ -454,7 +407,6 @@
     padding: 4px 0;
   }
 
-  /* ============ ГАЛОЧКИ ============ */
   .checks { display: flex; gap: 18px; flex-wrap: wrap; margin: 12px 0; }
   .check {
     display: flex;
@@ -467,7 +419,6 @@
   }
   .check input { accent-color: var(--accent1); }
 
-  /* ============ КНОПКИ ============ */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -502,7 +453,6 @@
 
   .buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
 
-  /* ============ СТАТУС ============ */
   .status {
     margin-top: 12px;
     font-size: 12px;
@@ -513,7 +463,6 @@
   .status.success { color: #34d399; }
   .status.loading { color: #fbbf24; }
 
-  /* ============ ССЫЛКИ ============ */
   .key-links {
     display: flex;
     gap: 12px;
@@ -749,7 +698,7 @@
     box-shadow: 0 0 8px var(--accent2);
   }
   .log-list {
-    max-height: 220px;
+    max-height: 300px;
     overflow-y: auto;
     font-family: "SF Mono", Consolas, monospace;
     font-size: 12px;
@@ -768,11 +717,13 @@
   .log-item.info { border-left-color: #38bdf8; color: #0284c7; }
   .log-item.ok { border-left-color: #34d399; color: #059669; }
   .log-item.err { border-left-color: #fb7185; color: #e11d48; }
+  .log-item.warn { border-left-color: #fbbf24; color: #b45309; }
   body:not(.light) .log-item.info { color: #bae6fd; }
   body:not(.light) .log-item.ok { color: #a7f3d0; }
   body:not(.light) .log-item.err { color: #fecdd3; }
+  body:not(.light) .log-item.warn { color: #fde68a; }
   body:not(.light) .log-item .log-time { color: #64748b; }
-  .log-item:not(.info):not(.ok):not(.err) { border-left-color: #94a3b8; color: var(--text); }
+  .log-item:not(.info):not(.ok):not(.err):not(.warn) { border-left-color: #94a3b8; color: var(--text); }
 
   .img-log-box {
     margin-top: 18px;
@@ -804,7 +755,7 @@
     box-shadow: 0 0 8px var(--img-accent);
   }
   .img-log-list {
-    max-height: 220px;
+    max-height: 300px;
     overflow-y: auto;
     font-family: "SF Mono", Consolas, monospace;
     font-size: 12px;
@@ -823,11 +774,13 @@
   .img-log-item.info { border-left-color: #22d3ee; color: #0e7490; }
   .img-log-item.ok { border-left-color: #2dd4bf; color: #0d9488; }
   .img-log-item.err { border-left-color: #f472b6; color: #db2777; }
+  .img-log-item.warn { border-left-color: #fbbf24; color: #b45309; }
   body:not(.light) .img-log-item.info { color: #a5f3fc; }
   body:not(.light) .img-log-item.ok { color: #99f6e4; }
   body:not(.light) .img-log-item.err { color: #fbcfe8; }
+  body:not(.light) .img-log-item.warn { color: #fde68a; }
   body:not(.light) .img-log-item .log-time { color: #155e75; }
-  .img-log-item:not(.info):not(.ok):not(.err) { border-left-color: #155e75; color: var(--text); }
+  .img-log-item:not(.info):not(.ok):not(.err):not(.warn) { border-left-color: #155e75; color: var(--text); }
 
   /* ============ ПАРОЛИ ============ */
   .pwd-output { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
@@ -1015,9 +968,6 @@
       <div class="key-links">
         <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
       </div>
-      <div class="hint-note" style="border-left-color: var(--accent1); margin-top:12px;">
-        <b>Важно:</b> без ключа генерация недоступна. Укажи свой ключ Pollinations — он сохранится в браузере и будет использоваться для всех запросов.
-      </div>
     </div>
 
     <div class="panel">
@@ -1127,6 +1077,149 @@ const storage = {
 const rand = (min, max) => Math.random() * (max - min) + min;
 const randInt = (min, max) => Math.floor(rand(min, max + 1));
 const pick = (arr) => arr[randInt(0, arr.length - 1)];
+
+/* =========================================================================
+   РАСШИФРОВКА ОШИБОК — превращаем технические сообщения в понятные
+   ========================================================================= */
+
+/**
+ * Принимает ошибку (Error или объект) и название провайдера.
+ * Возвращает { short, detail, hint }:
+ *   short  — короткое сообщение под кнопкой
+ *   detail — подробное сообщение для лога (что произошло)
+ *   hint   — подсказка «что делать»
+ */
+function explainError(err, provider) {
+  const msg = (err && err.message) ? err.message : String(err);
+  const providerName = provider === 'deepseek' ? 'DeepSeek' :
+                       provider === 'pollinations' ? 'Pollinations' : 'сервис';
+
+  // Нет ключа
+  if (msg.includes('Не указан ключ') || msg.includes('нет ключа')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Не указан API-ключ ${providerName}.`,
+      hint: 'Вставь ключ в поле выше. Ключ можно получить по ссылке рядом с полем.'
+    };
+  }
+
+  // HTTP-ошибки
+  const httpMatch = msg.match(/HTTP\s+(\d{3})/);
+  if (httpMatch) {
+    const code = parseInt(httpMatch[1]);
+    switch (code) {
+      case 400:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 400 — неверный запрос к ${providerName}.`,
+          hint: 'Скорее всего, проблема в тексте поста или в промте. Попробуй изменить текст и повторить.'
+        };
+      case 401:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 401 — неверный или просроченный API-ключ ${providerName}.`,
+          hint: 'Проверь ключ: возможно, он введён с ошибкой или его отозвали. Получи новый по ссылке рядом с полем и вставь заново.'
+        };
+      case 402:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 402 — закончился баланс ${providerName}.`,
+          hint: 'Пополни счёт у провайдера или используй другой ключ с положительным балансом.'
+        };
+      case 403:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 403 — доступ запрещён ${providerName}.`,
+          hint: 'Возможно, ключ не имеет прав на эту модель или у него ограничен доступ. Проверь настройки ключа у провайдера.'
+        };
+      case 404:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 404 — модель или эндпоинт не найдены у ${providerName}.`,
+          hint: 'Возможно, провайдер обновил API или временно убрал модель. Попробуй позже или выбери другого провайдера.'
+        };
+      case 408:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 408 — сервер ${providerName} не дождался запроса.`,
+          hint: 'Это временная проблема на стороне провайдера. Попробуй ещё раз через минуту.'
+        };
+      case 429:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP 429 — превышен лимит запросов ${providerName}.`,
+          hint: 'Слишком много запросов за короткое время. Подожди 1–2 минуты и попробуй снова.'
+        };
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP ${code} — сервер ${providerName} временно недоступен.`,
+          hint: 'Это проблема на стороне провайдера, не на твоей. Обычно проходит за несколько минут — попробуй позже.'
+        };
+      default:
+        return {
+          short: 'Не удалось сгенерировать',
+          detail: `HTTP ${code} — ошибка на стороне ${providerName}.`,
+          hint: 'Попробуй ещё раз. Если не помогает — проверь ключ и статус сервиса провайдера.'
+        };
+    }
+  }
+
+  // Сетевые ошибки
+  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ERR_NETWORK')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Не удалось связаться с сервером ${providerName}.`,
+      hint: 'Проверь интернет-соединение. Возможно, провайдер временно недоступен или блокирует запросы.'
+    };
+  }
+
+  // Таймаут
+  if (msg.includes('Таймаут') || msg.includes('timeout')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Сервер ${providerName} не ответил за 60 секунд.`,
+      hint: 'Сервис перегружен или отвечает медленно. Попробуй ещё раз — часто со второго раза получается.'
+    };
+  }
+
+  // Не удалось загрузить картинку
+  if (msg.includes('Не удалось загрузить')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: 'Картинка не загрузилась с сервера Pollinations.',
+      hint: 'Возможные причины: промт отклонён модерацией, сервис перегружен или ключ недействителен. Попробуй изменить описание или повторить запрос.'
+    };
+  }
+
+  // Неизвестный формат ответа
+  if (msg.includes('Неизвестный формат ответа')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Сервер ${providerName} вернул неожиданный ответ.`,
+      hint: 'Скорее всего, провайдер изменил формат API. Попробуй другого провайдера или повтори позже.'
+    };
+  }
+
+  // Парсинг комментариев — пустой ответ
+  if (msg.includes('пустой') || msg.includes('empty')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Сервер ${providerName} вернул пустой ответ.`,
+      hint: 'Попробуй ещё раз или измени текст поста. Иногда модель отвечает некорректно из-за слишком сложного запроса.'
+    };
+  }
+
+  // Всё остальное
+  return {
+    short: 'Не удалось сгенерировать',
+    detail: `Ошибка ${providerName}: ${msg}`,
+    hint: 'Попробуй ещё раз. Если не помогает — проверь ключ, интернет и статус сервиса провайдера.'
+  };
+}
 
 /* =========================================================================
    ЗАГОЛОВОК ВКЛАДКИ
@@ -1387,8 +1480,6 @@ $('tabText').addEventListener('click', () => {
   $('imageBlock').classList.add('hidden');
 });
 $('tabImage').addEventListener('click', () => {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
-  if (!hasKey) { setStatus('Для работы с изображениями нужен API-ключ', 'error'); return; }
   state.mode = 'image';
   $('tabImage').classList.add('active');
   $('tabText').classList.remove('active');
@@ -1398,11 +1489,13 @@ $('tabImage').addEventListener('click', () => {
 const dropZone = $('dropZone');
 const fileInput = $('fileInput');
 const thumbsEl = $('thumbs');
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
-dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+if (dropZone) {
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+  dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
+  fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+}
 
 function handleFiles(files) {
   const arr = Array.from(files).slice(0, 5 - state.images.length);
@@ -1475,28 +1568,48 @@ async function callProvider(systemPrompt, userContent, useImages) {
     addLog('Обращаюсь к Pollinations API...', 'info');
   }
 
-  const resp = await fetch(url, { method: 'POST', headers, body });
-  if (!resp.ok) {
-    const errText = await resp.text().catch(() => '');
-    throw new Error(`HTTP ${resp.status}: ${resp.statusText}${errText ? ' — ' + errText.slice(0, 120) : ''}`);
+  let resp;
+  try {
+    resp = await fetch(url, { method: 'POST', headers, body });
+  } catch (networkErr) {
+    // Ошибка сети или CORS
+    throw new Error('Failed to fetch: ' + networkErr.message);
   }
+
+  if (!resp.ok) {
+    // Пытаемся достать тело ошибки (иногда там пояснение от провайдера)
+    let errBody = '';
+    try { errBody = await resp.text(); } catch (e) {}
+    throw new Error(`HTTP ${resp.status}: ${resp.statusText}${errBody ? ' — ' + errBody.slice(0, 200) : ''}`);
+  }
+
   const data = await resp.json();
   let raw = '';
   if (data.choices && data.choices[0] && data.choices[0].message) raw = data.choices[0].message.content;
   else if (typeof data === 'string') raw = data;
   else if (data.text) raw = data.text;
   else throw new Error('Неизвестный формат ответа');
+
+  if (!raw || !raw.trim()) throw new Error('пустой ответ');
   return raw;
 }
 
 async function generateComments() {
   if (state.generating) return;
+
   const postText = $('postText').value.trim();
-  if (!postText && state.images.length === 0) { setStatus('Введите текст поста', 'error'); addLog('Ошибка: нет текста', 'err'); return; }
+  if (!postText && state.images.length === 0) {
+    setStatus('Введите текст поста', 'error');
+    addLog('Не удалось начать генерацию: пустой текст поста и нет картинок.', 'err');
+    return;
+  }
+
   const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
   if (!hasKey) {
-    setStatus(`Введите API-ключ ${state.provider === 'deepseek' ? 'DeepSeek' : 'Pollinations'}`, 'error');
-    addLog('Ошибка: не указан ключ', 'err');
+    setStatus('Не удалось сгенерировать', 'error');
+    const info = explainError(new Error('Не указан ключ'), state.provider);
+    addLog(info.detail, 'err');
+    addLog('Подсказка: ' + info.hint, 'warn');
     return;
   }
 
@@ -1517,7 +1630,7 @@ async function generateComments() {
     const positive = $('optPositive').checked;
     const style = $('styleText').value.trim();
     const angle = pick(ANGLES);
-    addLog(`Параметры: ${count} комм., ${sentences} предл.`, 'info');
+    addLog(`Параметры: ${count} комм., ${sentences} предл., ракурс: ${angle}`, 'info');
     const systemPrompt = buildSystemPrompt({ count, sentences, emoji, positive, style });
     const userContent = cleanText || 'Опиши изображение и оставь комментарий.';
     setStatus('Генерация...', 'loading');
@@ -1525,6 +1638,11 @@ async function generateComments() {
     addLog('Ответ получен, разбираю...', 'info');
     let list = parseComments(raw, count);
     list = list.map(c => stripLinks(c)).filter(Boolean);
+
+    if (!list.length) {
+      throw new Error('пустой ответ');
+    }
+
     state.comments = list;
     renderComments();
     setStatus(`Готово: ${list.length} комментариев`, 'success');
@@ -1535,8 +1653,10 @@ async function generateComments() {
     }
   } catch (err) {
     console.error(err);
-    setStatus('Ошибка: ' + err.message, 'error');
-    addLog(`✗ Ошибка: ${err.message}`, 'err');
+    const info = explainError(err, state.provider);
+    setStatus(info.short, 'error');
+    addLog(info.detail, 'err');
+    addLog('Подсказка: ' + info.hint, 'warn');
   } finally {
     state.generating = false;
     $('btnGenerate').disabled = false;
@@ -1590,7 +1710,13 @@ function escapeHtml(str) {
 
 async function regenOne(index) {
   const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
-  if (!hasKey) { setStatus('Нет ключа', 'error'); return; }
+  if (!hasKey) {
+    setStatus('Не удалось сгенерировать', 'error');
+    const info = explainError(new Error('Не указан ключ'), state.provider);
+    addLog(info.detail, 'err');
+    addLog('Подсказка: ' + info.hint, 'warn');
+    return;
+  }
   addLog(`Регенерация комментария ${index + 1}...`, 'info');
   setStatus('Генерация варианта...', 'loading');
   try {
@@ -1603,15 +1729,16 @@ async function regenOne(index) {
     });
     const raw = await callProvider(systemPrompt, cleanText || 'Оставь комментарий.', false);
     const list = parseComments(raw, 1);
-    if (list.length) {
-      state.comments[index] = stripLinks(list[0]);
-      renderComments();
-      setStatus('Вариант обновлён', 'success');
-      addLog(`✓ Комментарий ${index + 1} обновлён`, 'ok');
-    }
+    if (!list.length) throw new Error('пустой ответ');
+    state.comments[index] = stripLinks(list[0]);
+    renderComments();
+    setStatus('Вариант обновлён', 'success');
+    addLog(`✓ Комментарий ${index + 1} обновлён`, 'ok');
   } catch (err) {
-    setStatus('Ошибка: ' + err.message, 'error');
-    addLog(`✗ Регенерация ${index + 1}: ${err.message}`, 'err');
+    const info = explainError(err, state.provider);
+    setStatus(info.short, 'error');
+    addLog(info.detail, 'err');
+    addLog('Подсказка: ' + info.hint, 'warn');
   }
 }
 
@@ -1752,7 +1879,7 @@ async function downloadSingle(url, filename, btn) {
       btn.textContent = '✗ Ошибка';
       setTimeout(() => { btn.textContent = '⬇ Скачать'; btn.disabled = false; }, 1500);
     }
-    addImgLog(`Ошибка скачивания: ${err.message}`, 'err');
+    addImgLog(`Не удалось скачать: ${err.message}`, 'err');
     return false;
   }
 }
@@ -1801,13 +1928,21 @@ function renderImages() {
 
 async function generateImages() {
   if (imgState.generating) return;
+
   if (!imgState.apiKey) {
-    setImgStatus('Введите API-ключ Pollinations', 'error');
-    addImgLog('Ошибка: не указан ключ', 'err');
+    setImgStatus('Не удалось сгенерировать', 'error');
+    const info = explainError(new Error('Не указан ключ'), 'pollinations');
+    addImgLog(info.detail, 'err');
+    addImgLog('Подсказка: ' + info.hint, 'warn');
     return;
   }
+
   const prompt = $('imgPrompt').value.trim();
-  if (!prompt) { setImgStatus('Введи описание картинки', 'error'); addImgLog('Ошибка: пустое описание', 'err'); return; }
+  if (!prompt) {
+    setImgStatus('Введи описание картинки', 'error');
+    addImgLog('Не удалось начать генерацию: пустое описание.', 'err');
+    return;
+  }
 
   const count = Math.max(1, parseInt($('imgCount').value) || 1);
 
@@ -1822,12 +1957,16 @@ async function generateImages() {
   setImgStatus('Генерация...', 'loading');
 
   let okCount = 0, errCount = 0;
+  let lastError = null;
+
   for (let i = 1; i <= count; i++) {
     try {
       addImgLog(`Генерирую картинку ${i} из ${count}...`, 'info');
       setImgStatus(`Картинка ${i} из ${count}...`, 'loading');
       const seed = randInt(1, 999999);
       const url = `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(imgState.apiKey)}`;
+
+      // Предзагрузка картинки, чтобы отловить ошибку до отображения
       await new Promise((resolve, reject) => {
         const testImg = new Image();
         const timeout = setTimeout(() => reject(new Error('Таймаут загрузки (60 сек)')), 60000);
@@ -1835,6 +1974,7 @@ async function generateImages() {
         testImg.onerror = () => { clearTimeout(timeout); reject(new Error('Не удалось загрузить')); };
         testImg.src = url;
       });
+
       imgState.images.push({ url, prompt, id: i });
       renderImages();
       okCount++;
@@ -1842,19 +1982,27 @@ async function generateImages() {
       if (i < count) await new Promise(r => setTimeout(r, 1200));
     } catch (err) {
       errCount++;
-      addImgLog(`✗ Картинка ${i}: ${err.message}`, 'err');
+      lastError = err;
+      const info = explainError(err, 'pollinations');
+      addImgLog(`✗ Картинка ${i}: ${info.detail}`, 'err');
+      addImgLog('Подсказка: ' + info.hint, 'warn');
     }
   }
   imgState.generating = false;
   $('btnGenerateImages').disabled = false;
 
   if (okCount > 0) {
-    setImgStatus(`Готово: ${okCount} из ${count}`, 'success');
-    addImgLog(`Завершено: ${okCount} успешно, ${errCount} с ошибкой`, okCount === count ? 'ok' : 'info');
+    if (errCount === 0) {
+      setImgStatus(`Готово: ${okCount} картинок`, 'success');
+      addImgLog(`✓ Завершено: ${okCount} успешно`, 'ok');
+    } else {
+      setImgStatus(`Готово: ${okCount} из ${count}`, 'success');
+      addImgLog(`Завершено: ${okCount} успешно, ${errCount} с ошибкой`, 'warn');
+    }
     addImgHistory(prompt, count);
   } else {
-    setImgStatus('Не удалось сгенерировать ни одной картинки', 'error');
-    addImgLog('Все запросы завершились ошибкой', 'err');
+    setImgStatus('Не удалось сгенерировать', 'error');
+    addImgLog(`Все ${count} запросов завершились ошибкой.`, 'err');
   }
   updateDownloadAllBtn();
 }

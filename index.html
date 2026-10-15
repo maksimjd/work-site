@@ -350,70 +350,6 @@
     box-shadow: 0 0 18px rgba(249, 115, 22, 0.45), 0 0 36px rgba(249, 115, 22, 0.2);
   }
 
-  /* ============ ВЫБОР КЛЮЧА (картинки) — карточки ============ */
-  .key-switch {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  .key-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: left;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-  }
-  .key-btn:hover { border-color: var(--img-accent); }
-  .key-btn.active {
-    border-color: var(--img-accent);
-    background: rgba(34, 211, 238, 0.08);
-    box-shadow: 0 0 14px rgba(34, 211, 238, 0.25);
-  }
-  .key-btn .key-title { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
-  .key-btn .key-sub { font-size: 11px; color: var(--muted); }
-  .key-btn.active .key-title { color: var(--img-accent); }
-
-  /* ============ ВЫБОР КЛЮЧА (комментарии Pollinations) — таблетки ============ */
-  .key-pills {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 4px;
-  }
-  .key-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    color: var(--muted);
-    font-size: 12px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
-  }
-  .key-pill:hover { color: var(--text); border-color: var(--accent1); }
-  .key-pill.active {
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    color: #fff;
-    border-color: transparent;
-    font-weight: 600;
-    box-shadow: 0 0 14px rgba(99, 102, 241, 0.5), 0 0 28px rgba(168, 85, 247, 0.25);
-  }
-  .key-pill .pill-icon { font-size: 14px; }
-
   /* ============ ВКЛАДКИ ============ */
   .tabs {
     display: flex;
@@ -916,7 +852,6 @@
   @media (max-width: 760px) {
     .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .main { padding: 16px; }
-    .key-switch { flex-direction: column; }
   }
 </style>
 </head>
@@ -1008,23 +943,11 @@
 
     <!-- Pollinations -->
     <div class="panel hidden" id="pollinationsKeyBox">
-      <label class="label">Ключ Pollinations</label>
-      <div class="key-pills">
-        <button class="key-pill active" data-poll-key="free">
-          <span class="pill-icon">🎁</span> Системный ключ
-        </button>
-        <button class="key-pill" data-poll-key="own">
-          <span class="pill-icon">🔑</span> Свой ключ
-        </button>
-      </div>
-
-      <div id="pollOwnKeyBox" class="hidden" style="margin-top:12px;">
-        <label class="label">Введите ваш ключ Pollinations</label>
-        <input type="password" id="pollinationsKey" placeholder="sk_... или pk_...">
-        <div class="status success" id="pollinationsKeySaved" style="display:none;">✓ Сохранён</div>
-        <div class="key-links">
-          <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
-        </div>
+      <label class="label">API-ключ Pollinations</label>
+      <input type="password" id="pollinationsKey" placeholder="sk_... или pk_...">
+      <div class="status success" id="pollinationsKeySaved" style="display:none;">✓ Сохранён</div>
+      <div class="key-links">
+        <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
       </div>
     </div>
 
@@ -1086,25 +1009,14 @@
     <h1>🎨 Генерация картинок</h1>
 
     <div class="panel">
-      <label class="label">Ключ для генерации</label>
-      <div class="key-switch">
-        <button class="key-btn active" data-key="free">
-          <span class="key-title">🎁 Системный ключ</span>
-          <span class="key-sub">Использовать системный ключ — ничего вводить не нужно</span>
-        </button>
-        <button class="key-btn" data-key="own">
-          <span class="key-title">🔑 Свой ключ</span>
-          <span class="key-sub">Введу свой ключ Pollinations</span>
-        </button>
+      <label class="label">API-ключ Pollinations</label>
+      <input type="password" id="imgApiKey" placeholder="sk_... или pk_...">
+      <div class="status success" id="imgKeySaved" style="display:none;">✓ Сохранён</div>
+      <div class="key-links">
+        <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
       </div>
-
-      <div id="ownKeyBox" class="hidden" style="margin-top:12px;">
-        <label class="label">Введите ваш ключ Pollinations</label>
-        <input type="password" id="imgApiKey" placeholder="sk_... или pk_...">
-        <div class="status success" id="imgKeySaved" style="display:none;">✓ Сохранён</div>
-        <div class="key-links">
-          <a href="https://enter.pollinations.ai" target="_blank" rel="noopener">🔑 Получить ключ Pollinations</a>
-        </div>
+      <div class="hint-note" style="border-left-color: var(--accent1); margin-top:12px;">
+        <b>Важно:</b> без ключа генерация недоступна. Укажи свой ключ Pollinations — он сохранится в браузере и будет использоваться для всех запросов.
       </div>
     </div>
 
@@ -1215,9 +1127,6 @@ const storage = {
 const rand = (min, max) => Math.random() * (max - min) + min;
 const randInt = (min, max) => Math.floor(rand(min, max + 1));
 const pick = (arr) => arr[randInt(0, arr.length - 1)];
-
-/* Системный ключ Pollinations */
-const MY_POLLINATIONS_KEY = 'sk_zHAhsuIg1ADYOAHn9pxgbLiiAJW5rGpb';
 
 /* =========================================================================
    ЗАГОЛОВОК ВКЛАДКИ
@@ -1412,16 +1321,11 @@ let state = {
   provider: storage.get('provider', 'deepseek'),
   mode: 'text',
   deepseekKey: storage.get('deepseekKey', ''),
-  pollKeyMode: storage.get('pollKeyMode', 'free'),
-  pollOwnKey: storage.get('pollOwnKey', ''),
+  pollinationsKey: storage.get('pollinationsKey', ''),
   images: [],
   comments: [],
   generating: false
 };
-
-function getCommentPollinationsKey() {
-  return state.pollKeyMode === 'free' ? MY_POLLINATIONS_KEY : state.pollOwnKey;
-}
 
 function updateProviderUI() {
   document.querySelectorAll('.provider-btn').forEach(btn => {
@@ -1434,34 +1338,17 @@ function updateProviderUI() {
     $('deepseekKey').value = state.deepseekKey;
     $('deepseekKeySaved').style.display = 'block';
   }
-}
-
-function updatePollKeyUI() {
-  document.querySelectorAll('.key-pill[data-poll-key]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.pollKey === state.pollKeyMode);
-  });
-  $('pollOwnKeyBox').classList.toggle('hidden', state.pollKeyMode !== 'own');
-  if (state.pollOwnKey) {
-    $('pollinationsKey').value = state.pollOwnKey;
+  if (state.pollinationsKey) {
+    $('pollinationsKey').value = state.pollinationsKey;
     $('pollinationsKeySaved').style.display = 'block';
   }
 }
 
-/* --- Переключение провайдера (без записи в лог) --- */
 document.querySelectorAll('.provider-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     state.provider = btn.dataset.provider;
     storage.set('provider', state.provider);
     updateProviderUI();
-  });
-});
-
-/* --- Переключение ключа Pollinations (без записи в лог) --- */
-document.querySelectorAll('.key-pill[data-poll-key]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    state.pollKeyMode = btn.dataset.pollKey;
-    storage.set('pollKeyMode', state.pollKeyMode);
-    updatePollKeyUI();
   });
 });
 
@@ -1472,7 +1359,6 @@ function restoreSettings() {
   $('optEmoji').checked = storage.get('optEmoji', true);
   $('optPositive').checked = storage.get('optPositive', false);
   updateProviderUI();
-  updatePollKeyUI();
 }
 
 function saveSettings() {
@@ -1489,9 +1375,9 @@ $('deepseekKey').addEventListener('input', (e) => {
   $('deepseekKeySaved').style.display = state.deepseekKey ? 'block' : 'none';
 });
 $('pollinationsKey').addEventListener('input', (e) => {
-  state.pollOwnKey = e.target.value.trim();
-  storage.set('pollOwnKey', state.pollOwnKey);
-  $('pollinationsKeySaved').style.display = state.pollOwnKey ? 'block' : 'none';
+  state.pollinationsKey = e.target.value.trim();
+  storage.set('pollinationsKey', state.pollinationsKey);
+  $('pollinationsKeySaved').style.display = state.pollinationsKey ? 'block' : 'none';
 });
 
 $('tabText').addEventListener('click', () => {
@@ -1501,7 +1387,7 @@ $('tabText').addEventListener('click', () => {
   $('imageBlock').classList.add('hidden');
 });
 $('tabImage').addEventListener('click', () => {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
   if (!hasKey) { setStatus('Для работы с изображениями нужен API-ключ', 'error'); return; }
   state.mode = 'image';
   $('tabImage').classList.add('active');
@@ -1576,10 +1462,9 @@ async function callProvider(systemPrompt, userContent, useImages) {
     body = JSON.stringify({ model: 'deepseek-flash', messages, temperature: rand(0.9, 1.15) });
     addLog('Обращаюсь к DeepSeek API...', 'info');
   } else {
-    const activeKey = getCommentPollinationsKey();
-    if (!activeKey) throw new Error('Не указан ключ Pollinations');
+    if (!state.pollinationsKey) throw new Error('Не указан ключ Pollinations');
     url = 'https://gen.pollinations.ai/v1/chat/completions';
-    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + activeKey };
+    headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.pollinationsKey };
     const messages = [{ role: 'system', content: systemPrompt }];
     if (useImages && state.images.length && state.mode === 'image') {
       const c = [{ type: 'text', text: userContent }];
@@ -1608,8 +1493,12 @@ async function generateComments() {
   if (state.generating) return;
   const postText = $('postText').value.trim();
   if (!postText && state.images.length === 0) { setStatus('Введите текст поста', 'error'); addLog('Ошибка: нет текста', 'err'); return; }
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
-  if (!hasKey) { setStatus('Укажите ключ', 'error'); addLog('Ошибка: нет ключа', 'err'); return; }
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
+  if (!hasKey) {
+    setStatus(`Введите API-ключ ${state.provider === 'deepseek' ? 'DeepSeek' : 'Pollinations'}`, 'error');
+    addLog('Ошибка: не указан ключ', 'err');
+    return;
+  }
 
   state.generating = true;
   $('btnGenerate').disabled = true;
@@ -1700,7 +1589,7 @@ function escapeHtml(str) {
 }
 
 async function regenOne(index) {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : getCommentPollinationsKey();
+  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
   if (!hasKey) { setStatus('Нет ключа', 'error'); return; }
   addLog(`Регенерация комментария ${index + 1}...`, 'info');
   setStatus('Генерация варианта...', 'loading');
@@ -1770,42 +1659,23 @@ $('btnGenerate').addEventListener('click', generateComments);
    ========================================================================= */
 
 let imgState = {
-  keyMode: storage.get('imgKeyMode', 'free'),
-  ownKey: storage.get('imgOwnKey', ''),
+  apiKey: storage.get('imgApiKey', ''),
   images: [],
   generating: false,
   downloadingAll: false,
   history: storage.get('imgHistory', [])
 };
 
-function updateKeyModeUI() {
-  document.querySelectorAll('.key-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.key === imgState.keyMode);
-  });
-  $('ownKeyBox').classList.toggle('hidden', imgState.keyMode !== 'own');
-  if (imgState.ownKey) {
-    $('imgApiKey').value = imgState.ownKey;
-    $('imgKeySaved').style.display = 'block';
-  }
+if (imgState.apiKey) {
+  $('imgApiKey').value = imgState.apiKey;
+  $('imgKeySaved').style.display = 'block';
 }
-
-document.querySelectorAll('.key-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    imgState.keyMode = btn.dataset.key;
-    storage.set('imgKeyMode', imgState.keyMode);
-    updateKeyModeUI();
-  });
-});
 
 $('imgApiKey').addEventListener('input', (e) => {
-  imgState.ownKey = e.target.value.trim();
-  storage.set('imgOwnKey', imgState.ownKey);
-  $('imgKeySaved').style.display = imgState.ownKey ? 'block' : 'none';
+  imgState.apiKey = e.target.value.trim();
+  storage.set('imgApiKey', imgState.apiKey);
+  $('imgKeySaved').style.display = imgState.apiKey ? 'block' : 'none';
 });
-
-function getActiveKey() {
-  return imgState.keyMode === 'free' ? MY_POLLINATIONS_KEY : imgState.ownKey;
-}
 
 $('imgCount').value = storage.get('imgCount', 4);
 $('imgCount').addEventListener('change', (e) => {
@@ -1931,13 +1801,15 @@ function renderImages() {
 
 async function generateImages() {
   if (imgState.generating) return;
-  const activeKey = getActiveKey();
-  if (!activeKey) { setImgStatus('Введите свой ключ или выберите «Системный ключ»', 'error'); addImgLog('Ошибка: нет ключа', 'err'); return; }
+  if (!imgState.apiKey) {
+    setImgStatus('Введите API-ключ Pollinations', 'error');
+    addImgLog('Ошибка: не указан ключ', 'err');
+    return;
+  }
   const prompt = $('imgPrompt').value.trim();
   if (!prompt) { setImgStatus('Введи описание картинки', 'error'); addImgLog('Ошибка: пустое описание', 'err'); return; }
 
   const count = Math.max(1, parseInt($('imgCount').value) || 1);
-  const modeLabel = imgState.keyMode === 'free' ? 'системный ключ' : 'свой ключ';
 
   imgState.generating = true;
   $('btnGenerateImages').disabled = true;
@@ -1945,7 +1817,7 @@ async function generateImages() {
   imgState.images = [];
   renderImages();
   clearImgLog();
-  addImgLog(`Старт: ${count} картинок, режим: ${modeLabel}`, 'info');
+  addImgLog(`Старт: ${count} картинок`, 'info');
   addImgLog(`Описание: «${prompt.slice(0, 60)}${prompt.length > 60 ? '...' : ''}»`, 'info');
   setImgStatus('Генерация...', 'loading');
 
@@ -1955,7 +1827,7 @@ async function generateImages() {
       addImgLog(`Генерирую картинку ${i} из ${count}...`, 'info');
       setImgStatus(`Картинка ${i} из ${count}...`, 'loading');
       const seed = randInt(1, 999999);
-      const url = `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(activeKey)}`;
+      const url = `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(imgState.apiKey)}`;
       await new Promise((resolve, reject) => {
         const testImg = new Image();
         const timeout = setTimeout(() => reject(new Error('Таймаут загрузки (60 сек)')), 60000);
@@ -2133,7 +2005,6 @@ function restorePwdSettings() {
 
 restoreSettings();
 restorePwdSettings();
-updateKeyModeUI();
 renderImgHistory();
 renderPwdHistory();
 handleHash();

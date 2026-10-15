@@ -30,7 +30,6 @@
     min-height: 100vh;
   }
 
-  /* ============ РАСКЛАДКА ============ */
   .layout {
     display: flex;
     min-height: 100vh;
@@ -150,6 +149,52 @@
     margin-bottom: 6px;
   }
 
+  /* ============ ГЛАВНАЯ ============ */
+  .home-hero {
+    text-align: center;
+    padding: 28px 20px 20px;
+  }
+  .home-hero .home-icon {
+    font-size: 44px;
+    display: block;
+    margin-bottom: 14px;
+  }
+  .home-hero h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .home-hero p {
+    font-size: 14px;
+    color: var(--text);
+    max-width: 640px;
+    margin: 0 auto 12px;
+    line-height: 1.7;
+  }
+  .home-hero p.muted {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .home-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .home-status b { color: #c4b5fd; }
+
   /* ============ ВЫБОР ПРОВАЙДЕРА ============ */
   .provider-switch {
     display: flex;
@@ -256,6 +301,7 @@
   /* ============ ИНПУТЫ ============ */
   input[type="text"],
   input[type="password"],
+  input[type="number"],
   textarea,
   select {
     width: 100%;
@@ -291,7 +337,7 @@
     white-space: nowrap;
   }
   .num-field input {
-    width: 46px;
+    width: 60px;
     border: none;
     background: transparent;
     color: var(--text);
@@ -570,7 +616,7 @@
   .log-item.err { border-left-color: #fb7185; color: #fecdd3; }
   .log-item:not(.info):not(.ok):not(.err) { border-left-color: #475569; color: #cbd5e1; }
 
-  /* ============ ЛОГ КАРТИНОК (ДРУГОЙ ДИЗАЙН) ============ */
+  /* ============ ЛОГ КАРТИНОК ============ */
   .img-log-box {
     margin-top: 18px;
     background: linear-gradient(180deg, #0b1216 0%, #081013 100%);
@@ -672,8 +718,30 @@
 <div class="layout">
   <main class="main">
 
+    <!-- ===== РАЗДЕЛ: ГЛАВНАЯ ===== -->
+    <section id="section-home">
+      <h1>Главная</h1>
+
+      <div class="panel">
+        <div class="home-hero">
+          <span class="home-icon">👋</span>
+          <h2>Добро пожаловать!</h2>
+
+          <p>Этот сайт был создан совсем недавно — он молодой и продолжает развиваться.</p>
+
+          <p>Здесь будут появляться новые разделы, инструменты и улучшения. Что-то может работать не идеально — если заметишь баг, это нормально, всё постепенно доводится до ума.</p>
+
+          <p class="muted">Заглядывай почаще — сайт регулярно обновляется. ✨</p>
+
+          <div class="home-status">
+            <span>🛠</span> <b>Статус:</b> в активной разработке. Обновления выходят по мере готовности.
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== РАЗДЕЛ: ГЕНЕРАТОР КОММЕНТАРИЕВ ===== -->
-    <section id="section-comments">
+    <section id="section-comments" class="hidden">
       <h1>Генератор комментариев</h1>
 
       <div class="provider-switch">
@@ -780,17 +848,18 @@
         <div class="row" style="margin-top:12px;">
           <div class="num-field">
             <label>Кол-во картинок</label>
-            <input type="number" id="imgCount" min="1" max="20" value="4">
+            <input type="number" id="imgCount" min="1" max="99999" value="4">
           </div>
         </div>
 
         <div class="hint-note">
-          <b>Совет:</b> можно запросить от 1 до 20 картинок за раз. Но не стоит ставить максимум каждый раз — Pollinations может отвечать дольше обычного, и есть риск упереться в лимиты. Если картинка не появилась за 30–60 секунд — это нормально, генерация иногда бывает медленной. Просто подожди.
+          <b>Совет:</b> можно запросить любое количество картинок — от 1 до 99999. Учти: чем больше картинок ты запросишь, тем дольше будет генерация. Если поставить очень много, Pollinations может отвечать медленнее обычного, а некоторые запросы — завершиться ошибкой. Если картинка не появилась за 30–60 секунд — это нормально, генерация иногда бывает медленной. Просто подожди.
         </div>
       </div>
 
       <div class="buttons">
         <button class="btn btn-primary" id="btnGenerateImages">✨ Сгенерировать картинки</button>
+        <button class="btn hidden" id="btnDownloadAll">⬇ Скачать все</button>
         <button class="btn" id="btnClearImages">Очистить</button>
       </div>
 
@@ -846,7 +915,8 @@
 
   <aside class="sidebar">
     <h3>Разделы</h3>
-    <button class="nav-btn active" data-section="comments">💬 Комментарии</button>
+    <button class="nav-btn active" data-section="home">🏠 Главная</button>
+    <button class="nav-btn" data-section="comments">💬 Комментарии</button>
     <button class="nav-btn" data-section="images">🎨 Генерация картинок</button>
     <button class="nav-btn" data-section="passwords">🔑 Пароли</button>
     <button class="nav-btn" data-section="instructions">📘 Инструкции</button>
@@ -887,8 +957,10 @@ const pick = (arr) => arr[randInt(0, arr.length - 1)];
    РОУТИНГ
    ========================================================================= */
 
+const SECTIONS = ['home', 'comments', 'images', 'passwords', 'instructions'];
+
 function showSection(section) {
-  ['comments', 'images', 'passwords', 'instructions'].forEach(s => {
+  SECTIONS.forEach(s => {
     const el = $('section-' + s);
     if (el) el.classList.toggle('hidden', s !== section);
   });
@@ -898,12 +970,12 @@ function showSection(section) {
 }
 
 function handleHash() {
-  const hash = location.hash.replace(/^#/, '') || 'comments';
+  const hash = location.hash.replace(/^#/, '') || 'home';
   const section = hash.split('/')[0];
-  if (['comments', 'images', 'passwords', 'instructions'].includes(section)) {
+  if (SECTIONS.includes(section)) {
     showSection(section);
   } else {
-    showSection('comments');
+    showSection('home');
   }
 }
 
@@ -1319,11 +1391,11 @@ $('btnGenerate').addEventListener('click', generateComments);
 
 let imgState = {
   apiKey: storage.get('imgApiKey', ''),
-  images: [], // { url, prompt, id }
-  generating: false
+  images: [],
+  generating: false,
+  downloadingAll: false
 };
 
-// Восстановление ключа
 if (imgState.apiKey) {
   $('imgApiKey').value = imgState.apiKey;
   $('imgKeySaved').style.display = 'block';
@@ -1346,11 +1418,16 @@ function setImgStatus(text, type = '') {
   el.className = 'status ' + type;
 }
 
-// Скачивание картинки через fetch + blob (чтобы работало с跨-доменными картинками)
-async function downloadImage(url, filename, btn) {
+// Показать/скрыть кнопку «Скачать все» (только когда есть картинки)
+function updateDownloadAllBtn() {
+  const hasImages = imgState.images.length > 0;
+  $('btnDownloadAll').classList.toggle('hidden', !hasImages);
+}
+
+// Скачивание одной картинки через fetch + blob
+async function downloadSingle(url, filename, btn) {
   try {
-    btn.disabled = true;
-    btn.textContent = '...';
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const blob = await resp.blob();
@@ -1362,16 +1439,55 @@ async function downloadImage(url, filename, btn) {
     a.click();
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-    btn.textContent = '✓ Готово';
-    setTimeout(() => { btn.textContent = '⬇ Скачать'; btn.disabled = false; }, 1500);
+    if (btn) {
+      btn.textContent = '✓ Готово';
+      setTimeout(() => { btn.textContent = '⬇ Скачать'; btn.disabled = false; }, 1500);
+    }
     addImgLog(`Скачано: ${filename}`, 'ok');
+    return true;
   } catch (err) {
-    btn.textContent = '✗ Ошибка';
-    setTimeout(() => { btn.textContent = '⬇ Скачать'; btn.disabled = false; }, 1500);
+    if (btn) {
+      btn.textContent = '✗ Ошибка';
+      setTimeout(() => { btn.textContent = '⬇ Скачать'; btn.disabled = false; }, 1500);
+    }
     addImgLog(`Ошибка скачивания: ${err.message}`, 'err');
+    return false;
   }
 }
 
+// Скачивание всех картинок по очереди
+async function downloadAll() {
+  if (imgState.downloadingAll) return;
+  if (!imgState.images.length) {
+    setImgStatus('Сначала сгенерируй картинки', 'error');
+    addImgLog('Нечего скачивать', 'err');
+    return;
+  }
+
+  imgState.downloadingAll = true;
+  $('btnDownloadAll').disabled = true;
+  addImgLog(`Начинаю скачивание всех (${imgState.images.length} шт.)...`, 'info');
+
+  let ok = 0, err = 0;
+  for (let i = 0; i < imgState.images.length; i++) {
+    setImgStatus(`Скачиваю ${i + 1} из ${imgState.images.length}...`, 'loading');
+    addImgLog(`Скачиваю картинку ${i + 1} из ${imgState.images.length}...`, 'info');
+
+    const randomName = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
+    const success = await downloadSingle(imgState.images[i].url, randomName, null);
+    if (success) ok++; else err++;
+
+    if (i < imgState.images.length - 1) await new Promise(r => setTimeout(r, 400));
+  }
+
+  imgState.downloadingAll = false;
+  $('btnDownloadAll').disabled = false;
+
+  setImgStatus(`Скачано: ${ok}, ошибок: ${err}`, ok > 0 ? 'success' : 'error');
+  addImgLog(`Готово. Успешно: ${ok}, с ошибкой: ${err}`, ok > 0 ? 'ok' : 'err');
+}
+
+// Отрисовка картинок (без управления кнопкой «Скачать все»)
 function renderImages() {
   const grid = $('imageGrid');
   grid.innerHTML = '';
@@ -1387,7 +1503,7 @@ function renderImages() {
     const btn = card.querySelector('.btn-download');
     btn.addEventListener('click', () => {
       const randomName = 'image_' + Math.random().toString(36).slice(2, 10) + '.jpg';
-      downloadImage(item.url, randomName, btn);
+      downloadSingle(item.url, randomName, btn);
     });
     grid.appendChild(card);
   });
@@ -1409,10 +1525,12 @@ async function generateImages() {
     return;
   }
 
-  const count = Math.min(20, Math.max(1, parseInt($('imgCount').value) || 1));
+  const count = Math.max(1, parseInt($('imgCount').value) || 1);
 
   imgState.generating = true;
   $('btnGenerateImages').disabled = true;
+  // На время генерации скрываем кнопку «Скачать все»
+  $('btnDownloadAll').classList.add('hidden');
   imgState.images = [];
   renderImages();
   clearImgLog();
@@ -1431,7 +1549,6 @@ async function generateImages() {
       const encoded = encodeURIComponent(prompt);
       const url = `https://gen.pollinations.ai/image/${encoded}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(imgState.apiKey)}`;
 
-      // Проверяем, что картинка реально загрузилась (через предзагрузку)
       await new Promise((resolve, reject) => {
         const testImg = new Image();
         const timeout = setTimeout(() => reject(new Error('Таймаут загрузки (60 сек)')), 60000);
@@ -1445,7 +1562,6 @@ async function generateImages() {
       okCount++;
       addImgLog(`✓ Картинка ${i} готова`, 'ok');
 
-      // Небольшая пауза между запросами, чтобы не перегружать Pollinations
       if (i < count) await new Promise(r => setTimeout(r, 1200));
 
     } catch (err) {
@@ -1464,9 +1580,13 @@ async function generateImages() {
     setImgStatus('Не удалось сгенерировать ни одной картинки', 'error');
     addImgLog('Все запросы завершились ошибкой', 'err');
   }
+
+  // Показываем кнопку «Скачать все» ТОЛЬКО после завершения всей генерации
+  updateDownloadAllBtn();
 }
 
 $('btnGenerateImages').addEventListener('click', generateImages);
+$('btnDownloadAll').addEventListener('click', downloadAll);
 
 $('btnClearImages').addEventListener('click', () => {
   imgState.images = [];
@@ -1474,6 +1594,8 @@ $('btnClearImages').addEventListener('click', () => {
   $('imgPrompt').value = '';
   setImgStatus('');
   clearImgLog();
+  // При очистке скрываем кнопку «Скачать все»
+  $('btnDownloadAll').classList.add('hidden');
   addImgLog('Очищено', 'info');
 });
 
@@ -1568,7 +1690,10 @@ restoreSettings();
 restorePwdSettings();
 handleHash();
 
-if (!location.hash) history.replaceState(null, '', '#comments');
+// Если в URL нет хэша — ставим #home, чтобы кнопка «назад» работала корректно
+if (!location.hash) {
+  history.replaceState(null, '', '#home');
+}
 
 setStatus('');
 addLog('Готов к работе', 'info');

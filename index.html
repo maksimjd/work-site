@@ -3,1396 +3,1692 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Генератор — Комментарии и Пароли</title>
+<title>Генератор комментариев</title>
 <style>
-  * { box-sizing: border-box; }
+  /* ============ БАЗОВЫЕ СТИЛИ ============ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c11;
+    --panel: #171a21;
+    --border: #262b36;
+    --text: #e6e8ee;
+    --muted: #8b93a7;
+    --accent1: #6366f1;
+    --accent2: #a855f7;
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #0a0c11;
-    color: #e6e8ec;
-    margin: 0;
-    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
     min-height: 100vh;
   }
-  .layout { display: flex; min-height: 100vh; gap: 18px; padding: 18px; max-width: 1400px; margin: 0 auto; }
-  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  /* ============ РАСКЛАДКА ============ */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .main {
+    flex: 1;
+    padding: 24px;
+    min-width: 0;
+  }
+
   .sidebar {
-    width: 240px; flex-shrink: 0;
-    background: #171a21;
-    border: 1px solid #262b36;
-    border-radius: 20px;
-    padding: 20px 14px;
-    height: fit-content;
-    position: sticky;
-    top: 18px;
-  }
-  .sidebar h2 {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: #6b7385; margin: 0 0 14px 10px; font-weight: 700;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 11px;
-    padding: 12px 14px; border-radius: 12px;
-    color: #b8bfcf; font-size: 14px; font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 6px; border: 1px solid transparent;
-    background: transparent; width: 100%; text-align: left;
-    font-family: inherit;
-  }
-  .nav-item:hover { background: rgba(99, 102, 241, 0.08); color: #e6e8ec; }
-  .nav-item.active {
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    color: #fff;
-  }
-  .nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
-
-  .online-counter {
-    margin-top: 18px; padding: 12px;
-    background: #0f1115;
-    border: 1px solid #262b36;
-    border-radius: 12px;
-    text-align: center;
-  }
-  .online-counter .dot {
-    display: inline-block; width: 8px; height: 8px;
-    background: #22c55e; border-radius: 50%;
-    margin-right: 6px;
-    animation: pulse 1.8s infinite;
-    vertical-align: 1px;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .online-counter .num { font-size: 18px; font-weight: 800; color: #86efac; }
-  .online-counter .label {
-    font-size: 10px; color: #6b7385;
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-top: 4px; font-weight: 600;
+    width: 240px;
+    flex-shrink: 0;
+    padding: 24px 18px;
+    border-left: 1px solid var(--border);
+    background: #0d1016;
   }
 
-  .tg-block {
-    margin-top: 14px;
-    padding: 12px 10px;
-    background: rgba(56, 189, 248, 0.06);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 12px;
-    text-align: center;
-    text-decoration: none;
+  /* ============ САЙДБАР ============ */
+  .sidebar h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .nav-btn {
     display: block;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .tg-block:hover {
-    border-color: rgba(56, 189, 248, 0.5);
-    background: rgba(56, 189, 248, 0.12);
-  }
-  .tg-line {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
     font-size: 13px;
-    font-weight: 700;
-    color: #7dd3fc;
-    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  .tg-line .blink {
-    animation: blink 1.6s infinite;
-    font-size: 14px;
+  .nav-btn:hover { border-color: var(--accent1); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .online-box {
+    margin-top: 22px;
+    padding: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .online-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    margin-right: 6px;
+    animation: blink 2s infinite;
   }
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.25; }
   }
 
-  .container {
-    background: #171a21;
-    padding: 28px;
-    border-radius: 20px;
-    border: 1px solid #262b36;
-    flex: 1;
-  }
-
-  h1 {
-    font-size: 24px;
-    margin: 0 0 8px;
-    color: #a5b4fc;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-  }
-  p.hint { color: #8b93a5; font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
-
-  label {
-    display: block; font-size: 12px; font-weight: 700;
-    margin-bottom: 8px; color: #8b93a5;
-    text-transform: uppercase; letter-spacing: 0.8px;
-  }
-  input, textarea, select {
-    width: 100%; padding: 12px 14px; font-size: 15px;
-    background: #0a0c10; color: #e6e8ec;
-    border: 1px solid #2d3340; border-radius: 10px;
-    resize: vertical; box-sizing: border-box;
-    margin-bottom: 16px; font-family: inherit;
-    transition: border-color 0.15s;
-  }
-  input:focus, textarea:focus, select:focus {
-    outline: none; border-color: #6366f1;
-  }
-  textarea { min-height: 110px; line-height: 1.5; }
-  select { cursor: pointer; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b93a5' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 15px center;
-    padding-right: 40px;
-  }
-  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .key-wrapper { position: relative; margin-bottom: 16px; }
-  .key-wrapper input { margin-bottom: 0; padding-right: 110px; }
-  .key-saved {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    font-size: 12px; color: #86efac; background: rgba(34, 197, 94, 0.15);
-    padding: 4px 10px; border-radius: 6px; opacity: 0;
-    transition: opacity 0.2s; pointer-events: none; font-weight: 700;
-  }
-  .key-saved.show { opacity: 1; }
-
-  .key-link {
-    display: inline-block;
+  .tg-box {
+    margin-top: 18px;
+    padding: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
     font-size: 12px;
-    color: #7dd3fc;
-    text-decoration: none;
-    margin-bottom: 16px;
-    border-bottom: 1px dotted #7dd3fc;
   }
-  .key-link:hover { color: #38bdf8; }
+  .tg-box a {
+    color: var(--accent2);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .tg-sparkle {
+    animation: sparkle 1.6s infinite;
+    display: inline-block;
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
 
-  /* ===== Верхние вкладки — разный вид ===== */
-  .top-tabs {
+  /* ============ ЗАГОЛОВКИ / ПАНЕЛИ ============ */
+  h1 {
+    font-size: 20px;
+    margin-bottom: 18px;
+    font-weight: 700;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  /* ============ ВКЛАДКИ РАЗНОЙ ФОРМЫ ============ */
+  .tabs {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
-    align-items: stretch;
-  }
-  /* Первая вкладка — закруглённая кнопка с иконкой */
-  .top-tab-text {
-    flex: 1;
-    padding: 11px 18px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
+    margin-bottom: 16px;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: inherit;
-    transition: opacity 0.15s;
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-  }
-  .top-tab-text:hover { opacity: 0.92; }
-  .top-tab-text:not(.active) {
-    background: transparent;
-    color: #8b93a5;
-    border: 1px solid #2d3340;
-    box-shadow: none;
   }
 
-  /* Вторая вкладка — прямоугольная с полоской сверху */
-  .top-tab-image {
-    flex: 1;
-    padding: 11px 18px 11px 22px;
-    background: transparent;
-    color: #8b93a5;
-    border: 1px solid #2d3340;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
+  .tab-text {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: inherit;
-    position: relative;
-    transition: all 0.15s;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
   }
-  .top-tab-image::before {
+  .tab-text.active {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .tab-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px 9px 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 14px;
+  }
+  .tab-image::before {
     content: "";
     position: absolute;
-    left: 8px;
-    top: 20%;
-    bottom: 20%;
-    width: 3px;
-    background: #2d3340;
-    border-radius: 2px;
-    transition: background 0.15s;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 8px 0 0 8px;
+    background: var(--border);
   }
-  .top-tab-image:hover { color: #c5cad6; border-color: #3d4455; }
-  .top-tab-image.active {
-    background: rgba(168, 85, 247, 0.08);
-    color: #c084fc;
-    border-color: rgba(168, 85, 247, 0.4);
+  .tab-image.active::before {
+    background: linear-gradient(180deg, var(--accent1), var(--accent2));
   }
-  .top-tab-image.active::before {
-    background: #a855f7;
-    box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+  .tab-image.active {
+    border-color: var(--accent1);
+    font-weight: 600;
   }
 
-  .auth-switch {
-    display: flex; gap: 5px; background: #0a0c10;
-    padding: 4px; border-radius: 12px;
-    border: 1px solid #262b36; margin-bottom: 16px;
-  }
-  .auth-btn {
-    flex: 1; padding: 9px 12px;
-    background: transparent; color: #8b93a5;
-    border: none; border-radius: 8px;
-    font-size: 12px; font-weight: 700;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+  /* ============ ИНПУТЫ ============ */
+  input[type="text"],
+  input[type="password"],
+  textarea,
+  select {
+    width: 100%;
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 9px 11px;
+    font-size: 13px;
     font-family: inherit;
+    outline: none;
   }
-  .auth-btn:hover { color: #c5cad6; }
-  .auth-btn.active {
-    background: rgba(99, 102, 241, 0.2);
-    color: #a5b4fc;
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent1);
   }
+  textarea { resize: vertical; min-height: 70px; }
 
-  .auth-hint {
-    font-size: 12px;
-    color: #8b93a5;
-    background: #0f1115;
-    border: 1px solid #262b36;
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-  .auth-hint strong { color: #b8bfcf; }
-  .auth-hint .warn { color: #fcd34d; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 140px; }
 
-  .checks-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
-    padding: 10px 12px;
-    background: #0f1115;
-    border: 1px solid #262b36;
-    border-radius: 10px;
-  }
-  .check-item {
+  /* ============ КОМПАКТНЫЕ ЧИСЛОВЫЕ ПОЛЯ ============ */
+  .num-field {
     display: flex;
     align-items: center;
     gap: 6px;
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 8px;
+    width: 140px;
+  }
+  .num-field label {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .num-field input {
+    width: 46px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  /* ============ ГАЛОЧКИ ============ */
+  .checks {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--muted);
     cursor: pointer;
     user-select: none;
   }
-  .check-item input {
-    width: auto;
-    margin: 0;
-    accent-color: #6366f1;
-    cursor: pointer;
-    transform: scale(1);
-  }
-  .check-item span {
-    font-size: 11px;
-    color: #8b93a5;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-  }
-  .check-item:hover span { color: #b8bfcf; }
+  .check input { accent-color: var(--accent1); }
 
-  button.generate {
-    width: 100%;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    color: #fff; border: none;
-    padding: 14px 22px; font-size: 15px; font-weight: 700;
-    border-radius: 11px; cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    font-family: inherit;
-  }
-  button.generate:hover:not(:disabled) { opacity: 0.92; }
-  button.generate:active:not(:disabled) { transform: scale(0.99); }
-  button.generate:disabled { opacity: 0.55; cursor: not-allowed; }
-
-  .btn-row { display: flex; gap: 10px; }
-  .btn-row button.generate { flex: 1; }
-  .btn-secondary {
-    padding: 14px 16px;
-    background: rgba(220, 38, 38, 0.1);
-    color: #fca5a5;
-    border: 1px solid rgba(220, 38, 38, 0.25);
-    border-radius: 11px;
-    font-size: 13px; font-weight: 700;
-    cursor: pointer;
-    font-family: inherit; white-space: nowrap;
-    transition: background 0.15s;
-  }
-  .btn-secondary:hover { background: rgba(220, 38, 38, 0.2); }
-
-  /* Кнопка скачивания TXT */
-  .btn-download {
-    margin-top: 10px;
-    width: 100%;
-    padding: 13px 22px;
-    background: rgba(34, 197, 94, 0.12);
-    color: #86efac;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    border-radius: 11px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    display: flex;
+  /* ============ КНОПКИ (со свечением) ============ */
+  .btn {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.15s;
-  }
-  .btn-download:hover { background: rgba(34, 197, 94, 0.22); }
-  .btn-download svg { width: 15px; height: 15px; }
-
-  .comments { margin-top: 20px; }
-  .comment {
-    background: #0f1115;
-    border: 1px solid #262b36;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    display: flex; justify-content: space-between;
-    align-items: flex-start; gap: 12px;
-  }
-  .comment .num {
-    width: 22px; height: 22px; flex-shrink: 0;
-    background: #6366f1;
-    border-radius: 6px; display: flex;
-    align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800; color: #fff; margin-top: 1px;
-  }
-  .comment p {
-    margin: 0; flex: 1; font-size: 14px; line-height: 1.5;
-    color: #dde1ea; padding-top: 1px;
-    word-wrap: break-word; overflow-wrap: break-word;
-  }
-  .comment p a {
-    color: #7dd3fc;
-    text-decoration: underline;
-    word-break: break-all;
-  }
-  .comment .actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
-  .comment .actions button {
-    font-size: 12px; padding: 6px 10px; border: none;
-    border-radius: 7px; cursor: pointer; font-weight: 700;
-    white-space: nowrap;
-    display: inline-flex; align-items: center; gap: 5px;
-    font-family: inherit;
-    transition: background 0.15s;
-  }
-  .regen { background: rgba(99, 102, 241, 0.12); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
-  .regen:hover:not(:disabled) { background: rgba(99, 102, 241, 0.22); }
-  .regen:disabled { opacity: 0.5; cursor: not-allowed; }
-  .copy { background: rgba(34, 197, 94, 0.12); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25); }
-  .copy:hover { background: rgba(34, 197, 94, 0.22); }
-  .copy.copied { background: rgba(34, 197, 94, 0.4); color: #fff; }
-  .copy svg { width: 12px; height: 12px; }
-
-  .status { font-size: 14px; color: #86efac; margin-top: 12px; min-height: 20px; text-align: center; }
-  .status.loading { color: #a5b4fc; }
-  .error { color: #fca5a5; }
-  .spinner {
-    display: inline-block; width: 13px; height: 13px;
-    border: 2px solid rgba(165, 180, 252, 0.3);
-    border-top-color: #a5b4fc; border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-right: 8px; vertical-align: -2px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .password-output { position: relative; margin-bottom: 18px; }
-  .password-output input {
-    font-size: 19px;
-    font-family: "SF Mono", Monaco, monospace;
-    text-align: center;
-    letter-spacing: 1px;
-    padding: 18px 50px 18px 18px;
-    margin-bottom: 0;
-    background: #06080b;
-    border: 2px solid #2d3340;
-    font-weight: 700;
-    color: #86efac;
-  }
-  .password-output input:focus { border-color: #6366f1; }
-  .password-copy {
-    position: absolute; right: 8px; top: 50%;
-    transform: translateY(-50%);
-    width: 38px; height: 38px;
-    border-radius: 9px; border: none;
-    background: rgba(34, 197, 94, 0.15);
-    color: #86efac; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s;
-  }
-  .password-copy:hover { background: rgba(34, 197, 94, 0.28); }
-  .password-copy.copied { background: #22c55e; color: #fff; }
-  .password-copy svg { width: 16px; height: 16px; }
-
-  .length-slider { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-  .length-slider input[type="range"] {
-    flex: 1; margin: 0; height: 5px;
-    -webkit-appearance: none; appearance: none;
-    background: #2d3340; border-radius: 3px; outline: none; padding: 0;
-  }
-  .length-slider input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: #6366f1;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 13px;
     cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
   }
-  .length-slider input[type="range"]::-moz-range-thumb {
-    width: 20px; height: 20px; border-radius: 50%;
-    background: #6366f1; cursor: pointer; border: none;
+  .btn:hover {
+    border-color: var(--accent1);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
   }
-  .length-value { font-size: 18px; font-weight: 800; color: #a5b4fc; min-width: 36px; text-align: center; }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 
-  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-  .option {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px;
-    background: #0f1115;
-    border: 1px solid #262b36; border-radius: 10px;
-    cursor: pointer; user-select: none;
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.45), 0 0 28px rgba(168, 85, 247, 0.25);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.7), 0 0 40px rgba(168, 85, 247, 0.45);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* ============ СТАТУС ============ */
+  .status {
+    margin-top: 12px;
+    font-size: 12px;
+    min-height: 18px;
+    color: var(--muted);
+  }
+  .status.error { color: #f87171; }
+  .status.success { color: #34d399; }
+  .status.loading { color: #fbbf24; }
+
+  /* ============ ЗАГРУЗКА КАРТИНОК ============ */
+  .drop-zone {
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
     transition: border-color 0.15s;
   }
-  .option:hover { border-color: #3d4455; }
-  .option input { width: auto; margin: 0; accent-color: #6366f1; cursor: pointer; }
-  .option span { font-size: 13px; color: #b8bfcf; font-weight: 500; }
-  .option.checked {
-    border-color: rgba(99, 102, 241, 0.45);
-    background: rgba(99, 102, 241, 0.06);
+  .drop-zone.drag { border-color: var(--accent1); color: var(--accent1); }
+
+  .thumbs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .thumb {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .thumb button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+    line-height: 1;
   }
 
-  .strength-bar { display: flex; gap: 4px; margin-bottom: 8px; }
-  .strength-bar .seg { height: 5px; flex: 1; border-radius: 3px; background: #262b36; transition: background 0.2s; }
-  .strength-label { font-size: 13px; color: #8b93a5; text-align: right; margin-bottom: 18px; font-weight: 600; }
-  .strength-label.weak { color: #fca5a5; }
-  .strength-label.medium { color: #fcd34d; }
-  .strength-label.strong { color: #86efac; }
+  /* ============ СПИСОК КОММЕНТАРИЕВ ============ */
+  .comments { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
 
-  .section { display: none; }
-  .section.active { display: block; }
-
-  .upload-zone {
-    border: 2px dashed #2d3340; border-radius: 12px;
-    padding: 24px; text-align: center; cursor: pointer;
-    transition: border-color 0.15s; margin-bottom: 16px;
-    background: #0f1115;
+  .comment {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
   }
-  .upload-zone:hover { border-color: #6366f1; }
-  .upload-zone.dragover { border-color: #a855f7; background: rgba(168, 85, 247, 0.06); }
-  .upload-zone svg { width: 30px; height: 30px; color: #6366f1; margin-bottom: 8px; }
-  .upload-zone p { margin: 0; color: #8b93a5; font-size: 13px; }
-  .upload-zone p strong { color: #a5b4fc; }
-
-  .previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 8px; margin-bottom: 16px; }
-  .preview {
-    position: relative; aspect-ratio: 1;
-    border-radius: 10px; overflow: hidden;
-    border: 1px solid #2d3340;
+  .comment-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
   }
-  .preview img { width: 100%; height: 100%; object-fit: cover; }
-  .preview .remove {
-    position: absolute; top: 4px; right: 4px;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: rgba(220, 38, 38, 0.9); color: #fff;
-    border: none; font-size: 14px; line-height: 1;
-    cursor: pointer; display: flex;
-    align-items: center; justify-content: center;
+  .comment-num {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .comment-text {
+    font-size: 13px;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+  .comment-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .comment-actions button {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: #0f1218;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .comment-actions button:hover {
+    border-color: var(--accent1);
+    color: var(--text);
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
   }
 
+  /* ============ ЛОГ РАБОТЫ (внизу) ============ */
+  .log-box {
+    margin-top: 18px;
+    background: linear-gradient(180deg, #0d1016 0%, #0b0e14 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .log-box h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .log-box h3::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+  .log-list {
+    max-height: 220px;
+    overflow-y: auto;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #cbd5e1;
+  }
+  .log-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 2px 0 2px 8px;
+    border-left: 2px solid transparent;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .log-item .log-time {
+    color: #64748b;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .log-item.info {
+    border-left-color: #38bdf8;
+    color: #bae6fd;
+  }
+  .log-item.ok {
+    border-left-color: #34d399;
+    color: #a7f3d0;
+  }
+  .log-item.err {
+    border-left-color: #fb7185;
+    color: #fecdd3;
+  }
+  /* Обычные строки */
+  .log-item:not(.info):not(.ok):not(.err) {
+    border-left-color: #475569;
+    color: #cbd5e1;
+  }
+
+  /* ============ ИНСТРУКЦИИ ============ */
+  .instr-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .instr-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  }
+  .instr-card:hover {
+    border-color: var(--accent1);
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.35);
+    transform: translateY(-1px);
+  }
+  .instr-card .instr-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .instr-card .instr-desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .instr-article {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    line-height: 1.7;
+  }
+  .instr-article h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .instr-article h3 {
+    font-size: 14px;
+    margin: 18px 0 8px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .instr-article p {
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .instr-article ul {
+    margin: 8px 0 12px 20px;
+    font-size: 13px;
+  }
+  .instr-article li {
+    margin-bottom: 4px;
+  }
+  .instr-article code {
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    color: var(--accent2);
+  }
+  /* Ссылки в инструкциях — кликабельные, открываются в новом окне */
+  .instr-article a {
+    color: #a5b4fc;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(165, 180, 252, 0.5);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .instr-article a:hover {
+    color: #c4b5fd;
+    border-bottom-color: #c4b5fd;
+  }
+  .instr-article .note {
+    background: #0f1218;
+    border-left: 3px solid var(--accent1);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 14px;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .back-btn:hover {
+    border-color: var(--accent1);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
+  }
+
+  /* ============ ГЕНЕРАТОР ПАРОЛЕЙ ============ */
+  .pwd-output {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .pwd-output input {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .strength {
+    display: flex;
+    gap: 4px;
+    margin: 10px 0 4px;
+  }
+  .strength span {
+    flex: 1;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent1);
+  }
+
+  .slider-value {
+    display: inline-block;
+    min-width: 30px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent2);
+  }
+
+  /* Утилита для скрытия */
   .hidden { display: none !important; }
 
-  @media (max-width: 800px) {
-    .layout { flex-direction: column; padding: 12px; }
-    .sidebar { width: 100%; position: static; }
-    .sidebar h2 { display: none; }
-    .sidebar nav { display: flex; gap: 6px; overflow-x: auto; }
-    .nav-item { flex: 1; min-width: fit-content; justify-content: center; padding: 11px; }
-    .nav-item span { display: none; }
-    .nav-item svg { margin: 0; }
-    .container { padding: 20px; }
-    h1 { font-size: 20px; }
-    .row-3, .row-2, .options-grid { grid-template-columns: 1fr; }
-    .comment { flex-direction: column; }
-    .comment .actions { width: 100%; }
-    .comment .actions button { flex: 1; justify-content: center; }
-    .btn-row { flex-direction: column; }
+  /* Адаптив */
+  @media (max-width: 760px) {
+    .layout { flex-direction: column-reverse; }
+    .sidebar {
+      width: 100%;
+      border-left: none;
+      border-bottom: 1px solid var(--border);
+    }
   }
 </style>
 </head>
 <body>
+
 <div class="layout">
-  <div class="content">
-    <div class="container">
+  <!-- ==================== ОСНОВНОЙ КОНТЕНТ ==================== -->
+  <main class="main">
 
-      <div class="section active" id="section-comments">
-        <h1>Генератор комментариев</h1>
-        <p class="hint">Выбери режим: текст или изображения. Работаем с ключом или без него.</p>
+    <!-- ===== РАЗДЕЛ: ГЕНЕРАТОР КОММЕНТАРИЕВ ===== -->
+    <section id="section-comments">
+      <h1>Генератор комментариев</h1>
 
-        <label>Режим работы</label>
-        <div class="auth-switch">
-          <button class="auth-btn active" id="authNoKey" onclick="setAuthMode('noKey')">Без ключа</button>
-          <button class="auth-btn" id="authKey" onclick="setAuthMode('key')">С ключом</button>
-        </div>
-
-        <div id="keyBlock" class="hidden">
-          <label for="apiKey">API-ключ Pollinations</label>
-          <div class="key-wrapper">
-            <input type="password" id="apiKey" placeholder="pk_... или sk_..." oninput="saveApiKey()" />
-            <span class="key-saved" id="keySaved">Сохранён</span>
-          </div>
-          <a class="key-link" href="https://enter.pollinations.ai" target="_blank" rel="noopener">Получить бесплатный ключ →</a>
-        </div>
-
-        <div id="hintBlock" class="auth-hint">
-          <strong>Без ключа:</strong> работаем только с текстом. <span class="warn">Ограничение: 1 запрос в 15 секунд</span>. Если нужно быстрее и с изображениями — переключись на режим «С ключом» и получи бесплатный ключ на <a href="https://enter.pollinations.ai" target="_blank" rel="noopener" style="color:#7dd3fc">enter.pollinations.ai</a>.
-        </div>
-
-        <!-- РАЗНЫЕ ПО ВИДУ ВЕРХНИЕ ВКЛАДКИ -->
-        <div class="top-tabs">
-          <button class="top-tab-text active" id="modeText" onclick="setMode('text')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
-            Текст
-          </button>
-          <button class="top-tab-image" id="modeImage" onclick="setMode('image')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-            Изображение
-          </button>
-        </div>
-
-        <div id="textBlock">
-          <label for="postText">Текст поста или тема</label>
-          <textarea id="postText" placeholder="Вставь сюда текст поста или тему..."></textarea>
-
-          <label for="styleHint">Свой стиль комментария (необязательно)</label>
-          <textarea id="styleHint" placeholder="Например: разговорный, с юмором, дружеский, поддерживающий, короткий и живой..." style="min-height: 60px;"></textarea>
-        </div>
-
-        <div id="imageBlock" class="hidden">
-          <label>Изображения (до 5 штук)</label>
-          <div class="upload-zone" id="uploadZone">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <p>Перетащи файлы или <strong>нажми для выбора</strong></p>
-          </div>
-          <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
-          <div class="previews" id="previews"></div>
-          <label for="imageContext">Дополнительный текст (необязательно)</label>
-          <textarea id="imageContext" placeholder="Например: напиши комментарий к этому фото..." style="min-height: 70px;"></textarea>
-        </div>
-
-        <div class="row-3">
-          <div>
-            <label for="countInput">Кол-во комментов</label>
-            <input type="number" id="countInput" min="1" max="50" value="5" onchange="saveCount()" />
-          </div>
-          <div>
-            <label for="sentences">Предложений (шаблон)</label>
-            <select id="sentences">
-              <option value="1">1 предложение</option>
-              <option value="2" selected>2 предложения</option>
-              <option value="3">3 предложения</option>
-              <option value="4">4 предложения</option>
-            </select>
-          </div>
-          <div>
-            <label for="sentencesCustom">Своё кол-во предложений</label>
-            <input type="number" id="sentencesCustom" min="1" max="10" placeholder="напр. 2" onchange="saveSentencesCustom()" />
-          </div>
-        </div>
-
-        <div class="row-2">
-          <div>
-            <label for="name">Имя автора</label>
-            <select id="name">
-              <option value="Алексей" selected>Алексей</option>
-              <option value="Дмитрий">Дмитрий</option>
-              <option value="Сергей">Сергей</option>
-              <option value="Максим">Максим</option>
-              <option value="Иван">Иван</option>
-            </select>
-          </div>
-          <div>
-            <label style="visibility:hidden">.</label>
-            <div class="checks-row" style="margin-bottom:0">
-              <label class="check-item">
-                <input type="checkbox" id="useEmoji">
-                <span>Со смайликами</span>
-              </label>
-              <label class="check-item">
-                <input type="checkbox" id="strictTone" checked>
-                <span>Строго позитивный тон</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="generate" id="generateBtn" onclick="generateAll()">Сгенерировать новые</button>
-          <button class="btn-secondary" onclick="clearComments()">Очистить</button>
-        </div>
-        <div class="status" id="status"></div>
-        <button class="btn-download hidden" id="downloadBtn" onclick="downloadTxt()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Скачать в TXT
-        </button>
-        <div class="comments" id="comments"></div>
+      <div class="tabs">
+        <button class="tab-text active" id="tabText">💬 Текст</button>
+        <button class="tab-image" id="tabImage">🖼 Изображение</button>
       </div>
 
-      <div class="section" id="section-passwords">
-        <h1>Генератор паролей</h1>
-        <p class="hint">Настрой параметры и получи надёжный пароль. Копируется в один клик.</p>
-
-        <div class="password-output">
-          <input type="text" id="passwordField" readonly value="Нажми «Сгенерировать»">
-          <button class="password-copy" id="passwordCopyBtn" onclick="copyPassword()" title="Скопировать">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
+      <div class="panel">
+        <label class="label">Режим авторизации</label>
+        <div class="row" style="margin-bottom:10px;">
+          <button class="btn" id="authNoKey">Без ключа</button>
+          <button class="btn" id="authKey">С ключом</button>
         </div>
-
-        <div class="strength-bar" id="strengthBar">
-          <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+        <div id="keyBox" class="hidden">
+          <label class="label">API-ключ Pollinations (enter.pollinations.ai)</label>
+          <input type="password" id="apiKey" placeholder="Вставьте ключ...">
+          <div class="status success" id="keySaved" style="display:none;">✓ Сохранён</div>
         </div>
-        <div class="strength-label" id="strengthLabel">Надёжность: —</div>
-
-        <label for="lengthRange">Длина пароля</label>
-        <div class="length-slider">
-          <input type="range" id="lengthRange" min="4" max="64" value="16" oninput="updateLength()">
-          <div class="length-value" id="lengthValue">16</div>
-        </div>
-
-        <label>Параметры</label>
-        <div class="options-grid">
-          <label class="option checked" id="optUpper">
-            <input type="checkbox" id="includeUpper" checked>
-            <span>Заглавные (A-Z)</span>
-          </label>
-          <label class="option checked" id="optLower">
-            <input type="checkbox" id="includeLower" checked>
-            <span>Строчные (a-z)</span>
-          </label>
-          <label class="option checked" id="optDigits">
-            <input type="checkbox" id="includeDigits" checked>
-            <span>Цифры (0-9)</span>
-          </label>
-          <label class="option checked" id="optSymbols">
-            <input type="checkbox" id="includeSymbols" checked>
-            <span>Символы (!@#$)</span>
-          </label>
-          <label class="option" id="optNoSimilar">
-            <input type="checkbox" id="excludeSimilar">
-            <span>Без похожих (0,O,l,1)</span>
-          </label>
-          <label class="option" id="optNoAmbiguous">
-            <input type="checkbox" id="excludeAmbiguous">
-            <span>Без неоднозначных</span>
-          </label>
-        </div>
-
-        <button class="generate" onclick="generatePassword()">Сгенерировать пароль</button>
-        <div class="status" id="passwordStatus"></div>
       </div>
 
-    </div>
-  </div>
+      <div class="panel">
+        <label class="label">Текст поста или тема</label>
+        <textarea id="postText" placeholder="Вставьте текст поста или опишите тему..."></textarea>
 
+        <div style="margin-top:12px;">
+          <label class="label">Свой стиль комментария (необязательно)</label>
+          <input type="text" id="styleText" placeholder="Например: с юмором, официально...">
+        </div>
+
+        <div id="imageBlock" class="hidden" style="margin-top:14px;">
+          <label class="label">Картинки (до 5)</label>
+          <div class="drop-zone" id="dropZone">Перетащите или кликните для загрузки</div>
+          <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+          <div class="thumbs" id="thumbs"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="row" style="margin-bottom:14px;">
+          <div class="num-field">
+            <label>Кол-во комментов</label>
+            <input type="number" id="countComments" min="1" max="50" value="10">
+          </div>
+          <div class="num-field">
+            <label>Предложений</label>
+            <input type="number" id="countSentences" min="1" max="10" value="3">
+          </div>
+        </div>
+
+        <div class="checks">
+          <label class="check"><input type="checkbox" id="optEmoji" checked> Со смайликами</label>
+          <label class="check"><input type="checkbox" id="optPositive"> Строго позитивный тон</label>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-primary" id="btnGenerate">✨ Сгенерировать новые</button>
+        <button class="btn" id="btnClear">Очистить</button>
+        <button class="btn hidden" id="btnDownload">⬇ Скачать в TXT</button>
+      </div>
+
+      <div class="status" id="status"></div>
+
+      <div class="comments" id="comments"></div>
+
+      <!-- ЛОГ РАБОТЫ (внизу) -->
+      <div class="log-box">
+        <h3>Лог работы</h3>
+        <div class="log-list" id="logList"></div>
+      </div>
+    </section>
+
+    <!-- ===== РАЗДЕЛ: ГЕНЕРАТОР ПАРОЛЕЙ ===== -->
+    <section id="section-passwords" class="hidden">
+      <h1>Генератор паролей</h1>
+
+      <div class="panel">
+        <div class="pwd-output">
+          <input type="text" id="pwdOutput" readonly>
+          <button class="btn btn-primary" id="btnCopyPwd">Копировать</button>
+        </div>
+
+        <div class="strength" id="pwdStrength">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="status" id="pwdStrengthLabel" style="margin-top:4px;">Надёжность</div>
+      </div>
+
+      <div class="panel">
+        <label class="label">Длина пароля: <span class="slider-value" id="pwdLenVal">16</span></label>
+        <input type="range" id="pwdLen" min="4" max="64" value="16">
+
+        <div class="checks" style="margin-top:16px;">
+          <label class="check"><input type="checkbox" id="pwdUpper" checked> Заглавные</label>
+          <label class="check"><input type="checkbox" id="pwdLower" checked> Строчные</label>
+          <label class="check"><input type="checkbox" id="pwdDigits" checked> Цифры</label>
+          <label class="check"><input type="checkbox" id="pwdSymbols"> Символы</label>
+          <label class="check"><input type="checkbox" id="pwdNoSimilar"> Без похожих</label>
+          <label class="check"><input type="checkbox" id="pwdNoAmbiguous"> Без неоднозначных</label>
+        </div>
+
+        <div class="buttons">
+          <button class="btn btn-primary" id="btnGenPwd">Сгенерировать</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== РАЗДЕЛ: ИНСТРУКЦИИ ===== -->
+    <section id="section-instructions" class="hidden">
+      <div id="instrListView">
+        <h1>Инструкции</h1>
+        <div class="instr-list" id="instrList"></div>
+      </div>
+
+      <div id="instrDetailView" class="hidden">
+        <a href="#instructions" class="back-btn" id="instrBackBtn">← Назад к списку</a>
+        <div class="instr-article" id="instrDetail"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== САЙДБАР ==================== -->
   <aside class="sidebar">
-    <h2>Разделы</h2>
-    <nav>
-      <button class="nav-item active" id="navComments" onclick="switchSection('comments')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
-        <span>Комментарии</span>
-      </button>
-      <button class="nav-item" id="navPasswords" onclick="switchSection('passwords')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        <span>Пароли</span>
-      </button>
-    </nav>
+    <h3>Разделы</h3>
+    <button class="nav-btn active" data-section="comments">💬 Комментарии</button>
+    <button class="nav-btn" data-section="passwords">🔑 Пароли</button>
+    <button class="nav-btn" data-section="instructions">📘 Инструкции</button>
 
-    <div class="online-counter">
-      <div><span class="dot"></span><span class="num" id="onlineCount">1</span></div>
-      <div class="label">Онлайн сейчас</div>
+    <div class="online-box">
+      <span class="online-dot"></span>Онлайн: <b id="onlineCount">1</b>
     </div>
 
-    <a class="tg-block" href="https://t.me/guiiderr" target="_blank" rel="noopener">
-      <div class="tg-line">Телеграм канал проекта <span class="blink">✨</span></div>
-    </a>
+    <div class="tg-box">
+      <span class="tg-sparkle">✨</span>
+      <a href="https://t.me/guiiderr" target="_blank" rel="noopener">Телеграм канал проекта</a>
+    </div>
   </aside>
 </div>
 
 <script>
-  function switchSection(name) {
-    document.getElementById("section-comments").classList.toggle("active", name === "comments");
-    document.getElementById("section-passwords").classList.toggle("active", name === "passwords");
-    document.getElementById("navComments").classList.toggle("active", name === "comments");
-    document.getElementById("navPasswords").classList.toggle("active", name === "passwords");
-  }
+/* =========================================================================
+   ОБЩИЕ УТИЛИТЫ
+   ========================================================================= */
 
-  let onlineCount = 1;
-  function updateOnline() {
+const $ = (id) => document.getElementById(id);
+
+const storage = {
+  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} },
+  get(key, def) {
     try {
-      if (!window._bc) {
-        window._bc = new BroadcastChannel("online_presence");
-        window._bc.onmessage = (e) => {
-          if (e.data && e.data.type === "ping") {
-            window._bc.postMessage({ type: "pong" });
-            onlineCount++;
-            renderOnline();
-          }
-        };
+      const v = localStorage.getItem(key);
+      return v === null ? def : JSON.parse(v);
+    } catch (e) { return def; }
+  }
+};
+
+const rand = (min, max) => Math.random() * (max - min) + min;
+const randInt = (min, max) => Math.floor(rand(min, max + 1));
+const pick = (arr) => arr[randInt(0, arr.length - 1)];
+
+/* =========================================================================
+   АВТОЛИНКОВКА ССЫЛОК В HTML ИНСТРУКЦИЙ
+   ========================================================================= */
+
+// Превращает URL/домены в HTML-теги <a> с target="_blank".
+// Работает только с текстом вне существующих тегов.
+function autoLinkHtml(html) {
+  // Разбиваем на теги и текст, чтобы не трогать атрибуты тегов
+  const parts = html.split(/(<[^>]+>)/g);
+
+  const urlRegex = /\b((?:https?:\/\/|www\.)[^\s<)"']+|[a-z0-9-]+\.(?:com|ru|org|net|io|dev|ai|me|co|github\.io)(?:\/[^\s<)"']*)?)\b/gi;
+
+  return parts.map(part => {
+    // Если это тег — не трогаем
+    if (part.startsWith('<')) return part;
+
+    return part.replace(urlRegex, (match) => {
+      // Убираем возможные хвостовые знаки препинания
+      let clean = match;
+      let tail = '';
+      while (clean.length && /[.,;:!?)]$/.test(clean)) {
+        tail = clean.slice(-1) + tail;
+        clean = clean.slice(0, -1);
       }
-      window._bc.postMessage({ type: "ping" });
-    } catch (e) { onlineCount = 1; }
-    renderOnline();
-  }
-  function renderOnline() {
-    document.getElementById("onlineCount").textContent = Math.max(1, onlineCount);
-  }
-  updateOnline();
-  setInterval(() => { onlineCount = 1; updateOnline(); }, 60000);
 
-  let authMode = "noKey";
-  function setAuthMode(mode) {
-    authMode = mode;
-    document.getElementById("authNoKey").classList.toggle("active", mode === "noKey");
-    document.getElementById("authKey").classList.toggle("active", mode === "key");
-    document.getElementById("keyBlock").classList.toggle("hidden", mode !== "key");
-    document.getElementById("hintBlock").classList.toggle("hidden", mode === "key");
-    localStorage.setItem("auth_mode", mode);
-  }
-  (function initAuthMode() {
-    const saved = localStorage.getItem("auth_mode");
-    if (saved) setAuthMode(saved);
-    else setAuthMode("noKey");
-  })();
-
-  const KEY_STORAGE = "pollinations_api_key";
-  const COUNT_STORAGE = "comment_count";
-  const EMOJI_STORAGE = "use_emoji";
-  const SENTENCES_STORAGE = "sentences_count";
-  const SENTENCES_CUSTOM_STORAGE = "sentences_custom";
-  const STYLE_STORAGE = "style_hint";
-
-  function saveApiKey() {
-    const key = document.getElementById("apiKey").value.trim();
-    if (key) {
-      localStorage.setItem(KEY_STORAGE, key);
-      const indicator = document.getElementById("keySaved");
-      indicator.classList.add("show");
-      clearTimeout(indicator._timer);
-      indicator._timer = setTimeout(() => indicator.classList.remove("show"), 1500);
-    } else {
-      localStorage.removeItem(KEY_STORAGE);
-    }
-  }
-  function loadApiKey() {
-    const saved = localStorage.getItem(KEY_STORAGE);
-    if (saved) document.getElementById("apiKey").value = saved;
-  }
-  loadApiKey();
-
-  function saveCount() {
-    const val = document.getElementById("countInput").value;
-    if (val) localStorage.setItem(COUNT_STORAGE, val);
-  }
-  function loadCount() {
-    const saved = localStorage.getItem(COUNT_STORAGE);
-    if (saved) document.getElementById("countInput").value = saved;
-  }
-  loadCount();
-
-  function saveEmoji() {
-    localStorage.setItem(EMOJI_STORAGE, document.getElementById("useEmoji").checked ? "1" : "0");
-  }
-  function loadEmoji() {
-    const saved = localStorage.getItem(EMOJI_STORAGE);
-    if (saved === "1") document.getElementById("useEmoji").checked = true;
-  }
-  loadEmoji();
-
-  function saveSentences() {
-    localStorage.setItem(SENTENCES_STORAGE, document.getElementById("sentences").value);
-  }
-  function loadSentences() {
-    const saved = localStorage.getItem(SENTENCES_STORAGE);
-    if (saved) document.getElementById("sentences").value = saved;
-  }
-  loadSentences();
-
-  function saveSentencesCustom() {
-    const val = document.getElementById("sentencesCustom").value;
-    if (val) localStorage.setItem(SENTENCES_CUSTOM_STORAGE, val);
-    else localStorage.removeItem(SENTENCES_CUSTOM_STORAGE);
-  }
-  function loadSentencesCustom() {
-    const saved = localStorage.getItem(SENTENCES_CUSTOM_STORAGE);
-    if (saved) document.getElementById("sentencesCustom").value = saved;
-  }
-  loadSentencesCustom();
-
-  function saveStyle() {
-    localStorage.setItem(STYLE_STORAGE, document.getElementById("styleHint").value);
-  }
-  function loadStyle() {
-    const saved = localStorage.getItem(STYLE_STORAGE);
-    if (saved) document.getElementById("styleHint").value = saved;
-  }
-  loadStyle();
-  document.getElementById("styleHint").addEventListener("input", saveStyle);
-
-  document.querySelectorAll(".option input").forEach(cb => {
-    cb.addEventListener("change", () => {
-      cb.closest(".option").classList.toggle("checked", cb.checked);
+      let href = clean;
+      if (!/^https?:\/\//i.test(href)) {
+        href = 'https://' + href;
+      }
+      return `<a href="${href}" target="_blank" rel="noopener">${clean}</a>${tail}`;
     });
-  });
-  document.getElementById("useEmoji").addEventListener("change", saveEmoji);
+  }).join('');
+}
 
-  const CHARS = {
-    upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    lower: "abcdefghijklmnopqrstuvwxyz",
-    digits: "0123456789",
-    symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
-    similar: "0OoIl1",
-    ambiguous: "{}[]()/\\'\"`~,;:.<>"
+/* =========================================================================
+   БАЗА ИНСТРУКЦИЙ
+   ========================================================================= */
+
+const INSTRUCTIONS = [
+  {
+    id: 'github-pages',
+    title: 'Как загрузить свой сайт на GitHub',
+    desc: 'Пошаговая инструкция: от регистрации до публикации сайта по ссылке.',
+    html: `
+      <h2>Как загрузить свой сайт на GitHub</h2>
+      <p>Инструкция по созданию и публикации сайта на GitHub. Никаких программ — только браузер.</p>
+
+      <h3>1. Регистрация на GitHub</h3>
+      <ul>
+        <li>Зайди на github.com/signup</li>
+        <li>Введи email, пароль, придумай логин (например ivan-petrov)</li>
+        <li>Подтверди почту — придёт письмо</li>
+      </ul>
+
+      <h3>2. Готовим файл сайта</h3>
+      <ul>
+        <li>Открой Блокнот (Windows) или TextEdit (Mac)</li>
+        <li>Вставь туда весь код сайта</li>
+        <li>Сохрани файл с именем index.html — именно так, маленькими буквами!</li>
+        <li>В Блокноте: Файл → Сохранить как → тип файла выбери «Все файлы» → имя index.html</li>
+      </ul>
+      <div class="note">Важно: НЕ index.html.txt — Windows может подсунуть .txt в конце. Проверь: открой файл двойным кликом — должен открыться в браузере и работать.</div>
+
+      <h3>3. Создаём репозиторий на GitHub</h3>
+      <ul>
+        <li>Зайди на github.com и войди в аккаунт</li>
+        <li>Справа сверху нажми «+» → New repository</li>
+        <li>Repository name: my-site (или любое другое имя латиницей)</li>
+        <li>Выбери Public (обязательно! Иначе сайт не будет работать)</li>
+        <li>Галочки на «Add a README file», «.gitignore», «license» — НЕ ставь</li>
+        <li>Нажми зелёную кнопку Create repository</li>
+      </ul>
+
+      <h3>4. Загружаем файл</h3>
+      <ul>
+        <li>Ты попадёшь на страницу нового репозитория</li>
+        <li>Найди ссылку «uploading an existing file» — нажми на неё (или Add file → Upload files)</li>
+        <li>Перетащи файл index.html в окно браузера</li>
+        <li>Внизу в поле «Commit changes» напиши что-нибудь, например first upload</li>
+        <li>Нажми зелёную кнопку Commit changes</li>
+      </ul>
+
+      <h3>5. Включаем GitHub Pages</h3>
+      <ul>
+        <li>В репозитории нажми Settings (вверху)</li>
+        <li>В левом меню найди пункт Pages</li>
+        <li>В блоке Branch выбери main, рядом — / (root)</li>
+        <li>Нажми Save</li>
+        <li>Подожди 1–2 минуты, обнови страницу — сверху появится зелёная плашка: Your site is live at https://ТВОЙ_НИК.github.io/my-site/</li>
+      </ul>
+
+      <h3>6. Как проверить, что всё работает</h3>
+      <ul>
+        <li>Открой ссылку https://ТВОЙ_НИК.github.io/my-site/ в браузере</li>
+        <li>Должен открыться твой сайт</li>
+        <li>Если видишь 404 — подожди ещё минуту и обнови (Ctrl+F5)</li>
+        <li>Если и через 5 минут 404 — проверь: файл точно называется index.html, в Settings → Pages выбрана ветка main и папка / (root), репозиторий Public, а не Private</li>
+      </ul>
+
+      <h3>7. Как обновлять сайт</h3>
+      <ul>
+        <li>Открой свой репозиторий на GitHub</li>
+        <li>Кликни на файл index.html</li>
+        <li>Нажми иконку карандаша справа вверху</li>
+        <li>Внеси изменения в код</li>
+        <li>Внизу нажми зелёную кнопку Commit changes</li>
+        <li>Через 1–2 минуты обнови сайт в браузере кнопкой Ctrl+F5</li>
+      </ul>
+      <div class="note">Если хочешь заменить файл целиком: открой репозиторий → Add file → Upload files → перетащи новый index.html поверх старого — GitHub сам предложит заменить → Commit changes.</div>
+
+      <h3>Частые проблемы</h3>
+      <ul>
+        <li><b>Сайт показывает 404</b> — подожди 2–3 минуты. Проверь, что файл называется index.html. Проверь, что репозиторий Public.</li>
+        <li><b>Изменения не появляются</b> — нажми Ctrl+F5 в браузере. Подожди 1–2 минуты после коммита.</li>
+        <li><b>Файл открывается как текст</b> — ты назвал его index.html.txt. Переименуй в index.html.</li>
+        <li><b>GitHub Pages не появляется в Settings</b> — обнови страницу, иногда пункт не сразу виден.</li>
+        <li><b>Сайт открывается, но пустой</b> — проверь, что код полностью скопирован в index.html.</li>
+      </ul>
+
+      <h3>Кратко, вся суть</h3>
+      <ul>
+        <li>Создал файл index.html в Блокноте</li>
+        <li>На GitHub: + → New repository → Public → Create</li>
+        <li>Add file → Upload files → закинул index.html → Commit changes</li>
+        <li>Settings → Pages → Branch main + / (root) → Save</li>
+        <li>Ссылка появилась — открыл, проверил</li>
+        <li>Чтобы обновить: открыл index.html → карандаш → правки → Commit changes → Ctrl+F5</li>
+      </ul>
+    `
+  }
+];
+
+/* =========================================================================
+   РОУТИНГ РАЗДЕЛОВ (hash-based)
+   ========================================================================= */
+
+function showSection(section) {
+  $('section-comments').classList.toggle('hidden', section !== 'comments');
+  $('section-passwords').classList.toggle('hidden', section !== 'passwords');
+  $('section-instructions').classList.toggle('hidden', section !== 'instructions');
+
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.section === section);
+  });
+}
+
+function handleHash() {
+  const hash = location.hash.replace(/^#/, '') || 'comments';
+  const [section, instrId] = hash.split('/');
+
+  if (section === 'instructions') {
+    showSection('instructions');
+    if (instrId) {
+      showInstrDetail(instrId);
+    } else {
+      showInstrList();
+    }
+  } else if (section === 'passwords') {
+    showSection('passwords');
+  } else {
+    showSection('comments');
+  }
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    location.hash = btn.dataset.section;
+  });
+});
+
+window.addEventListener('hashchange', handleHash);
+
+/* =========================================================================
+   РЕНДЕР СПИСКА ИНСТРУКЦИЙ
+   ========================================================================= */
+
+function renderInstrList() {
+  const list = $('instrList');
+  list.innerHTML = '';
+  INSTRUCTIONS.forEach(instr => {
+    const a = document.createElement('a');
+    a.className = 'instr-card';
+    a.href = `#instructions/${instr.id}`;
+    a.innerHTML = `
+      <div class="instr-title">${instr.title}</div>
+      <div class="instr-desc">${instr.desc}</div>
+    `;
+    list.appendChild(a);
+  });
+}
+
+function showInstrList() {
+  $('instrListView').classList.remove('hidden');
+  $('instrDetailView').classList.add('hidden');
+}
+
+function showInstrDetail(id) {
+  const instr = INSTRUCTIONS.find(i => i.id === id);
+  if (!instr) {
+    showInstrList();
+    return;
+  }
+  $('instrListView').classList.add('hidden');
+  $('instrDetailView').classList.remove('hidden');
+
+  // Автолинковка ссылок + открытие в новом окне
+  $('instrDetail').innerHTML = autoLinkHtml(instr.html);
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+/* =========================================================================
+   ОНЛАЙН-СЧЁТЧИК (BroadcastChannel)
+   ========================================================================= */
+
+const onlineCountEl = $('onlineCount');
+let tabId = Math.random().toString(36).slice(2);
+let knownTabs = new Set([tabId]);
+let channel = null;
+
+try {
+  channel = new BroadcastChannel('online-counter');
+
+  function announce() {
+    channel.postMessage({ type: 'ping', id: tabId });
+  }
+
+  channel.onmessage = (e) => {
+    const { type, id } = e.data || {};
+    if (type === 'ping') {
+      knownTabs.add(id);
+      channel.postMessage({ type: 'pong', id: tabId });
+      updateOnline();
+    } else if (type === 'pong') {
+      knownTabs.add(id);
+      updateOnline();
+    } else if (type === 'bye') {
+      knownTabs.delete(id);
+      updateOnline();
+    }
   };
 
-  function updateLength() {
-    document.getElementById("lengthValue").textContent = document.getElementById("lengthRange").value;
+  window.addEventListener('beforeunload', () => {
+    channel.postMessage({ type: 'bye', id: tabId });
+  });
+
+  announce();
+  setInterval(announce, 5000);
+} catch (e) {}
+
+function updateOnline() {
+  onlineCountEl.textContent = knownTabs.size;
+}
+
+/* =========================================================================
+   ЛОГ РАБОТЫ (внизу страницы)
+   ========================================================================= */
+
+const logList = $('logList');
+
+// Добавить строку в лог. type: '' | 'ok' | 'err' | 'info'
+function addLog(text, type = '') {
+  const div = document.createElement('div');
+  div.className = 'log-item ' + type;
+
+  const time = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'log-time';
+  timeSpan.textContent = `[${time}]`;
+
+  const textSpan = document.createElement('span');
+  textSpan.textContent = text;
+
+  div.appendChild(timeSpan);
+  div.appendChild(textSpan);
+
+  logList.appendChild(div);
+  logList.scrollTop = logList.scrollHeight;
+}
+
+function clearLog() {
+  logList.innerHTML = '';
+}
+
+/* =========================================================================
+   ГЕНЕРАТОР КОММЕНТАРИЕВ
+   ========================================================================= */
+
+const ANGLES = [
+  'личный опыт', 'вопрос к автору', 'поддержка', 'критика',
+  'юмор', 'аналогия', 'совет', 'наблюдение', 'благодарность', 'размышление'
+];
+
+let state = {
+  mode: 'text',
+  auth: 'nokey',
+  apiKey: storage.get('apiKey', ''),
+  images: [],
+  comments: [],
+  generating: false,
+  lastRequestTime: 0
+};
+
+function restoreSettings() {
+  if (state.apiKey) {
+    $('apiKey').value = state.apiKey;
+    $('keySaved').style.display = 'block';
   }
 
-  function calcStrength(password) {
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (password.length >= 12) score++;
-    if (password.length >= 16) score++;
-    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^A-Za-z0-9]/.test(password)) score++;
-    return Math.min(4, Math.ceil(score / 1.5));
+  const style = storage.get('styleText', '');
+  if (style) $('styleText').value = style;
+
+  $('countComments').value = storage.get('countComments', 10);
+  $('countSentences').value = storage.get('countSentences', 3);
+
+  $('optEmoji').checked = storage.get('optEmoji', true);
+  $('optPositive').checked = storage.get('optPositive', false);
+
+  if (state.apiKey) {
+    state.auth = storage.get('auth', 'key');
   }
+  updateAuthUI();
+}
 
-  function generatePassword() {
-    const length = parseInt(document.getElementById("lengthRange").value, 10);
-    const useUpper = document.getElementById("includeUpper").checked;
-    const useLower = document.getElementById("includeLower").checked;
-    const useDigits = document.getElementById("includeDigits").checked;
-    const useSymbols = document.getElementById("includeSymbols").checked;
-    const noSimilar = document.getElementById("excludeSimilar").checked;
-    const noAmbiguous = document.getElementById("excludeAmbiguous").checked;
+function saveSettings() {
+  storage.set('styleText', $('styleText').value);
+  storage.set('countComments', $('countComments').value);
+  storage.set('countSentences', $('countSentences').value);
+  storage.set('optEmoji', $('optEmoji').checked);
+  storage.set('optPositive', $('optPositive').checked);
+  storage.set('auth', state.auth);
+}
 
-    let pool = "";
-    if (useUpper) pool += CHARS.upper;
-    if (useLower) pool += CHARS.lower;
-    if (useDigits) pool += CHARS.digits;
-    if (useSymbols) pool += CHARS.symbols;
+function updateAuthUI() {
+  $('authNoKey').classList.toggle('btn-primary', state.auth === 'nokey');
+  $('authKey').classList.toggle('btn-primary', state.auth === 'key');
+  $('keyBox').classList.toggle('hidden', state.auth !== 'key');
+}
 
-    if (!pool) {
-      document.getElementById("passwordStatus").className = "status error";
-      document.getElementById("passwordStatus").textContent = "Выбери хотя бы один тип символов.";
-      return;
-    }
+$('authNoKey').addEventListener('click', () => {
+  state.auth = 'nokey';
+  updateAuthUI();
+  saveSettings();
+});
+$('authKey').addEventListener('click', () => {
+  state.auth = 'key';
+  updateAuthUI();
+  saveSettings();
+});
 
-    if (noSimilar) pool = pool.split("").filter(c => !CHARS.similar.includes(c)).join("");
-    if (noAmbiguous) pool = pool.split("").filter(c => !CHARS.ambiguous.includes(c)).join("");
+$('apiKey').addEventListener('input', (e) => {
+  state.apiKey = e.target.value.trim();
+  storage.set('apiKey', state.apiKey);
+  $('keySaved').style.display = state.apiKey ? 'block' : 'none';
+});
 
-    const arr = new Uint32Array(length);
-    crypto.getRandomValues(arr);
-    let password = "";
-    for (let i = 0; i < length; i++) password += pool[arr[i] % pool.length];
+$('tabText').addEventListener('click', () => {
+  state.mode = 'text';
+  $('tabText').classList.add('active');
+  $('tabImage').classList.remove('active');
+  $('imageBlock').classList.add('hidden');
+});
+$('tabImage').addEventListener('click', () => {
+  if (state.auth !== 'key') {
+    setStatus('Для работы с изображениями нужен API-ключ', 'error');
+    addLog('Ошибка: для режима «Изображение» нужен API-ключ', 'err');
+    return;
+  }
+  state.mode = 'image';
+  $('tabImage').classList.add('active');
+  $('tabText').classList.remove('active');
+  $('imageBlock').classList.remove('hidden');
+});
 
-    document.getElementById("passwordField").value = password;
+const dropZone = $('dropZone');
+const fileInput = $('fileInput');
+const thumbsEl = $('thumbs');
 
-    const strength = calcStrength(password);
-    const segs = document.querySelectorAll("#strengthBar .seg");
-    const colors = ["#fca5a5", "#fcd34d", "#86efac", "#22c55e"];
-    segs.forEach((s, i) => {
-      s.style.background = i < strength ? colors[strength - 1] : "#262b36";
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('drag');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  const arr = Array.from(files).slice(0, 5 - state.images.length);
+  arr.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      state.images.push(ev.target.result);
+      renderThumbs();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderThumbs() {
+  thumbsEl.innerHTML = '';
+  state.images.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    div.innerHTML = `<img src="${src}" alt=""><button data-i="${i}">×</button>`;
+    div.querySelector('button').addEventListener('click', () => {
+      state.images.splice(i, 1);
+      renderThumbs();
     });
+    thumbsEl.appendChild(div);
+  });
+}
 
-    const label = document.getElementById("strengthLabel");
-    label.className = "strength-label";
-    if (strength <= 1) { label.textContent = "Надёжность: слабая"; label.classList.add("weak"); }
-    else if (strength === 2) { label.textContent = "Надёжность: средняя"; label.classList.add("medium"); }
-    else if (strength === 3) { label.textContent = "Надёжность: хорошая"; label.classList.add("strong"); }
-    else { label.textContent = "Надёжность: отличная"; label.classList.add("strong"); }
+function setStatus(text, type = '') {
+  const el = $('status');
+  el.textContent = text;
+  el.className = 'status ' + type;
+}
 
-    document.getElementById("passwordStatus").className = "status";
-    document.getElementById("passwordStatus").textContent = "Пароль готов!";
+// Удаление ссылок из текста
+function stripLinks(text) {
+  return text.replace(/(https?:\/\/[^\s]+)/g, '').replace(/\s{2,}/g, ' ').trim();
+}
+
+function buildSystemPrompt(opts) {
+  const { count, sentences, emoji, positive, style } = opts;
+
+  let p = `Ты — генератор комментариев. Сгенерируй ${count} разных комментариев.\n`;
+  p += `Каждый комментарий — ${sentences} предложений.\n`;
+
+  if (positive) p += `Тон строго позитивный, без критики и негатива.\n`;
+  if (emoji) p += `Добавляй уместные смайлики.\n`;
+  if (style) p += `Стиль: ${style}.\n`;
+
+  p += `ВАЖНО: не добавляй никакие ссылки, URL, адреса сайтов. Только текст.\n`;
+
+  p += `Верни ответ строго в формате JSON-массива строк: ["коммент1", "коммент2", ...]. `;
+  p += `Никакого лишнего текста, только JSON.`;
+
+  return p;
+}
+
+async function respectRateLimit() {
+  if (state.auth === 'key') return;
+  const now = Date.now();
+  const elapsed = now - state.lastRequestTime;
+  const wait = 15000 - elapsed;
+  if (wait > 0) {
+    const sec = Math.ceil(wait / 1000);
+    setStatus(`Ожидание лимита: ${sec} сек...`, 'loading');
+    addLog(`Лимит анонимного режима: ждём ${sec} сек...`, 'info');
+    await new Promise(r => setTimeout(r, wait));
+  }
+  state.lastRequestTime = Date.now();
+}
+
+async function generateComments() {
+  if (state.generating) return;
+
+  const postText = $('postText').value.trim();
+  if (!postText && state.images.length === 0) {
+    setStatus('Введите текст поста или загрузите картинку', 'error');
+    addLog('Ошибка: не введён текст поста', 'err');
+    return;
   }
 
-  function copyPassword() {
-    const field = document.getElementById("passwordField");
-    if (!field.value || field.value === "Нажми «Сгенерировать»") return;
-    navigator.clipboard.writeText(field.value).then(() => {
-      const btn = document.getElementById("passwordCopyBtn");
-      btn.classList.add("copied");
-      document.getElementById("passwordStatus").textContent = "Пароль скопирован.";
-      setTimeout(() => btn.classList.remove("copied"), 1200);
-    });
-  }
+  state.generating = true;
+  $('btnGenerate').disabled = true;
 
-  generatePassword();
+  // Очищаем старые комментарии и лог перед новой генерацией
+  state.comments = [];
+  renderComments();
+  $('btnDownload').classList.add('hidden');
 
-  const API_URL_TEXT = "https://text.pollinations.ai/openai";
-  const API_URL_GEN = "https://gen.pollinations.ai/v1/chat/completions";
-  const MODEL = "openai";
+  clearLog();
+  addLog('Старт генерации...', 'info');
+  setStatus('Генерация...', 'loading');
 
-  let comments = [];
-  let mode = "text";
-  let uploadedImages = [];
+  try {
+    await respectRateLimit();
 
-  function getApiKey() { return document.getElementById("apiKey").value.trim(); }
+    const cleanText = stripLinks(postText);
 
-  function setMode(newMode) {
-    mode = newMode;
-    document.getElementById("modeText").classList.toggle("active", newMode === "text");
-    document.getElementById("modeImage").classList.toggle("active", newMode === "image");
-    document.getElementById("textBlock").classList.toggle("hidden", newMode !== "text");
-    document.getElementById("imageBlock").classList.toggle("hidden", newMode !== "image");
-    setStatus("");
-  }
+    const count = parseInt($('countComments').value) || 10;
+    const sentences = parseInt($('countSentences').value) || 3;
+    const emoji = $('optEmoji').checked;
+    const positive = $('optPositive').checked;
+    const style = $('styleText').value.trim();
+    const angle = pick(ANGLES);
 
-  const uploadZone = document.getElementById("uploadZone");
-  const fileInput = document.getElementById("fileInput");
+    addLog(`Параметры: ${count} комм., ${sentences} предл., ракурс «${angle}»`, 'info');
 
-  uploadZone.addEventListener("click", () => fileInput.click());
-  uploadZone.addEventListener("dragover", (e) => { e.preventDefault(); uploadZone.classList.add("dragover"); });
-  uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragover"));
-  uploadZone.addEventListener("drop", (e) => { e.preventDefault(); uploadZone.classList.remove("dragover"); handleFiles(e.dataTransfer.files); });
-  fileInput.addEventListener("change", (e) => { handleFiles(e.target.files); fileInput.value = ""; });
+    const systemPrompt = buildSystemPrompt({ count, sentences, emoji, positive, style });
 
-  function handleFiles(files) {
-    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
-    Array.from(files).forEach(file => {
-      if (!allowed.includes(file.type)) return;
-      if (uploadedImages.length >= 5) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const dataUrl = ev.target.result;
-        uploadedImages.push({ dataUrl, base64: dataUrl.split(",")[1], type: file.type });
-        renderPreviews();
+    let userContent = cleanText || 'Опиши изображение и оставь комментарий.';
+
+    let url, headers, body;
+
+    if (state.auth === 'key' && state.apiKey) {
+      url = 'https://gen.pollinations.ai/v1/chat/completions';
+      headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + state.apiKey
       };
-      reader.readAsDataURL(file);
-    });
-  }
 
-  function removeImage(index) { uploadedImages.splice(index, 1); renderPreviews(); }
+      const messages = [{ role: 'system', content: systemPrompt }];
 
-  function renderPreviews() {
-    const container = document.getElementById("previews");
-    container.innerHTML = "";
-    uploadedImages.forEach((img, i) => {
-      const div = document.createElement("div");
-      div.className = "preview";
-      div.innerHTML = `<img src="${img.dataUrl}"><button class="remove" onclick="removeImage(${i})">×</button>`;
-      container.appendChild(div);
-    });
-  }
-
-  const ANGLES = [
-    "отметь, что больше всего зацепило в этом посте",
-    "вырази эмоцию, которую вызвал этот материал",
-    "обрати внимание на детали, которые понравились",
-    "поделись мыслью, которая пришла после прочтения",
-    "скажи, чем этот пост может быть полезен",
-    "отметь атмосферу, которая передаётся в этом тексте",
-    "подчеркни, что вдохновляет в этой теме",
-    "вырази поддержку и согласие с автором",
-    "отметь, что хочется попробовать или применить",
-    "скажи, что запомнилось больше всего"
-  ];
-
-  function randomAngle() { return ANGLES[Math.floor(Math.random() * ANGLES.length)]; }
-
-  function extractLinks(text) {
-    const links = [];
-    let clean = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => {
-      links.push(url);
-      return label;
-    });
-    clean = clean.replace(/\((https?:\/\/[^\s)]+|www\.[^\s)]+)\)/g, (m, url) => {
-      links.push(url);
-      return "";
-    });
-    clean = clean.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, (url) => {
-      links.push(url);
-      return "";
-    });
-    clean = clean.replace(/\(\s*\)/g, "").replace(/\s{2,}/g, " ").trim();
-    return { cleanText: clean, links: Array.from(new Set(links)) };
-  }
-
-  function injectLinks(comments, links) {
-    if (links.length === 0) return comments;
-    let linkIndex = 0;
-    return comments.map(c => {
-      if (c.includes("{LINK}")) {
-        const url = links[linkIndex % links.length];
-        linkIndex++;
-        return c.replace(/\{LINK\}/g, url);
+      if (state.images.length) {
+        const contentParts = [{ type: 'text', text: userContent }];
+        state.images.forEach(src => {
+          contentParts.push({ type: 'image_url', image_url: { url: src } });
+        });
+        messages.push({ role: 'user', content: contentParts });
+      } else {
+        messages.push({ role: 'user', content: userContent });
       }
-      return c;
-    });
-  }
 
-  function buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks, styleHint) {
-    const angles = [];
-    for (let i = 0; i < count; i++) angles.push(randomAngle());
-    angles.sort(() => Math.random() - 0.5);
-    const angleList = angles.map((a, i) => `${i + 1}. ${a}`).join("\n");
-
-    const emojiRule = useEmoji
-      ? `5. Каждый комментарий должен заканчиваться 1–3 уместными эмодзи.`
-      : `5. Без эмодзи. Совсем. Ни одного.`;
-
-    const toneRule = strictTone
-      ? `3. Только позитивный тон, без оскорблений, негатива, критики и сарказма.`
-      : `3. Тон дружелюбный, допускается лёгкая ирония без негатива.`;
-
-    const linkRule = hasLinks
-      ? `8. В тексте поста есть ссылки. Ты НЕ пишешь ссылки сам. Вместо любой ссылки, если она тебе нужна в комментарии, ставь ровно такой маркер: {LINK}. Ничего больше. Сайт сам подставит ссылку. Не пиши никаких URL, никаких скобок с ссылками, никаких markdown-ссылок.`
-      : `8. Никаких ссылок, URL, @упоминаний и хэштегов в комментариях не пиши.`;
-
-    const styleRule = styleHint
-      ? `11. ВАЖНО: пользователь указал желаемый стиль комментариев: "${styleHint}". Строго следуй этому стилю.`
-      : `11. Стиль комментариев — живой, разговорный, естественный, как будто человек пишет от себя.`;
-
-    return `Ты — ${name}. Пишешь позитивные комментарии.
-Требования:
-1. Каждый комментарий — ровно ${sentences} ${sentences === 1 ? "предложение" : sentences < 5 ? "предложения" : "предложений"}.
-2. Без повторов, каждый комментарий — уникальный.
-${toneRule}
-4. Тематика строго по содержанию того, что даст пользователь.
-${emojiRule}
-6. Звучат естественно, как от реального человека.
-7. Не использовать шаблонные фразы вроде "Огромное спасибо", "Отличный пост" в каждом комментарии.
-${linkRule}
-9. Для каждого комментария используй свой ракурс из списка ниже:
-${angleList}
-10. Верни РОВНО ${count} комментариев, каждый с новой строки. Не нумеруй их. Не добавляй пояснений. Только сами комментарии.
-${styleRule}
-
-Случайный код генерации: ${seed}`;
-  }
-
-  function parseComments(text, limit) {
-    if (!text) return [];
-    let cleaned = text.replace(/```[\s\S]*?```/g, (m) => m.replace(/```[a-z]*\n?/gi, "").replace(/```/g, "")).replace(/\*\*/g, "").trim();
-    let lines = cleaned.split(/\n+/).map(l => l.trim()).map(l => l.replace(/^\d+[\.\)\:\-]\s*/, "")).map(l => l.replace(/^[-—•*]\s*/, "")).filter(l => l.length > 10).filter(l => !/^(комментарий|вот|конечно|разумеется)/i.test(l));
-    if (lines.length < limit) {
-      const sentences = cleaned.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 10);
-      if (sentences.length > lines.length) lines = sentences;
+      body = JSON.stringify({
+        model: 'openai',
+        messages,
+        temperature: rand(0.9, 1.15),
+        seed: randInt(1, 999999)
+      });
+    } else {
+      url = 'https://text.pollinations.ai/openai';
+      headers = { 'Content-Type': 'application/json' };
+      body = JSON.stringify({
+        model: 'openai',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userContent }
+        ],
+        temperature: rand(0.9, 1.15),
+        seed: randInt(1, 999999)
+      });
     }
-    return lines.slice(0, limit);
+
+    addLog('Отправка запроса к Pollinations...', 'info');
+
+    const resp = await fetch(url, { method: 'POST', headers, body });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+
+    addLog('Ответ получен, разбираю...', 'info');
+
+    const data = await resp.json();
+
+    let raw = '';
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      raw = data.choices[0].message.content;
+    } else if (typeof data === 'string') {
+      raw = data;
+    } else if (data.text) {
+      raw = data.text;
+    } else {
+      throw new Error('Неизвестный формат ответа');
+    }
+
+    let list = parseComments(raw, count);
+    list = list.map(c => stripLinks(c)).filter(Boolean);
+
+    state.comments = list;
+    renderComments();
+
+    setStatus(`Готово: ${list.length} комментариев`, 'success');
+    addLog(`✓ Готово: ${list.length} комментариев`, 'ok');
+
+    $('btnDownload').classList.toggle('hidden', list.length < 10);
+
+  } catch (err) {
+    console.error(err);
+    setStatus('Ошибка: ' + err.message, 'error');
+    addLog(`✗ Ошибка: ${err.message}`, 'err');
+  } finally {
+    state.generating = false;
+    $('btnGenerate').disabled = false;
+  }
+}
+
+function parseComments(raw, count) {
+  let text = raw.trim();
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+
+  const start = text.indexOf('[');
+  const end = text.lastIndexOf(']');
+  if (start !== -1 && end !== -1 && end > start) {
+    try {
+      const arr = JSON.parse(text.slice(start, end + 1));
+      if (Array.isArray(arr)) {
+        return arr.map(s => String(s).trim()).filter(Boolean);
+      }
+    } catch (e) {}
   }
 
-  async function callAPI(userContent, count, name, useVision, sentences, useEmoji, strictTone, hasLinks, styleHint) {
-    const url = useVision ? API_URL_GEN : API_URL_TEXT;
-    const apiKey = getApiKey();
-    const headers = { "Content-Type": "application/json" };
-    if (apiKey) headers["Authorization"] = "Bearer " + apiKey;
+  return text
+    .split('\n')
+    .map(s => s.replace(/^\s*[\d]+[\.\)]\s*/, '').trim())
+    .filter(s => s.length > 3)
+    .slice(0, count);
+}
 
-    const seed = Math.floor(Math.random() * 999999);
-    const temperature = 0.9 + Math.random() * 0.25;
+function renderComments() {
+  const container = $('comments');
+  container.innerHTML = '';
 
-    const response = await fetch(url, {
-      method: "POST",
+  state.comments.forEach((text, i) => {
+    const div = document.createElement('div');
+    div.className = 'comment';
+    div.innerHTML = `
+      <div class="comment-head">
+        <span class="comment-num">#${i + 1}</span>
+      </div>
+      <div class="comment-text">${escapeHtml(text)}</div>
+      <div class="comment-actions">
+        <button data-action="regen" data-i="${i}">Ещё вариант</button>
+        <button data-action="copy" data-i="${i}">Копировать</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  container.querySelectorAll('button[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.i);
+      if (btn.dataset.action === 'copy') {
+        navigator.clipboard.writeText(state.comments[i]).then(() => {
+          btn.textContent = '✓ Скопировано';
+          setTimeout(() => btn.textContent = 'Копировать', 1500);
+        });
+      } else if (btn.dataset.action === 'regen') {
+        regenOne(i);
+      }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function regenOne(index) {
+  addLog(`Регенерация комментария ${index + 1}...`, 'info');
+  setStatus('Генерация варианта...', 'loading');
+
+  try {
+    await respectRateLimit();
+
+    const postText = $('postText').value.trim();
+    const cleanText = stripLinks(postText);
+    const angle = pick(ANGLES);
+
+    const systemPrompt = buildSystemPrompt({
+      count: 1,
+      sentences: parseInt($('countSentences').value) || 3,
+      emoji: $('optEmoji').checked,
+      positive: $('optPositive').checked,
+      style: $('styleText').value.trim()
+    });
+
+    const url = state.auth === 'key' && state.apiKey
+      ? 'https://gen.pollinations.ai/v1/chat/completions'
+      : 'https://text.pollinations.ai/openai';
+
+    const headers = { 'Content-Type': 'application/json' };
+    if (state.auth === 'key' && state.apiKey) {
+      headers['Authorization'] = 'Bearer ' + state.apiKey;
+    }
+
+    const resp = await fetch(url, {
+      method: 'POST',
       headers,
       body: JSON.stringify({
-        model: MODEL,
+        model: 'openai',
         messages: [
-          { role: "system", content: buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks, styleHint) },
-          { role: "user", content: userContent }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: cleanText || 'Оставь комментарий.' }
         ],
-        temperature: temperature,
-        max_tokens: 1400,
-        seed: seed
+        temperature: rand(0.9, 1.15),
+        seed: randInt(1, 999999)
       })
     });
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err.error?.message || err.details?.error?.message || `Ошибка API: ${response.status}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    let raw = data.choices?.[0]?.message?.content || data.text || '';
+    const list = parseComments(raw, 1);
+    if (list.length) {
+      state.comments[index] = stripLinks(list[0]);
+      renderComments();
+      setStatus('Вариант обновлён', 'success');
+      addLog(`✓ Комментарий ${index + 1} обновлён`, 'ok');
     }
+  } catch (err) {
+    setStatus('Ошибка: ' + err.message, 'error');
+    addLog(`✗ Регенерация ${index + 1}: ${err.message}`, 'err');
+  }
+}
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "";
-    return parseComments(content, count);
+$('btnClear').addEventListener('click', () => {
+  state.comments = [];
+  state.images = [];
+  renderComments();
+  renderThumbs();
+  $('postText').value = '';
+  $('btnDownload').classList.add('hidden');
+  setStatus('');
+  clearLog();
+  addLog('Очищено', 'info');
+});
+
+// Скачивание TXT (без нумерации, один коммент = одна строка)
+$('btnDownload').addEventListener('click', () => {
+  const text = state.comments.join('\n');
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'comments.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+$('btnGenerate').addEventListener('click', generateComments);
+
+['styleText', 'countComments', 'countSentences', 'optEmoji', 'optPositive']
+  .forEach(id => {
+    $(id).addEventListener('change', saveSettings);
+    $(id).addEventListener('input', saveSettings);
+  });
+
+/* =========================================================================
+   ГЕНЕРАТОР ПАРОЛЕЙ
+   ========================================================================= */
+
+const pwdOutput = $('pwdOutput');
+
+const CHARS = {
+  upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  lower: 'abcdefghijklmnopqrstuvwxyz',
+  digits: '0123456789',
+  symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+};
+
+const SIMILAR = 'il1Lo0O';
+const AMBIGUOUS = '{}[]()/\\\'"`~,;:.<>';
+
+function generatePassword() {
+  const len = parseInt($('pwdLen').value);
+  let pool = '';
+
+  if ($('pwdUpper').checked) pool += CHARS.upper;
+  if ($('pwdLower').checked) pool += CHARS.lower;
+  if ($('pwdDigits').checked) pool += CHARS.digits;
+  if ($('pwdSymbols').checked) pool += CHARS.symbols;
+
+  if (!pool) pool = CHARS.lower;
+
+  if ($('pwdNoSimilar').checked) {
+    pool = [...pool].filter(c => !SIMILAR.includes(c)).join('');
+  }
+  if ($('pwdNoAmbiguous').checked) {
+    pool = [...pool].filter(c => !AMBIGUOUS.includes(c)).join('');
   }
 
-  function clearComments() {
-    comments = [];
-    document.getElementById("comments").innerHTML = "";
-    document.getElementById("downloadBtn").classList.add("hidden");
-    setStatus("");
+  if (!pool) pool = CHARS.lower;
+
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  let pwd = '';
+  for (let i = 0; i < len; i++) {
+    pwd += pool[arr[i] % pool.length];
   }
 
-  let lastRequestTime = 0;
-  async function waitForRateLimit() {
-    if (authMode === "key") return;
-    const now = Date.now();
-    const timeSinceLast = now - lastRequestTime;
-    const minInterval = 15500;
-    if (timeSinceLast < minInterval) {
-      const waitTime = minInterval - timeSinceLast;
-      setStatus(`Ограничение анонимного режима. Ждём ${Math.ceil(waitTime / 1000)} сек...`, false, true);
-      await new Promise(r => setTimeout(r, waitTime));
-    }
-    lastRequestTime = Date.now();
-  }
+  pwdOutput.value = pwd;
+  updateStrength(pwd);
+}
 
-  function getSentencesCount() {
-    const custom = parseInt(document.getElementById("sentencesCustom").value, 10);
-    if (custom && custom > 0) return custom;
-    return parseInt(document.getElementById("sentences").value, 10) || 2;
-  }
+function updateStrength(pwd) {
+  const bars = $('pwdStrength').querySelectorAll('span');
+  const label = $('pwdStrengthLabel');
 
-  function updateDownloadBtn() {
-    const btn = document.getElementById("downloadBtn");
-    if (comments.length >= 10) btn.classList.remove("hidden");
-    else btn.classList.add("hidden");
-  }
+  let score = 0;
+  if (pwd.length >= 8) score++;
+  if (pwd.length >= 12) score++;
+  if (pwd.length >= 16) score++;
+  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if (/\d/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
 
-  async function generateAll() {
-    const count = parseInt(document.getElementById("countInput").value, 10) || 5;
-    const name = document.getElementById("name").value;
-    const sentences = getSentencesCount();
-    const useEmoji = document.getElementById("useEmoji").checked;
-    const strictTone = document.getElementById("strictTone").checked;
-    const styleHint = document.getElementById("styleHint").value.trim();
-    const btn = document.getElementById("generateBtn");
+  const level = Math.min(4, Math.floor(score / 1.5));
 
-    if (mode === "text") {
-      const rawText = document.getElementById("postText").value.trim();
-      if (!rawText) { setStatus('Вставь текст поста или тему.', true); return; }
+  const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+  const labels = ['Очень слабый', 'Слабый', 'Средний', 'Надёжный'];
 
-      const { cleanText, links } = extractLinks(rawText);
-      const hasLinks = links.length > 0;
+  bars.forEach((bar, i) => {
+    bar.style.background = i < level ? colors[level - 1] : 'var(--border)';
+  });
+  label.textContent = level > 0 ? labels[level - 1] : 'Очень слабый';
+}
 
-      btn.disabled = true;
-      clearComments();
-      setStatus('Генерирую комментарии...', false, true);
+$('pwdLen').addEventListener('input', (e) => {
+  $('pwdLenVal').textContent = e.target.value;
+  generatePassword();
+  storage.set('pwdLen', e.target.value);
+});
 
-      try {
-        await waitForRateLimit();
-
-        const prompt = `Пост: ${cleanText}\n\nСгенерируй ${count} уникальных комментариев.` +
-          (hasLinks ? `\n\nВ тексте поста были ссылки. Если уместно — вставь маркер {LINK} в комментарий, сайт сам подставит ссылку.` : "");
-        let result = await callAPI(prompt, count, name, false, sentences, useEmoji, strictTone, hasLinks, styleHint);
-        if (result.length === 0) throw new Error("Не удалось получить комментарии.");
-
-        if (hasLinks) result = injectLinks(result, links);
-
-        comments = result;
-        renderComments();
-        updateDownloadBtn();
-        setStatus(`Готово! Сгенерировано: ${comments.length}.`);
-      } catch (e) {
-        setStatus(e.message, true);
-      } finally {
-        btn.disabled = false;
-      }
-    } else {
-      if (authMode === "noKey") {
-        setStatus('Режим «Изображение» работает только с API-ключом. Переключись на «С ключом».', true);
-        return;
-      }
-      if (uploadedImages.length === 0) { setStatus('Загрузи хотя бы одно изображение.', true); return; }
-      if (!getApiKey()) { setStatus('Для работы с изображениями нужен API-ключ Pollinations.', true); return; }
-
-      const context = document.getElementById("imageContext").value.trim();
-      btn.disabled = true;
-      clearComments();
-      setStatus('Анализирую изображения...', false, true);
-
-      try {
-        const contentParts = [{
-          type: "text",
-          text: `Посмотри на ${uploadedImages.length === 1 ? "это изображение" : "эти изображения"} и напиши ${count} позитивных комментариев.` +
-                (context ? `\n\nДополнительный контекст: ${context}` : "") +
-                `\n\nСгенерируй РОВНО ${count} комментариев, каждый с новой строки, без нумерации.`
-        }];
-        uploadedImages.forEach(img => {
-          contentParts.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
-        });
-        comments = await callAPI(contentParts, count, name, true, sentences, useEmoji, strictTone, false, styleHint);
-        if (comments.length === 0) throw new Error("Не удалось получить комментарии по изображению.");
-        renderComments();
-        updateDownloadBtn();
-        setStatus(`Готово! Сгенерировано: ${comments.length}.`);
-      } catch (e) {
-        setStatus(e.message, true);
-      } finally {
-        btn.disabled = false;
-      }
-    }
-  }
-
-  async function regenerateOne(index) {
-    const name = document.getElementById("name").value;
-    const sentences = getSentencesCount();
-    const useEmoji = document.getElementById("useEmoji").checked;
-    const strictTone = document.getElementById("strictTone").checked;
-    const styleHint = document.getElementById("styleHint").value.trim();
-    const btns = document.querySelectorAll('.regen');
-    if (btns[index]) btns[index].disabled = true;
-    setStatus(`Перегенерирую комментарий №${index + 1}...`, false, true);
-    try {
-      await waitForRateLimit();
-      const existing = comments.filter((_, i) => i !== index).join("\n");
-      let userContent;
-      let useVision = false;
-      if (mode === "text") {
-        const rawText = document.getElementById("postText").value.trim();
-        if (!rawText) return;
-        const { cleanText, links } = extractLinks(rawText);
-        const hasLinks = links.length > 0;
-        userContent = `Пост: ${cleanText}\n\nУже есть комментарии (НЕ повторяй их):\n${existing}\n\n` +
-          (hasLinks ? `В тексте поста были ссылки. Если уместно, используй маркер {LINK}, сайт сам подставит ссылку.\n\n` : "") +
-          `Верни РОВНО ОДИН новый уникальный комментарий. Только текст, без нумерации.`;
-        const result = await callAPI(userContent, 1, name, false, sentences, useEmoji, strictTone, hasLinks, styleHint);
-        if (result.length > 0) {
-          let finalComment = result[0];
-          if (hasLinks) {
-            const injected = injectLinks([finalComment], links);
-            finalComment = injected[0];
-          }
-          comments[index] = finalComment;
-          renderComments();
-          updateDownloadBtn();
-          setStatus(`Комментарий №${index + 1} перегенерирован.`);
-        } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
-      } else {
-        if (uploadedImages.length === 0) return;
-        if (!getApiKey()) { setStatus('Нужен API-ключ для работы с изображениями.', true); return; }
-        const context = document.getElementById("imageContext").value.trim();
-        useVision = true;
-        userContent = [{
-          type: "text",
-          text: `Уже есть комментарии (НЕ повторяй их):\n${existing}\n\n` +
-                (context ? `Контекст: ${context}\n\n` : "") +
-                `Верни РОВНО ОДИН новый уникальный комментарий. Только текст, без нумерации.`
-        }];
-        uploadedImages.forEach(img => {
-          userContent.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
-        });
-        const result = await callAPI(userContent, 1, name, useVision, sentences, useEmoji, strictTone, false, styleHint);
-        if (result.length > 0) {
-          comments[index] = result[0];
-          renderComments();
-          updateDownloadBtn();
-          setStatus(`Комментарий №${index + 1} перегенерирован.`);
-        } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
-      }
-    } catch (e) {
-      setStatus(e.message, true);
-      if (btns[index]) btns[index].disabled = false;
-    }
-  }
-
-  function copyComment(index, btnEl) {
-    navigator.clipboard.writeText(comments[index]).then(() => {
-      setStatus(`Комментарий №${index + 1} скопирован.`);
-      if (btnEl) {
-        btnEl.classList.add('copied');
-        const original = btnEl.innerHTML;
-        btnEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Готово';
-        setTimeout(() => { btnEl.classList.remove('copied'); btnEl.innerHTML = original; }, 1400);
-      }
-    }).catch(() => setStatus("Не удалось скопировать.", true));
-  }
-
-  /* ===== СКАЧИВАНИЕ TXT ===== */
-  function downloadTxt() {
-    if (comments.length === 0) return;
-    const content = comments.map((c, i) => `${i + 1}. ${c}`).join("\n");
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "comments.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setStatus("Файл comments.txt скачан.");
-  }
-
-  function setStatus(msg, isError = false, isLoading = false) {
-    const el = document.getElementById("status");
-    el.className = "status" + (isError ? " error" : "") + (isLoading ? " loading" : "");
-    el.innerHTML = (isLoading ? '<span class="spinner"></span>' : "") + msg;
-  }
-
-  function linkify(text) {
-    if (/<a\s/i.test(text)) return text;
-    let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    safe = safe.replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+)/g, (url) => {
-      const href = url.startsWith("http") ? url : "https://" + url;
-      return `<a href="${href}" target="_blank" rel="noopener">${url}</a>`;
+['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous']
+  .forEach(id => {
+    $(id).addEventListener('change', () => {
+      generatePassword();
+      storage.set(id, $(id).checked);
     });
-    return safe;
-  }
+  });
 
-  function renderComments() {
-    const container = document.getElementById("comments");
-    container.innerHTML = "";
-    comments.forEach((c, i) => {
-      const div = document.createElement("div");
-      div.className = "comment";
-      div.innerHTML = `
-        <div class="num">${i + 1}</div>
-        <p>${linkify(c)}</p>
-        <div class="actions">
-          <button class="regen" onclick="regenerateOne(${i})">Ещё вариант</button>
-          <button class="copy" onclick="copyComment(${i}, this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            Копировать
-          </button>
-        </div>
-      `;
-      container.appendChild(div);
+$('btnGenPwd').addEventListener('click', generatePassword);
+
+$('btnCopyPwd').addEventListener('click', () => {
+  if (!pwdOutput.value) return;
+  navigator.clipboard.writeText(pwdOutput.value).then(() => {
+    const btn = $('btnCopyPwd');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Скопировано';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+});
+
+function restorePwdSettings() {
+  const len = storage.get('pwdLen', 16);
+  $('pwdLen').value = len;
+  $('pwdLenVal').textContent = len;
+
+  ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous']
+    .forEach(id => {
+      const def = id === 'pwdUpper' || id === 'pwdLower' || id === 'pwdDigits';
+      $(id).checked = storage.get(id, def);
     });
-  }
 
-  document.getElementById("sentences").addEventListener("change", saveSentences);
+  generatePassword();
+}
+
+/* =========================================================================
+   ИНИЦИАЛИЗАЦИЯ
+   ========================================================================= */
+
+restoreSettings();
+restorePwdSettings();
+renderInstrList();
+handleHash();
+
+if (!location.hash) {
+  history.replaceState(null, '', '#comments');
+}
+
+setStatus('');
+addLog('Готов к работе', 'info');
 </script>
 </body>
 </html>

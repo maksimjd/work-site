@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Генератор — Комментарии и Пароли</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0a0c11;
+    color: #e6e8ec;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .layout { display: flex; min-height: 100vh; gap: 18px; padding: 18px; max-width: 1400px; margin: 0 auto; }
+  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: #171a21;
+    border: 1px solid #262b36;
+    border-radius: 20px;
+    padding: 20px 14px;
+    height: fit-content;
+    position: sticky;
+    top: 18px;
+  }
+  .sidebar h2 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #6b7385; margin: 0 0 14px 10px; font-weight: 700;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 12px 14px; border-radius: 12px;
+    color: #b8bfcf; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 6px; border: 1px solid transparent;
+    background: transparent; width: 100%; text-align: left;
+    font-family: inherit;
+  }
+  .nav-item:hover { background: rgba(99, 102, 241, 0.08); color: #e6e8ec; }
+  .nav-item.active {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+  }
+  .nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+  .online-counter {
+    margin-top: 18px; padding: 12px;
+    background: #0f1115;
+    border: 1px solid #262b36;
+    border-radius: 12px;
+    text-align: center;
+  }
+  .online-counter .dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: #22c55e; border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 1.8s infinite;
+    vertical-align: 1px;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .online-counter .num { font-size: 18px; font-weight: 800; color: #86efac; }
+  .online-counter .label {
+    font-size: 10px; color: #6b7385;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-top: 4px; font-weight: 600;
+  }
+
+  .tg-block {
+    margin-top: 14px;
+    padding: 12px 10px;
+    background: rgba(56, 189, 248, 0.06);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .tg-block:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    background: rgba(56, 189, 248, 0.12);
+  }
+  .tg-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #7dd3fc;
+    letter-spacing: 0.2px;
+  }
+  .tg-line .blink {
+    animation: blink 1.6s infinite;
+    font-size: 14px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  .container {
+    background: #171a21;
+    padding: 28px;
+    border-radius: 20px;
+    border: 1px solid #262b36;
+    flex: 1;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin: 0 0 8px;
+    color: #a5b4fc;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  p.hint { color: #8b93a5; font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+
+  label {
+    display: block; font-size: 12px; font-weight: 700;
+    margin-bottom: 8px; color: #8b93a5;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  input, textarea, select {
+    width: 100%; padding: 12px 14px; font-size: 15px;
+    background: #0a0c10; color: #e6e8ec;
+    border: 1px solid #2d3340; border-radius: 10px;
+    resize: vertical; box-sizing: border-box;
+    margin-bottom: 16px; font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none; border-color: #6366f1;
+  }
+  textarea { min-height: 110px; line-height: 1.5; }
+  select { cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b93a5' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 15px center;
+    padding-right: 40px;
+  }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  .key-wrapper { position: relative; margin-bottom: 16px; }
+  .key-wrapper input { margin-bottom: 0; padding-right: 110px; }
+  .key-saved {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: #86efac; background: rgba(34, 197, 94, 0.15);
+    padding: 4px 10px; border-radius: 6px; opacity: 0;
+    transition: opacity 0.2s; pointer-events: none; font-weight: 700;
+  }
+  .key-saved.show { opacity: 1; }
+
+  .key-link {
+    display: inline-block;
+    font-size: 12px;
+    color: #7dd3fc;
+    text-decoration: none;
+    margin-bottom: 16px;
+    border-bottom: 1px dotted #7dd3fc;
+  }
+  .key-link:hover { color: #38bdf8; }
+
+  .mode-switch {
+    display: flex; gap: 5px; background: #0a0c10;
+    padding: 4px; border-radius: 12px;
+    border: 1px solid #262b36; margin-bottom: 20px;
+  }
+  .mode-btn {
+    flex: 1; padding: 10px 14px;
+    background: transparent; color: #8b93a5;
+    border: none; border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: inherit;
+  }
+  .mode-btn:hover { color: #c5cad6; }
+  .mode-btn.active {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+  }
+
+  .auth-switch {
+    display: flex; gap: 5px; background: #0a0c10;
+    padding: 4px; border-radius: 12px;
+    border: 1px solid #262b36; margin-bottom: 16px;
+  }
+  .auth-btn {
+    flex: 1; padding: 9px 12px;
+    background: transparent; color: #8b93a5;
+    border: none; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    font-family: inherit;
+  }
+  .auth-btn:hover { color: #c5cad6; }
+  .auth-btn.active {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+  }
+
+  .auth-hint {
+    font-size: 12px;
+    color: #8b93a5;
+    background: #0f1115;
+    border: 1px solid #262b36;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .auth-hint strong { color: #b8bfcf; }
+  .auth-hint .warn { color: #fcd34d; }
+
+  .checks-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: #0f1115;
+    border: 1px solid #262b36;
+    border-radius: 10px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-item input {
+    width: auto;
+    margin: 0;
+    accent-color: #6366f1;
+    cursor: pointer;
+    transform: scale(1);
+  }
+  .check-item span {
+    font-size: 11px;
+    color: #8b93a5;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+  .check-item:hover span { color: #b8bfcf; }
+
+  button.generate {
+    width: 100%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff; border: none;
+    padding: 14px 22px; font-size: 15px; font-weight: 700;
+    border-radius: 11px; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: inherit;
+  }
+  button.generate:hover:not(:disabled) { opacity: 0.92; }
+  button.generate:active:not(:disabled) { transform: scale(0.99); }
+  button.generate:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  .btn-row { display: flex; gap: 10px; }
+  .btn-row button.generate { flex: 1; }
+  .btn-secondary {
+    padding: 14px 16px;
+    background: rgba(220, 38, 38, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    border-radius: 11px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: rgba(220, 38, 38, 0.2); }
+
+  .comments { margin-top: 20px; }
+  .comment {
+    background: #0f1115;
+    border: 1px solid #262b36;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 12px;
+  }
+  .comment .num {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: #6366f1;
+    border-radius: 6px; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff; margin-top: 1px;
+  }
+  .comment p {
+    margin: 0; flex: 1; font-size: 14px; line-height: 1.5;
+    color: #dde1ea; padding-top: 1px;
+    word-wrap: break-word; overflow-wrap: break-word;
+  }
+  .comment p a {
+    color: #7dd3fc;
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  .comment .actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+  .comment .actions button {
+    font-size: 12px; padding: 6px 10px; border: none;
+    border-radius: 7px; cursor: pointer; font-weight: 700;
+    white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .regen { background: rgba(99, 102, 241, 0.12); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
+  .regen:hover:not(:disabled) { background: rgba(99, 102, 241, 0.22); }
+  .regen:disabled { opacity: 0.5; cursor: not-allowed; }
+  .copy { background: rgba(34, 197, 94, 0.12); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25); }
+  .copy:hover { background: rgba(34, 197, 94, 0.22); }
+  .copy.copied { background: rgba(34, 197, 94, 0.4); color: #fff; }
+  .copy svg { width: 12px; height: 12px; }
+
+  .status { font-size: 14px; color: #86efac; margin-top: 12px; min-height: 20px; text-align: center; }
+  .status.loading { color: #a5b4fc; }
+  .error { color: #fca5a5; }
+  .spinner {
+    display: inline-block; width: 13px; height: 13px;
+    border: 2px solid rgba(165, 180, 252, 0.3);
+    border-top-color: #a5b4fc; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px; vertical-align: -2px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .password-output { position: relative; margin-bottom: 18px; }
+  .password-output input {
+    font-size: 19px;
+    font-family: "SF Mono", Monaco, monospace;
+    text-align: center;
+    letter-spacing: 1px;
+    padding: 18px 50px 18px 18px;
+    margin-bottom: 0;
+    background: #06080b;
+    border: 2px solid #2d3340;
+    font-weight: 700;
+    color: #86efac;
+  }
+  .password-output input:focus { border-color: #6366f1; }
+  .password-copy {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    width: 38px; height: 38px;
+    border-radius: 9px; border: none;
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .password-copy:hover { background: rgba(34, 197, 94, 0.28); }
+  .password-copy.copied { background: #22c55e; color: #fff; }
+  .password-copy svg { width: 16px; height: 16px; }
+
+  .length-slider { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .length-slider input[type="range"] {
+    flex: 1; margin: 0; height: 5px;
+    -webkit-appearance: none; appearance: none;
+    background: #2d3340; border-radius: 3px; outline: none; padding: 0;
+  }
+  .length-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #6366f1;
+    cursor: pointer;
+  }
+  .length-slider input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #6366f1; cursor: pointer; border: none;
+  }
+  .length-value { font-size: 18px; font-weight: 800; color: #a5b4fc; min-width: 36px; text-align: center; }
+
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: #0f1115;
+    border: 1px solid #262b36; border-radius: 10px;
+    cursor: pointer; user-select: none;
+    transition: border-color 0.15s;
+  }
+  .option:hover { border-color: #3d4455; }
+  .option input { width: auto; margin: 0; accent-color: #6366f1; cursor: pointer; }
+  .option span { font-size: 13px; color: #b8bfcf; font-weight: 500; }
+  .option.checked {
+    border-color: rgba(99, 102, 241, 0.45);
+    background: rgba(99, 102, 241, 0.06);
+  }
+
+  .strength-bar { display: flex; gap: 4px; margin-bottom: 8px; }
+  .strength-bar .seg { height: 5px; flex: 1; border-radius: 3px; background: #262b36; transition: background 0.2s; }
+  .strength-label { font-size: 13px; color: #8b93a5; text-align: right; margin-bottom: 18px; font-weight: 600; }
+  .strength-label.weak { color: #fca5a5; }
+  .strength-label.medium { color: #fcd34d; }
+  .strength-label.strong { color: #86efac; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .upload-zone {
+    border: 2px dashed #2d3340; border-radius: 12px;
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s; margin-bottom: 16px;
+    background: #0f1115;
+  }
+  .upload-zone:hover { border-color: #6366f1; }
+  .upload-zone.dragover { border-color: #a855f7; background: rgba(168, 85, 247, 0.06); }
+  .upload-zone svg { width: 30px; height: 30px; color: #6366f1; margin-bottom: 8px; }
+  .upload-zone p { margin: 0; color: #8b93a5; font-size: 13px; }
+  .upload-zone p strong { color: #a5b4fc; }
+
+  .previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .preview {
+    position: relative; aspect-ratio: 1;
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid #2d3340;
+  }
+  .preview img { width: 100%; height: 100%; object-fit: cover; }
+  .preview .remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(220, 38, 38, 0.9); color: #fff;
+    border: none; font-size: 14px; line-height: 1;
+    cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 800px) {
+    .layout { flex-direction: column; padding: 12px; }
+    .sidebar { width: 100%; position: static; }
+    .sidebar h2 { display: none; }
+    .sidebar nav { display: flex; gap: 6px; overflow-x: auto; }
+    .nav-item { flex: 1; min-width: fit-content; justify-content: center; padding: 11px; }
+    .nav-item span { display: none; }
+    .nav-item svg { margin: 0; }
+    .container { padding: 20px; }
+    h1 { font-size: 20px; }
+    .row-3, .options-grid { grid-template-columns: 1fr; }
+    .comment { flex-direction: column; }
+    .comment .actions { width: 100%; }
+    .comment .actions button { flex: 1; justify-content: center; }
+    .btn-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="content">
+    <div class="container">
+
+      <div class="section active" id="section-comments">
+        <h1>Генератор комментариев</h1>
+        <p class="hint">Выбери режим: текст или изображения. Работаем с ключом или без него.</p>
+
+        <!-- Переключатель: есть ключ / нет ключа -->
+        <label>Режим работы</label>
+        <div class="auth-switch">
+          <button class="auth-btn active" id="authNoKey" onclick="setAuthMode('noKey')">Без ключа</button>
+          <button class="auth-btn" id="authKey" onclick="setAuthMode('key')">С ключом</button>
+        </div>
+
+        <!-- Блок для режима "с ключом" -->
+        <div id="keyBlock" class="hidden">
+          <label for="apiKey">API-ключ Pollinations</label>
+          <div class="key-wrapper">
+            <input type="password" id="apiKey" placeholder="pk_... или sk_..." oninput="saveApiKey()" />
+            <span class="key-saved" id="keySaved">Сохранён</span>
+          </div>
+          <a class="key-link" href="https://enter.pollinations.ai" target="_blank" rel="noopener">Получить бесплатный ключ →</a>
+        </div>
+
+        <!-- Подсказка для режима "без ключа" -->
+        <div id="hintBlock" class="auth-hint">
+          <strong>Без ключа:</strong> работаем только с текстом. <span class="warn">Ограничение: 1 запрос в 15 секунд</span>. Если нужно быстрее и с изображениями — переключись на режим «С ключом» и получи бесплатный ключ на <a href="https://enter.pollinations.ai" target="_blank" rel="noopener" style="color:#7dd3fc">enter.pollinations.ai</a>.
+        </div>
+
+        <div class="mode-switch">
+          <button class="mode-btn active" id="modeText" onclick="setMode('text')">Текст</button>
+          <button class="mode-btn" id="modeImage" onclick="setMode('image')">Изображение</button>
+        </div>
+
+        <div id="textBlock">
+          <label for="postText">Текст поста или тема</label>
+          <textarea id="postText" placeholder="Вставь сюда текст поста или тему..."></textarea>
+        </div>
+
+        <div id="imageBlock" class="hidden">
+          <label>Изображения (до 5 штук)</label>
+          <div class="upload-zone" id="uploadZone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <p>Перетащи файлы или <strong>нажми для выбора</strong></p>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+          <div class="previews" id="previews"></div>
+          <label for="imageContext">Дополнительный текст (необязательно)</label>
+          <textarea id="imageContext" placeholder="Например: напиши комментарий к этому фото..." style="min-height: 70px;"></textarea>
+        </div>
+
+        <div class="row-3">
+          <div>
+            <label for="countInput">Кол-во комментов</label>
+            <input type="number" id="countInput" min="1" max="50" value="5" onchange="saveCount()" />
+          </div>
+          <div>
+            <label for="sentences">Предложений</label>
+            <select id="sentences">
+              <option value="1">1 предложение</option>
+              <option value="2" selected>2 предложения</option>
+              <option value="3">3 предложения</option>
+              <option value="4">4 предложения</option>
+            </select>
+          </div>
+          <div>
+            <label for="name">Имя автора</label>
+            <select id="name">
+              <option value="Алексей" selected>Алексей</option>
+              <option value="Дмитрий">Дмитрий</option>
+              <option value="Сергей">Сергей</option>
+              <option value="Максим">Максим</option>
+              <option value="Иван">Иван</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="checks-row">
+          <label class="check-item">
+            <input type="checkbox" id="useEmoji">
+            <span>Со смайликами</span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" id="strictTone" checked>
+            <span>Строго позитивный тон</span>
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button class="generate" id="generateBtn" onclick="generateAll()">Сгенерировать новые</button>
+          <button class="btn-secondary" onclick="clearComments()">Очистить</button>
+        </div>
+        <div class="status" id="status"></div>
+        <div class="comments" id="comments"></div>
+      </div>
+
+      <div class="section" id="section-passwords">
+        <h1>Генератор паролей</h1>
+        <p class="hint">Настрой параметры и получи надёжный пароль. Копируется в один клик.</p>
+
+        <div class="password-output">
+          <input type="text" id="passwordField" readonly value="Нажми «Сгенерировать»">
+          <button class="password-copy" id="passwordCopyBtn" onclick="copyPassword()" title="Скопировать">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="strength-bar" id="strengthBar">
+          <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel">Надёжность: —</div>
+
+        <label for="lengthRange">Длина пароля</label>
+        <div class="length-slider">
+          <input type="range" id="lengthRange" min="4" max="64" value="16" oninput="updateLength()">
+          <div class="length-value" id="lengthValue">16</div>
+        </div>
+
+        <label>Параметры</label>
+        <div class="options-grid">
+          <label class="option checked" id="optUpper">
+            <input type="checkbox" id="includeUpper" checked>
+            <span>Заглавные (A-Z)</span>
+          </label>
+          <label class="option checked" id="optLower">
+            <input type="checkbox" id="includeLower" checked>
+            <span>Строчные (a-z)</span>
+          </label>
+          <label class="option checked" id="optDigits">
+            <input type="checkbox" id="includeDigits" checked>
+            <span>Цифры (0-9)</span>
+          </label>
+          <label class="option checked" id="optSymbols">
+            <input type="checkbox" id="includeSymbols" checked>
+            <span>Символы (!@#$)</span>
+          </label>
+          <label class="option" id="optNoSimilar">
+            <input type="checkbox" id="excludeSimilar">
+            <span>Без похожих (0,O,l,1)</span>
+          </label>
+          <label class="option" id="optNoAmbiguous">
+            <input type="checkbox" id="excludeAmbiguous">
+            <span>Без неоднозначных</span>
+          </label>
+        </div>
+
+        <button class="generate" onclick="generatePassword()">Сгенерировать пароль</button>
+        <div class="status" id="passwordStatus"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <h2>Разделы</h2>
+    <nav>
+      <button class="nav-item active" id="navComments" onclick="switchSection('comments')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>Комментарии</span>
+      </button>
+      <button class="nav-item" id="navPasswords" onclick="switchSection('passwords')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span>Пароли</span>
+      </button>
+    </nav>
+
+    <div class="online-counter">
+      <div><span class="dot"></span><span class="num" id="onlineCount">1</span></div>
+      <div class="label">Онлайн сейчас</div>
+    </div>
+
+    <a class="tg-block" href="https://t.me/guiiderr" target="_blank" rel="noopener">
+      <div class="tg-line">Телеграм канал проекта <span class="blink">✨</span></div>
+    </a>
+  </aside>
+</div>
+
+<script>
+  function switchSection(name) {
+    document.getElementById("section-comments").classList.toggle("active", name === "comments");
+    document.getElementById("section-passwords").classList.toggle("active", name === "passwords");
+    document.getElementById("navComments").classList.toggle("active", name === "comments");
+    document.getElementById("navPasswords").classList.toggle("active", name === "passwords");
+  }
+
+  /* ===== Онлайн-счётчик ===== */
+  let onlineCount = 1;
+  function updateOnline() {
+    try {
+      if (!window._bc) {
+        window._bc = new BroadcastChannel("online_presence");
+        window._bc.onmessage = (e) => {
+          if (e.data && e.data.type === "ping") {
+            window._bc.postMessage({ type: "pong" });
+            onlineCount++;
+            renderOnline();
+          }
+        };
+      }
+      window._bc.postMessage({ type: "ping" });
+    } catch (e) {
+      onlineCount = 1;
+    }
+    renderOnline();
+  }
+  function renderOnline() {
+    document.getElementById("onlineCount").textContent = Math.max(1, onlineCount);
+  }
+  updateOnline();
+  setInterval(() => { onlineCount = 1; updateOnline(); }, 60000);
+
+  /* ===== Режим авторизации ===== */
+  let authMode = "noKey";
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    document.getElementById("authNoKey").classList.toggle("active", mode === "noKey");
+    document.getElementById("authKey").classList.toggle("active", mode === "key");
+    document.getElementById("keyBlock").classList.toggle("hidden", mode !== "key");
+    document.getElementById("hintBlock").classList.toggle("hidden", mode === "key");
+  }
+
+  /* ===== Сохранение настроек ===== */
+  const KEY_STORAGE = "pollinations_api_key";
+  const COUNT_STORAGE = "comment_count";
+  const EMOJI_STORAGE = "use_emoji";
+  const SENTENCES_STORAGE = "sentences_count";
+  const AUTH_STORAGE = "auth_mode";
+
+  function saveApiKey() {
+    const key = document.getElementById("apiKey").value.trim();
+    if (key) {
+      localStorage.setItem(KEY_STORAGE, key);
+      const indicator = document.getElementById("keySaved");
+      indicator.classList.add("show");
+      clearTimeout(indicator._timer);
+      indicator._timer = setTimeout(() => indicator.classList.remove("show"), 1500);
+    } else {
+      localStorage.removeItem(KEY_STORAGE);
+    }
+  }
+  function loadApiKey() {
+    const saved = localStorage.getItem(KEY_STORAGE);
+    if (saved) document.getElementById("apiKey").value = saved;
+  }
+  loadApiKey();
+
+  function loadAuthMode() {
+    const saved = localStorage.getItem(AUTH_STORAGE);
+    if (saved) {
+      setAuthMode(saved);
+    } else {
+      setAuthMode("noKey");
+    }
+  }
+  loadAuthMode();
+
+  function saveAuthMode(mode) {
+    localStorage.setItem(AUTH_STORAGE, mode);
+  }
+
+  // Перехватываем установку режима, чтобы сохранять
+  const originalSetAuthMode = setAuthMode;
+  setAuthMode = function(mode) {
+    originalSetAuthMode(mode);
+    saveAuthMode(mode);
+  };
+
+  function saveCount() {
+    const val = document.getElementById("countInput").value;
+    if (val) localStorage.setItem(COUNT_STORAGE, val);
+  }
+  function loadCount() {
+    const saved = localStorage.getItem(COUNT_STORAGE);
+    if (saved) document.getElementById("countInput").value = saved;
+  }
+  loadCount();
+
+  function saveEmoji() {
+    localStorage.setItem(EMOJI_STORAGE, document.getElementById("useEmoji").checked ? "1" : "0");
+  }
+  function loadEmoji() {
+    const saved = localStorage.getItem(EMOJI_STORAGE);
+    if (saved === "1") document.getElementById("useEmoji").checked = true;
+  }
+  loadEmoji();
+
+  function saveSentences() {
+    localStorage.setItem(SENTENCES_STORAGE, document.getElementById("sentences").value);
+  }
+  function loadSentences() {
+    const saved = localStorage.getItem(SENTENCES_STORAGE);
+    if (saved) document.getElementById("sentences").value = saved;
+  }
+  loadSentences();
+
+  document.querySelectorAll(".option input").forEach(cb => {
+    cb.addEventListener("change", () => {
+      cb.closest(".option").classList.toggle("checked", cb.checked);
+    });
+  });
+  document.getElementById("useEmoji").addEventListener("change", saveEmoji);
+
+  const CHARS = {
+    upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    lower: "abcdefghijklmnopqrstuvwxyz",
+    digits: "0123456789",
+    symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+    similar: "0OoIl1",
+    ambiguous: "{}[]()/\\'\"`~,;:.<>"
+  };
+
+  function updateLength() {
+    document.getElementById("lengthValue").textContent = document.getElementById("lengthRange").value;
+  }
+
+  function calcStrength(password) {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (password.length >= 16) score++;
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return Math.min(4, Math.ceil(score / 1.5));
+  }
+
+  function generatePassword() {
+    const length = parseInt(document.getElementById("lengthRange").value, 10);
+    const useUpper = document.getElementById("includeUpper").checked;
+    const useLower = document.getElementById("includeLower").checked;
+    const useDigits = document.getElementById("includeDigits").checked;
+    const useSymbols = document.getElementById("includeSymbols").checked;
+    const noSimilar = document.getElementById("excludeSimilar").checked;
+    const noAmbiguous = document.getElementById("excludeAmbiguous").checked;
+
+    let pool = "";
+    if (useUpper) pool += CHARS.upper;
+    if (useLower) pool += CHARS.lower;
+    if (useDigits) pool += CHARS.digits;
+    if (useSymbols) pool += CHARS.symbols;
+
+    if (!pool) {
+      document.getElementById("passwordStatus").className = "status error";
+      document.getElementById("passwordStatus").textContent = "Выбери хотя бы один тип символов.";
+      return;
+    }
+
+    if (noSimilar) pool = pool.split("").filter(c => !CHARS.similar.includes(c)).join("");
+    if (noAmbiguous) pool = pool.split("").filter(c => !CHARS.ambiguous.includes(c)).join("");
+
+    const arr = new Uint32Array(length);
+    crypto.getRandomValues(arr);
+    let password = "";
+    for (let i = 0; i < length; i++) password += pool[arr[i] % pool.length];
+
+    document.getElementById("passwordField").value = password;
+
+    const strength = calcStrength(password);
+    const segs = document.querySelectorAll("#strengthBar .seg");
+    const colors = ["#fca5a5", "#fcd34d", "#86efac", "#22c55e"];
+    segs.forEach((s, i) => {
+      s.style.background = i < strength ? colors[strength - 1] : "#262b36";
+    });
+
+    const label = document.getElementById("strengthLabel");
+    label.className = "strength-label";
+    if (strength <= 1) { label.textContent = "Надёжность: слабая"; label.classList.add("weak"); }
+    else if (strength === 2) { label.textContent = "Надёжность: средняя"; label.classList.add("medium"); }
+    else if (strength === 3) { label.textContent = "Надёжность: хорошая"; label.classList.add("strong"); }
+    else { label.textContent = "Надёжность: отличная"; label.classList.add("strong"); }
+
+    document.getElementById("passwordStatus").className = "status";
+    document.getElementById("passwordStatus").textContent = "Пароль готов!";
+  }
+
+  function copyPassword() {
+    const field = document.getElementById("passwordField");
+    if (!field.value || field.value === "Нажми «Сгенерировать»") return;
+    navigator.clipboard.writeText(field.value).then(() => {
+      const btn = document.getElementById("passwordCopyBtn");
+      btn.classList.add("copied");
+      document.getElementById("passwordStatus").textContent = "Пароль скопирован.";
+      setTimeout(() => btn.classList.remove("copied"), 1200);
+    });
+  }
+
+  generatePassword();
+
+  const API_URL_TEXT = "https://text.pollinations.ai/openai";
+  const API_URL_GEN = "https://gen.pollinations.ai/v1/chat/completions";
+  const MODEL = "openai";
+
+  let comments = [];
+  let mode = "text";
+  let uploadedImages = [];
+
+  function getApiKey() { return document.getElementById("apiKey").value.trim(); }
+
+  function setMode(newMode) {
+    mode = newMode;
+    document.getElementById("modeText").classList.toggle("active", newMode === "text");
+    document.getElementById("modeImage").classList.toggle("active", newMode === "image");
+    document.getElementById("textBlock").classList.toggle("hidden", newMode !== "text");
+    document.getElementById("imageBlock").classList.toggle("hidden", newMode !== "image");
+    setStatus("");
+  }
+
+  const uploadZone = document.getElementById("uploadZone");
+  const fileInput = document.getElementById("fileInput");
+
+  uploadZone.addEventListener("click", () => fileInput.click());
+  uploadZone.addEventListener("dragover", (e) => { e.preventDefault(); uploadZone.classList.add("dragover"); });
+  uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragover"));
+  uploadZone.addEventListener("drop", (e) => { e.preventDefault(); uploadZone.classList.remove("dragover"); handleFiles(e.dataTransfer.files); });
+  fileInput.addEventListener("change", (e) => { handleFiles(e.target.files); fileInput.value = ""; });
+
+  function handleFiles(files) {
+    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+    Array.from(files).forEach(file => {
+      if (!allowed.includes(file.type)) return;
+      if (uploadedImages.length >= 5) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target.result;
+        uploadedImages.push({ dataUrl, base64: dataUrl.split(",")[1], type: file.type });
+        renderPreviews();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function removeImage(index) { uploadedImages.splice(index, 1); renderPreviews(); }
+
+  function renderPreviews() {
+    const container = document.getElementById("previews");
+    container.innerHTML = "";
+    uploadedImages.forEach((img, i) => {
+      const div = document.createElement("div");
+      div.className = "preview";
+      div.innerHTML = `<img src="${img.dataUrl}"><button class="remove" onclick="removeImage(${i})">×</button>`;
+      container.appendChild(div);
+    });
+  }
+
+  const ANGLES = [
+    "отметь, что больше всего зацепило в этом посте",
+    "вырази эмоцию, которую вызвал этот материал",
+    "обрати внимание на детали, которые понравились",
+    "поделись мыслью, которая пришла после прочтения",
+    "скажи, чем этот пост может быть полезен",
+    "отметь атмосферу, которая передаётся в этом тексте",
+    "подчеркни, что вдохновляет в этой теме",
+    "вырази поддержку и согласие с автором",
+    "отметь, что хочется попробовать или применить",
+    "скажи, что запомнилось больше всего"
+  ];
+
+  function randomAngle() { return ANGLES[Math.floor(Math.random() * ANGLES.length)]; }
+
+  /* ===== ВЫРЕЗАЕМ ССЫЛКИ ИЗ ТЕКСТА ===== */
+  function extractLinks(text) {
+    const links = [];
+    // Markdown-ссылки [текст](url) — оставляем только текст
+    let clean = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, label, url) => {
+      links.push(url);
+      return label;
+    });
+    // URL в круглых скобках (url) — удаляем и ссылку, и скобки
+    clean = clean.replace(/\((https?:\/\/[^\s)]+|www\.[^\s)]+)\)/g, (m, url) => {
+      links.push(url);
+      return "";
+    });
+    // Обычные URL без скобок
+    clean = clean.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, (url) => {
+      links.push(url);
+      return "";
+    });
+    // Убираем пустые скобки и лишние пробелы
+    clean = clean.replace(/\(\s*\)/g, "").replace(/\s{2,}/g, " ").trim();
+    return { cleanText: clean, links: Array.from(new Set(links)) };
+  }
+
+  /* ===== ПОДСТАВЛЯЕМ ССЫЛКИ ОБРАТНО ===== */
+  function injectLinks(comments, links) {
+    if (links.length === 0) return comments;
+    let linkIndex = 0;
+    return comments.map(c => {
+      if (c.includes("{LINK}")) {
+        const url = links[linkIndex % links.length];
+        linkIndex++;
+        return c.replace(/\{LINK\}/g, url);
+      }
+      return c;
+    });
+  }
+
+  function buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks) {
+    const angles = [];
+    for (let i = 0; i < count; i++) angles.push(randomAngle());
+    angles.sort(() => Math.random() - 0.5);
+    const angleList = angles.map((a, i) => `${i + 1}. ${a}`).join("\n");
+
+    const emojiRule = useEmoji
+      ? `5. Каждый комментарий должен заканчиваться 1–3 уместными эмодзи.`
+      : `5. Без эмодзи. Совсем. Ни одного.`;
+
+    const toneRule = strictTone
+      ? `3. Только позитивный тон, без оскорблений, негатива, критики и сарказма.`
+      : `3. Тон дружелюбный, допускается лёгкая ирония без негатива.`;
+
+    const linkRule = hasLinks
+      ? `8. В тексте поста есть ссылки. Ты НЕ пишешь ссылки сам. Вместо любой ссылки, если она тебе нужна в комментарии, ставь ровно такой маркер: {LINK}. Ничего больше. Сайт сам подставит ссылку. Не пиши никаких URL, никаких скобок с ссылками, никаких markdown-ссылок.`
+      : `8. Никаких ссылок, URL, @упоминаний и хэштегов в комментариях не пиши.`;
+
+    return `Ты — ${name}. Пишешь позитивные комментарии.
+Требования:
+1. Каждый комментарий — ровно ${sentences} ${sentences === 1 ? "предложение" : sentences < 5 ? "предложения" : "предложений"}.
+2. Без повторов, каждый комментарий — уникальный.
+${toneRule}
+4. Тематика строго по содержанию того, что даст пользователь.
+${emojiRule}
+6. Звучат естественно, как от реального человека.
+7. Не использовать шаблонные фразы вроде "Огромное спасибо", "Отличный пост" в каждом комментарии.
+${linkRule}
+9. Для каждого комментария используй свой ракурс из списка ниже:
+${angleList}
+10. Верни РОВНО ${count} комментариев, каждый с новой строки. Не нумеруй их. Не добавляй пояснений. Только сами комментарии.
+
+Случайный код генерации: ${seed}`;
+  }
+
+  function parseComments(text, limit) {
+    if (!text) return [];
+    let cleaned = text.replace(/```[\s\S]*?```/g, (m) => m.replace(/```[a-z]*\n?/gi, "").replace(/```/g, "")).replace(/\*\*/g, "").trim();
+    let lines = cleaned.split(/\n+/).map(l => l.trim()).map(l => l.replace(/^\d+[\.\)\:\-]\s*/, "")).map(l => l.replace(/^[-—•*]\s*/, "")).filter(l => l.length > 10).filter(l => !/^(комментарий|вот|конечно|разумеется)/i.test(l));
+    if (lines.length < limit) {
+      const sentences = cleaned.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 10);
+      if (sentences.length > lines.length) lines = sentences;
+    }
+    return lines.slice(0, limit);
+  }
+
+  async function callAPI(userContent, count, name, useVision, sentences, useEmoji, strictTone, hasLinks) {
+    const url = useVision ? API_URL_GEN : API_URL_TEXT;
+    const apiKey = getApiKey();
+    const headers = { "Content-Type": "application/json" };
+    if (apiKey) headers["Authorization"] = "Bearer " + apiKey;
+
+    const seed = Math.floor(Math.random() * 999999);
+    const temperature = 0.9 + Math.random() * 0.25;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [
+          { role: "system", content: buildSystemPrompt(name, count, seed, sentences, useEmoji, strictTone, hasLinks) },
+          { role: "user", content: userContent }
+        ],
+        temperature: temperature,
+        max_tokens: 1200,
+        seed: seed
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || err.details?.error?.message || `Ошибка API: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content || "";
+    return parseComments(content, count);
+  }
+
+  function clearComments() {
+    comments = [];
+    document.getElementById("comments").innerHTML = "";
+    setStatus("");
+  }
+
+  /* ===== ЗАДЕРЖКА ДЛЯ АНОНИМНОГО РЕЖИМА (1 запрос в 15 сек) ===== */
+  let lastRequestTime = 0;
+  async function waitForRateLimit() {
+    if (authMode === "key") return; // с ключом задержка не нужна
+    const now = Date.now();
+    const timeSinceLast = now - lastRequestTime;
+    const minInterval = 15500; // 15.5 секунд (с запасом)
+    if (timeSinceLast < minInterval) {
+      const waitTime = minInterval - timeSinceLast;
+      setStatus(`Ограничение анонимного режима. Ждём ${Math.ceil(waitTime / 1000)} сек...`, false, true);
+      await new Promise(r => setTimeout(r, waitTime));
+    }
+    lastRequestTime = Date.now();
+  }
+
+  async function generateAll() {
+    const count = parseInt(document.getElementById("countInput").value, 10) || 5;
+    const name = document.getElementById("name").value;
+    const sentences = parseInt(document.getElementById("sentences").value, 10) || 2;
+    const useEmoji = document.getElementById("useEmoji").checked;
+    const strictTone = document.getElementById("strictTone").checked;
+    const btn = document.getElementById("generateBtn");
+
+    if (mode === "text") {
+      const rawText = document.getElementById("postText").value.trim();
+      if (!rawText) { setStatus('Вставь текст поста или тему.', true); return; }
+
+      const { cleanText, links } = extractLinks(rawText);
+      const hasLinks = links.length > 0;
+
+      btn.disabled = true;
+      clearComments();
+      setStatus('Генерирую комментарии...', false, true);
+
+      try {
+        await waitForRateLimit();
+
+        const prompt = `Пост: ${cleanText}\n\nСгенерируй ${count} уникальных комментариев.` +
+          (hasLinks ? `\n\nВ тексте поста были ссылки. Если уместно — вставь маркер {LINK} в комментарий, сайт сам подставит ссылку.` : "");
+        let result = await callAPI(prompt, count, name, false, sentences, useEmoji, strictTone, hasLinks);
+        if (result.length === 0) throw new Error("Не удалось получить комментарии.");
+
+        if (hasLinks) {
+          result = injectLinks(result, links);
+        }
+
+        comments = result;
+        renderComments();
+        setStatus(`Готово! Сгенерировано: ${comments.length}.`);
+      } catch (e) {
+        setStatus(e.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    } else {
+      if (authMode === "noKey") {
+        setStatus('Режим «Изображение» работает только с API-ключом. Переключись на «С ключом».', true);
+        return;
+      }
+      if (uploadedImages.length === 0) { setStatus('Загрузи хотя бы одно изображение.', true); return; }
+      if (!getApiKey()) { setStatus('Для работы с изображениями нужен API-ключ Pollinations.', true); return; }
+
+      const context = document.getElementById("imageContext").value.trim();
+      btn.disabled = true;
+      clearComments();
+      setStatus('Анализирую изображения...', false, true);
+
+      try {
+        const contentParts = [{
+          type: "text",
+          text: `Посмотри на ${uploadedImages.length === 1 ? "это изображение" : "эти изображения"} и напиши ${count} позитивных комментариев.` +
+                (context ? `\n\nДополнительный контекст: ${context}` : "") +
+                `\n\nСгенерируй РОВНО ${count} комментариев, каждый с новой строки, без нумерации.`
+        }];
+        uploadedImages.forEach(img => {
+          contentParts.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
+        });
+        comments = await callAPI(contentParts, count, name, true, sentences, useEmoji, strictTone, false);
+        if (comments.length === 0) throw new Error("Не удалось получить комментарии по изображению.");
+        renderComments();
+        setStatus(`Готово! Сгенерировано: ${comments.length}.`);
+      } catch (e) {
+        setStatus(e.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  }
+
+  async function regenerateOne(index) {
+    const name = document.getElementById("name").value;
+    const sentences = parseInt(document.getElementById("sentences").value, 10) || 2;
+    const useEmoji = document.getElementById("useEmoji").checked;
+    const strictTone = document.getElementById("strictTone").checked;
+    const btns = document.querySelectorAll('.regen');
+    if (btns[index]) btns[index].disabled = true;
+    setStatus(`Перегенерирую комментарий №${index + 1}...`, false, true);
+    try {
+      await waitForRateLimit();
+      const existing = comments.filter((_, i) => i !== index).join("\n");
+      let userContent;
+      let useVision = false;
+      if (mode === "text") {
+        const rawText = document.getElementById("postText").value.trim();
+        if (!rawText) return;
+        const { cleanText, links } = extractLinks(rawText);
+        const hasLinks = links.length > 0;
+        userContent = `Пост: ${cleanText}\n\nУже есть комментарии (НЕ повторяй их):\n${existing}\n\n` +
+          (hasLinks ? `В тексте поста были ссылки. Если уместно, используй маркер {LINK}, сайт сам подставит ссылку.\n\n` : "") +
+          `Верни РОВНО ОДИН новый уникальный комментарий. Только текст, без нумерации.`;
+        const result = await callAPI(userContent, 1, name, false, sentences, useEmoji, strictTone, hasLinks);
+        if (result.length > 0) {
+          let finalComment = result[0];
+          if (hasLinks) {
+            const injected = injectLinks([finalComment], links);
+            finalComment = injected[0];
+          }
+          comments[index] = finalComment;
+          renderComments();
+          setStatus(`Комментарий №${index + 1} перегенерирован.`);
+        } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
+      } else {
+        if (uploadedImages.length === 0) return;
+        if (!getApiKey()) { setStatus('Нужен API-ключ для работы с изображениями.', true); return; }
+        const context = document.getElementById("imageContext").value.trim();
+        useVision = true;
+        userContent = [{
+          type: "text",
+          text: `Уже есть комментарии (НЕ повторяй их):\n${existing}\n\n` +
+                (context ? `Контекст: ${context}\n\n` : "") +
+                `Верни РОВНО ОДИН новый уникальный комментарий. Только текст, без нумерации.`
+        }];
+        uploadedImages.forEach(img => {
+          userContent.push({ type: "image_url", image_url: { url: `data:${img.type};base64,${img.base64}` } });
+        });
+        const result = await callAPI(userContent, 1, name, useVision, sentences, useEmoji, strictTone, false);
+        if (result.length > 0) {
+          comments[index] = result[0];
+          renderComments();
+          setStatus(`Комментарий №${index + 1} перегенерирован.`);
+        } else { throw new Error("Не удалось сгенерировать новый комментарий."); }
+      }
+    } catch (e) {
+      setStatus(e.message, true);
+      if (btns[index]) btns[index].disabled = false;
+    }
+  }
+
+  function copyComment(index, btnEl) {
+    navigator.clipboard.writeText(comments[index]).then(() => {
+      setStatus(`Комментарий №${index + 1} скопирован.`);
+      if (btnEl) {
+        btnEl.classList.add('copied');
+        const original = btnEl.innerHTML;
+        btnEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Готово';
+        setTimeout(() => { btnEl.classList.remove('copied'); btnEl.innerHTML = original; }, 1400);
+      }
+    }).catch(() => setStatus("Не удалось скопировать.", true));
+  }
+
+  function setStatus(msg, isError = false, isLoading = false) {
+    const el = document.getElementById("status");
+    el.className = "status" + (isError ? " error" : "") + (isLoading ? " loading" : "");
+    el.innerHTML = (isLoading ? '<span class="spinner"></span>' : "") + msg;
+  }
+
+  function linkify(text) {
+    if (/<a\s/i.test(text)) return text;
+    let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    safe = safe.replace(/(https?:\/\/[^\s<]+|www\.[^\s<]+)/g, (url) => {
+      const href = url.startsWith("http") ? url : "https://" + url;
+      return `<a href="${href}" target="_blank" rel="noopener">${url}</a>`;
+    });
+    return safe;
+  }
+
+  function renderComments() {
+    const container = document.getElementById("comments");
+    container.innerHTML = "";
+    comments.forEach((c, i) => {
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerHTML = `
+        <div class="num">${i + 1}</div>
+        <p>${linkify(c)}</p>
+        <div class="actions">
+          <button class="regen" onclick="regenerateOne(${i})">Ещё вариант</button>
+          <button class="copy" onclick="copyComment(${i}, this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Копировать
+          </button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  document.getElementById("sentences").addEventListener("change", saveSentences);
+</script>
+</body>
+</html>

@@ -15,7 +15,6 @@
     --accent1: #6366f1;
     --accent2: #a855f7;
     --img-accent: #22d3ee;
-    --free-accent: #22c55e;
   }
 
   body.light {
@@ -819,162 +818,74 @@
     color: var(--accent2);
   }
 
-  .hidden { display: none !important; }
-
-  @media (max-width: 760px) {
-    .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-    .main { padding: 16px; }
+  /* ============ ВРЕМЕННАЯ ПОЧТА ============ */
+  .tempmail-box { display: flex; flex-direction: column; gap: 14px; }
+  .tempmail-address {
+    font-size: 18px; font-weight: 700; font-family: Consolas, monospace;
+    padding: 14px 18px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border);
+    cursor: pointer; text-align: center; transition: border-color .15s, background .15s; word-break: break-all;
+    position: relative; user-select: none;
   }
-</style>
-
-<style id="design-v2">
-  :root {
-    --bg: #0b0d14;
-    --panel: #12151e;
-    --border: #212636;
-    --input-bg: #0d1018;
-    --text: #e8eaf2;
-    --muted: #8a92a8;
-    --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 10px 28px -14px rgba(0,0,0,.7);
+  .tempmail-address:hover { border-color: var(--accent1); background: var(--panel); }
+  .tempmail-address span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 4px; pointer-events: none; }
+  .tempmail-address.copied { border-color: #34d399; background: rgba(52, 211, 153, 0.08); }
+  
+  .tm-email-item { 
+    padding: 12px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 8px;
+    display: flex; flex-direction: column; gap: 4px; cursor: pointer; transition: border-color .15s, background .15s;
   }
-  body.light {
-    --bg: #eef0f6;
-    --panel: #ffffff;
-    --border: #dde1ec;
-    --input-bg: #f6f7fb;
-    --shadow: 0 1px 2px rgba(20,25,45,.05), 0 10px 28px -16px rgba(20,25,45,.18);
+  .tm-email-item:hover { border-color: var(--accent1); background: var(--panel); }
+  .tm-email-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .tm-email-info { flex: 1; min-width: 0; }
+  .tm-email-item .tm-from { font-size: 11px; color: var(--muted); }
+  .tm-email-item .tm-subj { font-weight: 600; font-size: 13px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tm-email-item .tm-body { font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 60px; overflow: hidden; color: var(--muted); margin-top: 8px; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  
+  .tm-del-btn {
+    font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); 
+    background: var(--panel); color: var(--muted); cursor: pointer; flex-shrink: 0;
+    transition: border-color .15s, color .15s, background .15s;
   }
+  .tm-del-btn:hover { border-color: #fb7185; color: #fb7185; background: rgba(251, 113, 133, 0.1); }
+  
+  .tm-refresh-timer { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
 
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    background:
-      radial-gradient(900px 420px at 50% -160px, rgba(99,102,241,.16), transparent 70%),
-      var(--bg);
-    background-attachment: fixed;
-    -webkit-font-smoothing: antialiased;
+  /* ============ МОДАЛЬНОЕ ОКНО ПИСЬМА ============ */
+  .mail-modal {
+    position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.7); padding: 20px; opacity: 0; transition: opacity 0.2s;
   }
-  ::selection { background: rgba(168,85,247,.35); }
-
-  .topbar {
-    background: color-mix(in srgb, var(--panel) 82%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .mail-modal.open { display: flex; opacity: 1; }
+  .mail-modal-content {
+    width: min(700px, 100%); max-height: 85vh; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 20px 60px -10px rgba(0,0,0,0.8);
+    transform: translateY(20px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .topbar-inner { padding: 12px 24px; }
-  .logo { font-size: 16px; letter-spacing: -.01em; }
-  .menu-btn, .theme-btn { border-radius: 12px; background: var(--input-bg); }
-  .menu-btn:hover, .theme-btn:hover { box-shadow: none; background: var(--panel); }
-
-  .sidebar { width: 264px; box-shadow: 24px 0 48px -24px rgba(0,0,0,.5); }
-  .sidebar-title { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); }
-  .nav-link { border-radius: 12px; padding: 12px 14px; }
-  .nav-link:hover { background: var(--input-bg); border-color: transparent; color: var(--text); }
-  .nav-link.active {
-    background: rgba(99,102,241,.14);
-    border-color: transparent;
+  .mail-modal.open .mail-modal-content { transform: translateY(0); }
+  
+  .mail-modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  }
+  .mail-modal-header-info { flex: 1; min-width: 0; }
+  .mail-modal-from { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .mail-modal-subj { font-size: 18px; font-weight: 700; line-height: 1.3; }
+  .mail-modal-close {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .mail-modal-close:hover { border-color: #fb7185; color: #fb7185; }
+  
+  .mail-modal-body {
+    padding: 20px 24px; overflow-y: auto; flex: 1;
+    font-size: 14px; line-height: 1.7; word-break: break-word;
     color: var(--text);
-    box-shadow: inset 3px 0 0 var(--accent1);
   }
-  .sidebar-footer .online-dot { box-shadow: 0 0 0 4px rgba(34,197,94,.16); }
+  .mail-modal-body * { max-width: 100%; }
 
-  .main { padding: 32px 24px 56px; }
-  h1 { font-size: 24px; letter-spacing: -.02em; margin-bottom: 20px; }
-  .panel { border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
-  .label { font-size: 12.5px; font-weight: 500; margin-bottom: 7px; }
-
-  .home-hero { padding: 40px 20px 28px; }
-  .home-hero .home-icon {
-    display: flex; align-items: center; justify-content: center;
-    width: 72px; height: 72px; margin: 0 auto 20px;
-    font-size: 34px; border-radius: 22px;
-    background: linear-gradient(145deg, rgba(99,102,241,.22), rgba(168,85,247,.12));
-    border: 1px solid rgba(139,147,255,.25);
-  }
-  .home-hero h2 { font-size: 30px; letter-spacing: -.02em; line-height: 1.2; }
-  .home-hero p { font-size: 15px; }
-  .home-status { border-radius: 12px; border-left-width: 1px; padding: 9px 16px; }
-
-  .explain, .limit-warn, .hint-note { border-radius: 12px; }
-
-  .mode-switch { border-radius: 18px; padding: 5px; }
-  .mode-btn { border-radius: 14px; font-size: 13px; }
-  .mode-btn.active { box-shadow: 0 8px 18px -10px rgba(0,0,0,.6); }
-  .mode-btn.active[data-mode="free"]       { box-shadow: 0 8px 20px -10px rgba(34,197,94,.7); }
-  .mode-btn.active[data-mode="deepseek"]   { box-shadow: 0 8px 20px -10px rgba(79,142,247,.7); }
-  .mode-btn.active[data-mode="pollinations"] { box-shadow: 0 8px 20px -10px rgba(249,115,22,.7); }
-
-  .tab-text, .tab-image { transition: border-color .2s, background .2s, color .2s; }
-  .tab-text:hover:not(.active), .tab-image:hover:not(.active) { border-color: var(--accent1); }
-  .tab-text.active { box-shadow: 0 8px 18px -10px rgba(99,102,241,.8); }
-
-  input[type="text"], input[type="password"], input[type="number"], textarea, select {
-    border-radius: 10px; padding: 10px 12px;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--accent1);
-    box-shadow: 0 0 0 3px rgba(99,102,241,.2);
-  }
-  .num-field { border-radius: 10px; padding: 5px 10px; }
-  .num-field:focus-within { border-color: var(--accent1); box-shadow: 0 0 0 3px rgba(99,102,241,.2); }
-  .num-field input:focus { box-shadow: none; }
-  .check { font-size: 12px; }
-
-  .btn { border-radius: 12px; padding: 10px 18px; background: var(--input-bg); }
-  .btn:hover { border-color: var(--accent1); box-shadow: none; background: var(--panel); }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    box-shadow: 0 10px 22px -10px rgba(99,102,241,.85);
-  }
-  .btn-primary:hover {
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    filter: brightness(1.08);
-    box-shadow: 0 12px 26px -10px rgba(139,92,246,.9);
-  }
-
-  .comment {
-    border-radius: 14px; padding: 14px 16px; background: var(--panel);
-    transition: border-color .2s;
-  }
-  .comment:hover { border-color: color-mix(in srgb, var(--accent1) 45%, var(--border)); }
-  .comment-num {
-    display: inline-block; padding: 1px 9px; border-radius: 999px;
-    background: var(--input-bg); border: 1px solid var(--border);
-  }
-  .comment-text { font-size: 14px; line-height: 1.6; }
-  .comment-actions button { border-radius: 9px; padding: 6px 12px; }
-  .comment-actions button:hover { box-shadow: none; background: var(--panel); }
-
-  .image-card { border-radius: 14px; }
-  .image-card:hover { box-shadow: 0 12px 26px -14px rgba(34,211,238,.5); }
-  .image-card .btn-download:hover { box-shadow: none; }
-
-  .history-box, .log-box, .img-log-box { border-radius: 14px; }
-  .history-box h3, .log-box h3, .img-log-box h3 {
-    text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600;
-  }
-  .history-box h3, .log-box h3 { color: var(--text); }
-  .history-box h3 .h3-text::before, .log-box h3::before, .img-log-box h3::before { box-shadow: none; }
-  .history-item { border-radius: 10px; padding: 7px 11px; }
-
-  .pwd-output input { font-size: 16px; letter-spacing: .04em; }
-  .strength span { height: 6px; border-radius: 99px; }
-
-  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-
-  :focus-visible { outline: 2px solid var(--accent1); outline-offset: 2px; }
-  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
-  @media (max-width: 760px) {
-    .main { padding: 20px 14px 40px; }
-    .panel { padding: 16px; border-radius: 16px; }
-    .home-hero h2 { font-size: 24px; }
-  }
-</style>
-
-<style id="animations-css">
+  /* ============ АНИМАЦИИ ============ */
   .main > section { animation: fadeInUp 0.4s ease-out both; }
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -992,38 +903,16 @@
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(0.9); }
   }
-</style>
 
-<style id="tempmail-css">
-  .tempmail-box { display: flex; flex-direction: column; gap: 14px; }
-  .tempmail-address {
-    font-size: 18px; font-weight: 700; font-family: Consolas, monospace;
-    padding: 14px 18px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border);
-    cursor: pointer; text-align: center; transition: border-color .15s, background .15s; word-break: break-all;
-    position: relative; user-select: none;
+  .hidden { display: none !important; }
+
+  @media (max-width: 760px) {
+    .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .main { padding: 16px; }
+    .mail-modal-header { padding: 16px; }
+    .mail-modal-body { padding: 16px; }
+    .mail-modal-subj { font-size: 16px; }
   }
-  .tempmail-address:hover { border-color: var(--accent1); background: var(--panel); }
-  .tempmail-address span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 4px; pointer-events: none; }
-  .tempmail-address.copied { border-color: #34d399; background: rgba(52, 211, 153, 0.08); }
-  
-  .tm-email-item { 
-    padding: 12px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 8px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .tm-email-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .tm-email-info { flex: 1; min-width: 0; }
-  .tm-email-item .tm-from { font-size: 11px; color: var(--muted); }
-  .tm-email-item .tm-subj { font-weight: 600; font-size: 13px; margin-top: 2px; }
-  .tm-email-item .tm-body { font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 150px; overflow-y: auto; color: var(--text); margin-top: 8px; }
-  
-  .tm-del-btn {
-    font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); 
-    background: var(--panel); color: var(--muted); cursor: pointer; flex-shrink: 0;
-    transition: border-color .15s, color .15s, background .15s;
-  }
-  .tm-del-btn:hover { border-color: #fb7185; color: #fb7185; background: rgba(251, 113, 133, 0.1); }
-  
-  .tm-refresh-timer { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -1321,6 +1210,20 @@
   </section>
 
 </main>
+
+<!-- МОДАЛЬНОЕ ОКНО ПИСЬМА -->
+<div class="mail-modal" id="mailModal">
+  <div class="mail-modal-content">
+    <div class="mail-modal-header">
+      <div class="mail-modal-header-info">
+        <div class="mail-modal-from" id="modalFrom"></div>
+        <div class="mail-modal-subj" id="modalSubj"></div>
+      </div>
+      <button class="mail-modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="mail-modal-body" id="modalBody"></div>
+  </div>
+</div>
 
 <script>
 /* =========================================================================
@@ -2232,7 +2135,7 @@ $('btnClearImages').addEventListener('click', () => {
 });
 
 /* =========================================================================
-   ВРЕМЕННАЯ ПОЧТА (Guerrilla Mail)
+   ВРЕМЕННАЯ ПОЧТА (Guerrilla Mail) + МОДАЛЬНОЕ ОКНО
    ========================================================================= */
 
 (function () {
@@ -2246,6 +2149,8 @@ $('btnClearImages').addEventListener('click', () => {
   const copy = t => navigator.clipboard.writeText(t).then(() => toast('Скопировано'), () => toast('Не удалось скопировать'));
 
   const emailEl = $('tmEmail'), statusEl = $('tmStatus'), listEl = $('tmList'), logEl = $('tmLog'), timerEl = $('tmTimer');
+  const modal = $('mailModal'), modalClose = $('modalClose'), modalFrom = $('modalFrom'), modalSubj = $('modalSubj'), modalBody = $('modalBody');
+  
   if (!emailEl) return;
 
   let tmState = { email: '', sidToken: '', messages: [], checkTimer: null, countdownTimer: null };
@@ -2260,6 +2165,84 @@ $('btnClearImages').addEventListener('click', () => {
     div.append(ts, xs); logEl.appendChild(div); logEl.scrollTop = logEl.scrollHeight;
   }
   function clearLog() { if (logEl) logEl.innerHTML = ''; }
+
+  // Звук при получении письма
+  let audioCtx;
+  function playNotificationSound() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
+      
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.02);
+      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+      
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.3);
+    } catch (e) {}
+  }
+
+  // Очистка тела письма: удаляем только скрипты и пустые теги, оставляя форматирование
+  function cleanBody(html) {
+    if (!html) return '';
+    // Удаляем опасные теги (script, style, iframe)
+    let clean = html.replace(/<(script|style|iframe|object|embed)[^>]*>[\s\S]*?<\/\1>/gi, '');
+    
+    // Создаём временный div, чтобы браузер сам распарсил HTML
+    const temp = document.createElement('div');
+    temp.innerHTML = clean;
+    
+    // Удаляем пустые div/spans/br, которые остались от вёрстки
+    // (но оставляем сами теги форматирования вроде p, b, i, a)
+    temp.querySelectorAll('div, span').forEach(el => {
+      if (!el.textContent.trim() && !el.querySelector('img')) {
+        el.remove();
+      }
+    });
+
+    // Убираем пустые параграфы
+    temp.querySelectorAll('p').forEach(el => {
+      if (!el.textContent.trim() && !el.querySelector('img')) {
+        el.remove();
+      }
+    });
+    
+    return temp.innerHTML.trim();
+  }
+
+  // Проверка на пустоту (после очистки)
+  function isEmptyHtml(html) {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    return !temp.textContent.trim() && !temp.querySelector('img');
+  }
+
+  function openModal(m) {
+    modalFrom.textContent = `От: ${m.mail_from || 'неизвестно'}`;
+    modalSubj.textContent = m.mail_subject || '(без темы)';
+    const clean = cleanBody(m.mail_body);
+    
+    if (isEmptyHtml(clean)) {
+      modalBody.innerHTML = '<span style="color: var(--muted); font-style: italic;">(пустое письмо)</span>';
+    } else {
+      modalBody.innerHTML = clean;
+    }
+    modal.classList.add('open');
+  }
+  function closeModal() { modal.classList.remove('open'); }
+
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
   function renderMessages() {
     if (!listEl) return;
@@ -2279,14 +2262,24 @@ $('btnClearImages').addEventListener('click', () => {
       const delBtn = document.createElement('button');
       delBtn.className = 'tm-del-btn';
       delBtn.textContent = '🗑 Удалить';
-      delBtn.addEventListener('click', () => deleteMessage(m.mail_id, div));
+      delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteMessage(m.mail_id, div); });
       
       header.append(info, delBtn);
       
       const body = document.createElement('div'); body.className = 'tm-body';
-      body.textContent = m.mail_body || m.mail_excerpt || '(пустое письмо)';
+      const clean = cleanBody(m.mail_body || m.mail_excerpt);
+      
+      if (isEmptyHtml(clean)) {
+        body.textContent = '(пустое письмо)';
+      } else {
+        // Для превью в списке оставляем только текст, убираем теги для компактности
+        const temp = document.createElement('div');
+        temp.innerHTML = clean;
+        body.textContent = temp.textContent.trim() || '(пустое письмо)';
+      }
       
       div.append(header, body);
+      div.addEventListener('click', () => openModal(m));
       listEl.appendChild(div);
     });
   }
@@ -2342,7 +2335,6 @@ $('btnClearImages').addEventListener('click', () => {
       
       if (!msgs.length) {
         if (!silent) { setStatus('Почта работает, но писем пока нет.', 'success'); addLog('Почта работает. Писем нет.', 'ok'); }
-        if (tmState.messages.length > 0) { tmState.messages = []; renderMessages(); }
         return;
       }
       
@@ -2352,17 +2344,21 @@ $('btnClearImages').addEventListener('click', () => {
       }
       
       const newMessages = [];
+      let hasNew = false;
       for (const m of msgs) {
         const existing = tmState.messages.find(x => x.mail_id === m.mail_id);
         if (existing) { newMessages.push(existing); } 
         else {
           const full = await api({ f: 'fetch_email', email_id: m.mail_id, sid_token: tmState.sidToken });
           newMessages.push(full);
+          hasNew = true;
           if (silent) addLog(`Пришло новое письмо от ${m.mail_from || 'неизвестно'}: ${m.mail_subject || '(без темы)'}`, 'ok');
         }
       }
       tmState.messages = newMessages;
       renderMessages();
+      
+      if (hasNew) playNotificationSound();
     } catch (e) {
       if (!silent) { setStatus('Проверка не удалась: ' + e.message, 'error'); addLog(`Ошибка проверки: ${e.message}`, 'err'); }
     }

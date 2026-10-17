@@ -826,6 +826,222 @@
     .main { padding: 16px; }
   }
 </style>
+
+<style id="design-v2">
+  :root {
+    --bg: #0b0d14;
+    --panel: #12151e;
+    --border: #212636;
+    --input-bg: #0d1018;
+    --text: #e8eaf2;
+    --muted: #8a92a8;
+    --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+  body.light {
+    --bg: #eef0f6;
+    --panel: #ffffff;
+    --border: #dde1ec;
+    --input-bg: #f6f7fb;
+    --shadow: 0 1px 2px rgba(20,25,45,.05), 0 10px 28px -16px rgba(20,25,45,.18);
+  }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background:
+      radial-gradient(900px 420px at 50% -160px, rgba(99,102,241,.16), transparent 70%),
+      var(--bg);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(168,85,247,.35); }
+
+  .topbar {
+    background: color-mix(in srgb, var(--panel) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .topbar-inner { padding: 12px 24px; }
+  .logo { font-size: 16px; letter-spacing: -.01em; }
+  .menu-btn, .theme-btn { border-radius: 12px; background: var(--input-bg); }
+  .menu-btn:hover, .theme-btn:hover { box-shadow: none; background: var(--panel); }
+
+  .sidebar { width: 264px; box-shadow: 24px 0 48px -24px rgba(0,0,0,.5); }
+  .sidebar-title { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--text); }
+  .nav-link { border-radius: 12px; padding: 12px 14px; }
+  .nav-link:hover { background: var(--input-bg); border-color: transparent; color: var(--text); }
+  .nav-link.active {
+    background: rgba(99,102,241,.14);
+    border-color: transparent;
+    color: var(--text);
+    box-shadow: inset 3px 0 0 var(--accent1);
+  }
+  .sidebar-footer .online-dot { box-shadow: 0 0 0 4px rgba(34,197,94,.16); }
+
+  .main { padding: 32px 24px 56px; }
+  h1 { font-size: 24px; letter-spacing: -.02em; margin-bottom: 20px; }
+  .panel { border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
+  .label { font-size: 12.5px; font-weight: 500; margin-bottom: 7px; }
+
+  .home-hero { padding: 40px 20px 28px; }
+  .home-hero .home-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 72px; height: 72px; margin: 0 auto 20px;
+    font-size: 34px; border-radius: 22px;
+    background: linear-gradient(145deg, rgba(99,102,241,.22), rgba(168,85,247,.12));
+    border: 1px solid rgba(139,147,255,.25);
+  }
+  .home-hero h2 { font-size: 30px; letter-spacing: -.02em; line-height: 1.2; }
+  .home-hero p { font-size: 15px; }
+  .home-status { border-radius: 12px; border-left-width: 1px; padding: 9px 16px; }
+
+  .explain, .limit-warn, .hint-note { border-radius: 12px; }
+
+  .mode-switch { border-radius: 18px; padding: 5px; }
+  .mode-btn { border-radius: 14px; font-size: 13px; }
+  .mode-btn.active { box-shadow: 0 8px 18px -10px rgba(0,0,0,.6); }
+  .mode-btn.active[data-mode="free"]       { box-shadow: 0 8px 20px -10px rgba(34,197,94,.7); }
+  .mode-btn.active[data-mode="deepseek"]   { box-shadow: 0 8px 20px -10px rgba(79,142,247,.7); }
+  .mode-btn.active[data-mode="pollinations"] { box-shadow: 0 8px 20px -10px rgba(249,115,22,.7); }
+
+  .tab-text, .tab-image { transition: border-color .2s, background .2s, color .2s; }
+  .tab-text:hover:not(.active), .tab-image:hover:not(.active) { border-color: var(--accent1); }
+  .tab-text.active { box-shadow: 0 8px 18px -10px rgba(99,102,241,.8); }
+
+  input[type="text"], input[type="password"], input[type="number"], textarea, select {
+    border-radius: 10px; padding: 10px 12px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent1);
+    box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+  }
+  .num-field { border-radius: 10px; padding: 5px 10px; }
+  .num-field:focus-within { border-color: var(--accent1); box-shadow: 0 0 0 3px rgba(99,102,241,.2); }
+  .num-field input:focus { box-shadow: none; }
+  .check { font-size: 12px; }
+
+  .btn { border-radius: 12px; padding: 10px 18px; background: var(--input-bg); }
+  .btn:hover { border-color: var(--accent1); box-shadow: none; background: var(--panel); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 10px 22px -10px rgba(99,102,241,.85);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    filter: brightness(1.08);
+    box-shadow: 0 12px 26px -10px rgba(139,92,246,.9);
+  }
+
+  .comment {
+    border-radius: 14px; padding: 14px 16px; background: var(--panel);
+    transition: border-color .2s;
+  }
+  .comment:hover { border-color: color-mix(in srgb, var(--accent1) 45%, var(--border)); }
+  .comment-num {
+    display: inline-block; padding: 1px 9px; border-radius: 999px;
+    background: var(--input-bg); border: 1px solid var(--border);
+  }
+  .comment-text { font-size: 14px; line-height: 1.6; }
+  .comment-actions button { border-radius: 9px; padding: 6px 12px; }
+  .comment-actions button:hover { box-shadow: none; background: var(--panel); }
+
+  .image-card { border-radius: 14px; }
+  .image-card:hover { box-shadow: 0 12px 26px -14px rgba(34,211,238,.5); }
+  .image-card .btn-download:hover { box-shadow: none; }
+
+  .history-box, .log-box, .img-log-box { border-radius: 14px; }
+  .history-box h3, .log-box h3, .img-log-box h3 {
+    text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600;
+  }
+  .history-box h3, .log-box h3 { color: var(--text); }
+  .history-box h3 .h3-text::before, .log-box h3::before, .img-log-box h3::before { box-shadow: none; }
+  .history-item { border-radius: 10px; padding: 7px 11px; }
+
+  .pwd-output input { font-size: 16px; letter-spacing: .04em; }
+  .strength span { height: 6px; border-radius: 99px; }
+
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+  :focus-visible { outline: 2px solid var(--accent1); outline-offset: 2px; }
+  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (max-width: 760px) {
+    .main { padding: 20px 14px 40px; }
+    .panel { padding: 16px; border-radius: 16px; }
+    .home-hero h2 { font-size: 24px; }
+  }
+</style>
+
+<style id="animations-css">
+  /* Плавное появление контента при переключении разделов */
+  .main > section {
+    animation: fadeInUp 0.4s ease-out both;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Плавное появление новых элементов (комментарии, письма, картинки) */
+  .comment, .image-card, .history-item, .tm-email-item {
+    animation: itemFadeIn 0.3s ease-out both;
+  }
+  @keyframes itemFadeIn {
+    from { opacity: 0; transform: scale(0.98) translateY(4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Кнопки при наведении */
+  .btn, .mode-btn, .nav-link, .tab-text, .tab-image {
+    transition: all 0.2s ease;
+  }
+  .btn:hover:not(:disabled), .mode-btn:hover:not(.active), .nav-link:hover:not(.active) {
+    transform: translateY(-1px);
+  }
+
+  /* Легкое покачивание иконки онлайна */
+  .online-dot {
+    animation: pulseDot 2s infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.9); }
+  }
+</style>
+
+<style id="tempmail-css">
+  .tempmail-box { display: flex; flex-direction: column; gap: 14px; }
+  .tempmail-address {
+    font-size: 18px; font-weight: 700; font-family: Consolas, monospace;
+    padding: 14px 18px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border);
+    cursor: pointer; text-align: center; transition: border-color .15s, background .15s; word-break: break-all;
+    position: relative; user-select: none;
+  }
+  .tempmail-address:hover { border-color: var(--accent1); background: var(--panel); }
+  .tempmail-address span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 4px; pointer-events: none; }
+  .tempmail-address.copied { border-color: #34d399; background: rgba(52, 211, 153, 0.08); }
+  
+  .tm-email-item { 
+    padding: 12px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 8px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .tm-email-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .tm-email-info { flex: 1; min-width: 0; }
+  .tm-email-item .tm-from { font-size: 11px; color: var(--muted); }
+  .tm-email-item .tm-subj { font-weight: 600; font-size: 13px; margin-top: 2px; }
+  .tm-email-item .tm-body { font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 150px; overflow-y: auto; color: var(--text); margin-top: 8px; }
+  
+  .tm-del-btn {
+    font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); 
+    background: var(--panel); color: var(--muted); cursor: pointer; flex-shrink: 0;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .tm-del-btn:hover { border-color: #fb7185; color: #fb7185; background: rgba(251, 113, 133, 0.1); }
+  
+  .tm-refresh-timer { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
+</style>
 </head>
 <body>
 
@@ -841,6 +1057,7 @@
     <li><button class="nav-link active" data-section="home"><span class="nav-icon">🏠</span> Главная</button></li>
     <li><button class="nav-link" data-section="comments"><span class="nav-icon">💬</span> Генератор комментариев</button></li>
     <li><button class="nav-link" data-section="images"><span class="nav-icon">🎨</span> Генерация картинок</button></li>
+    <li><button class="nav-link" data-section="tempmail"><span class="nav-icon">📬</span> Временная почта</button></li>
     <li><button class="nav-link" data-section="passwords"><span class="nav-icon">🔑</span> Генератор паролей</button></li>
   </ul>
 
@@ -1036,6 +1253,38 @@
     </div>
   </section>
 
+  <section id="section-tempmail" class="hidden">
+    <h1>Временная почта</h1>
+    <div class="explain">
+      <div class="explain-title">💡 Зачем это?</div>
+      <p>Временный ящик для регистраций на сайтах, чтобы не засорять основную почту. Почта живёт, пока вы не сгенерируете новую или не истечёт срок на сервере.</p>
+      <p>Работает через открытый API Guerrilla Mail (бесплатно, без ключей).</p>
+    </div>
+
+    <div class="panel">
+      <div class="tempmail-box">
+        <div id="tmEmail" class="tempmail-address">Генерация...</div>
+        <div class="buttons" style="margin-top:0;">
+          <button class="btn btn-primary" id="tmGen">✨ Сгенерировать новую</button>
+          <button class="btn" id="tmCheck">🔄 Проверить почту</button>
+          <button class="btn" id="tmDel" style="border-color: #fb7185; color: #fb7185;">🗑 Удалить почту</button>
+        </div>
+        <div class="status" id="tmStatus"></div>
+        <div class="tm-refresh-timer" id="tmTimer"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="label" style="margin-bottom:12px;">Входящие письма</div>
+      <div id="tmList"></div>
+    </div>
+
+    <div class="log-box">
+      <h3>Лог работы</h3>
+      <div class="log-list" id="tmLog"></div>
+    </div>
+  </section>
+
   <section id="section-passwords" class="hidden">
     <h1>Генератор паролей</h1>
 
@@ -1178,6 +1427,7 @@ const PAGE_TITLES = {
   home: 'Главная',
   comments: 'Генератор комментариев',
   images: 'Генерация картинок',
+  tempmail: 'Временная почта',
   passwords: 'Генератор паролей'
 };
 
@@ -1251,7 +1501,7 @@ themeBtn.addEventListener('click', () => {
    РОУТИНГ
    ========================================================================= */
 
-const SECTIONS = ['home', 'comments', 'images', 'passwords'];
+const SECTIONS = ['home', 'comments', 'images', 'tempmail', 'passwords'];
 
 function showSection(section) {
   SECTIONS.forEach(s => {
@@ -1647,9 +1897,7 @@ async function generateComments() {
   }
 }
 
-// === ИСПРАВЛЕННЫЙ ПАРСЕР КОММЕНТАРИЕВ ===
 function parseComments(raw, count) {
-  // 1. Пытаемся распарсить как нормальный JSON
   let text = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
   const start = text.indexOf('[');
   const end = text.lastIndexOf(']');
@@ -1657,28 +1905,19 @@ function parseComments(raw, count) {
     try {
       const arr = JSON.parse(text.slice(start, end + 1));
       if (Array.isArray(arr)) {
-        // Очищаем каждый элемент от случайных кавычек
         return arr.map(s => String(s).trim().replace(/^["'[\]]+|["'[\]]+$/g, '')).filter(Boolean);
       }
     } catch (e) {}
   }
 
-  // 2. Если JSON сломан — разбиваем по строкам и чистим от мусора
-  return text
-    .split('\n')
-    .map(line => {
-      let s = line.trim();
-      // Убираем в начале строки: [ " ' цифру с точкой/скобкой
-      s = s.replace(/^[\["']+/, '');
-      s = s.replace(/^\d+[\.\)]\s*/, '');
-      // Убираем в конце строки: ] " ' , 
-      s = s.replace(/[\]"',]+$/, '');
-      return s.trim();
-    })
-    .filter(s => s.length > 3)
-    .slice(0, count);
+  return text.split('\n').map(line => {
+    let s = line.trim();
+    s = s.replace(/^[\["']+/, '');
+    s = s.replace(/^\d+[\.\)]\s*/, '');
+    s = s.replace(/[\]"',]+$/, '');
+    return s.trim();
+  }).filter(s => s.length > 3).slice(0, count);
 }
-// ==========================================
 
 function renderComments() {
   const container = $('comments');
@@ -2001,6 +2240,210 @@ $('btnClearImages').addEventListener('click', () => {
   $('btnDownloadAll').classList.add('hidden');
   addImgLog('Очищено', 'info');
 });
+
+/* =========================================================================
+   ВРЕМЕННАЯ ПОЧТА (Guerrilla Mail)
+   ========================================================================= */
+
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const sget = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } };
+  const sset = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const toastEl = document.querySelector('.toast'); let tt;
+  const toast = m => { if (!toastEl) return; toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('show'), 1800); };
+  const copy = t => navigator.clipboard.writeText(t).then(() => toast('Скопировано'), () => toast('Не удалось скопировать'));
+
+  const emailEl = $('tmEmail'), statusEl = $('tmStatus'), listEl = $('tmList'), logEl = $('tmLog'), timerEl = $('tmTimer');
+  if (!emailEl) return;
+
+  let tmState = { email: '', sidToken: '', messages: [], checkTimer: null, countdownTimer: null };
+
+  function setStatus(t, type) { statusEl.textContent = t; statusEl.className = 'status' + (type ? ' ' + type : ''); }
+  function addLog(msg, type = '') {
+    if (!logEl) return;
+    const div = document.createElement('div'); div.className = 'log-item ' + type;
+    const now = new Date().toLocaleTimeString('ru-RU', { hour12: false });
+    const ts = document.createElement('span'); ts.className = 'log-time'; ts.textContent = `[${now}]`;
+    const xs = document.createElement('span'); xs.textContent = msg;
+    div.append(ts, xs); logEl.appendChild(div); logEl.scrollTop = logEl.scrollHeight;
+  }
+  function clearLog() { if (logEl) logEl.innerHTML = ''; }
+
+  function renderMessages() {
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    if (!tmState.messages.length) {
+      listEl.innerHTML = '<div class="history-empty">Писем пока нет. Отправьте что-нибудь на этот адрес и нажмите «Проверить почту».</div>';
+      return;
+    }
+    tmState.messages.forEach(m => {
+      const div = document.createElement('div'); div.className = 'tm-email-item';
+      
+      const header = document.createElement('div'); header.className = 'tm-email-header';
+      const info = document.createElement('div'); info.className = 'tm-email-info';
+      info.innerHTML = `<div class="tm-from">От: ${m.mail_from || 'неизвестно'}</div>
+        <div class="tm-subj">${m.mail_subject || '(без темы)'}</div>`;
+      
+      const delBtn = document.createElement('button');
+      delBtn.className = 'tm-del-btn';
+      delBtn.textContent = '🗑 Удалить';
+      delBtn.addEventListener('click', () => deleteMessage(m.mail_id, div));
+      
+      header.append(info, delBtn);
+      
+      const body = document.createElement('div'); body.className = 'tm-body';
+      body.textContent = m.mail_body || m.mail_excerpt || '(пустое письмо)';
+      
+      div.append(header, body);
+      listEl.appendChild(div);
+    });
+  }
+
+  async function api(params) {
+    const url = new URL('https://api.guerrillamail.com/ajax.php');
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const res = await fetch(url.toString());
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Guerrilla Mail API ${res.status}: ${err.slice(0, 100)}`);
+    }
+    return res.json();
+  }
+
+  async function generate() {
+    if (tmState.checkTimer) { clearInterval(tmState.checkTimer); tmState.checkTimer = null; }
+    if (tmState.countdownTimer) { clearInterval(tmState.countdownTimer); tmState.countdownTimer = null; }
+    
+    emailEl.textContent = 'Генерация...';
+    emailEl.classList.remove('copied');
+    setStatus('Создаю почтовый ящик...', 'loading');
+    clearLog(); addLog('Запрос к Guerrilla Mail...', 'info');
+
+    try {
+      const data = await api({ f: 'get_email_address', ip: '127.0.0.1', agent: 'Mozilla/5.0' });
+      if (!data.email_addr) throw new Error('Не удалось получить адрес.');
+
+      tmState.email = data.email_addr;
+      tmState.sidToken = data.sid_token;
+      tmState.messages = [];
+      
+      emailEl.innerHTML = `${data.email_addr}<span>Нажмите, чтобы скопировать</span>`;
+      setStatus('Почта готова. Отправьте письмо и проверьте.', 'success');
+      addLog(`Почта ${data.email_addr} готова к работе.`, 'ok');
+      renderMessages();
+      sset('tm_email', data.email_addr); sset('tm_sid', data.sid_token);
+      
+      startAutoCheck();
+    } catch (e) {
+      setStatus('Не удалось создать почту: ' + e.message, 'error');
+      addLog(`Ошибка: ${e.message}`, 'err');
+      emailEl.innerHTML = 'Нажмите «Сгенерировать новую»';
+    }
+  }
+
+  async function check(silent = false) {
+    if (!tmState.sidToken) return;
+    if (!silent) { setStatus('Проверяю почту...', 'loading'); addLog('Запрос списка писем...', 'info'); }
+    try {
+      const data = await api({ f: 'check_email', seq: '0', sid_token: tmState.sidToken });
+      const msgs = data.list || [];
+      
+      if (!msgs.length) {
+        if (!silent) { setStatus('Почта работает, но писем пока нет.', 'success'); addLog('Почта работает. Писем нет.', 'ok'); }
+        if (tmState.messages.length > 0) { tmState.messages = []; renderMessages(); }
+        return;
+      }
+      
+      if (!silent || msgs.length !== tmState.messages.length) {
+        setStatus(`Почта работает. Найдено писем: ${msgs.length}`, 'success');
+        addLog(`Найдено писем: ${msgs.length}`, 'ok');
+      }
+      
+      const newMessages = [];
+      for (const m of msgs) {
+        const existing = tmState.messages.find(x => x.mail_id === m.mail_id);
+        if (existing) { newMessages.push(existing); } 
+        else {
+          const full = await api({ f: 'fetch_email', email_id: m.mail_id, sid_token: tmState.sidToken });
+          newMessages.push(full);
+          if (silent) addLog(`Пришло новое письмо от ${m.mail_from || 'неизвестно'}: ${m.mail_subject || '(без темы)'}`, 'ok');
+        }
+      }
+      tmState.messages = newMessages;
+      renderMessages();
+    } catch (e) {
+      if (!silent) { setStatus('Проверка не удалась: ' + e.message, 'error'); addLog(`Ошибка проверки: ${e.message}`, 'err'); }
+    }
+  }
+
+  async function deleteMessage(mailId, el) {
+    if (!confirm('Удалить это письмо?')) return;
+    try {
+      await api({ f: 'del_email', email_ids: [mailId], sid_token: tmState.sidToken });
+      addLog('Письмо удалено', 'info');
+      el.style.opacity = '0';
+      setTimeout(() => {
+        tmState.messages = tmState.messages.filter(m => m.mail_id !== mailId);
+        renderMessages();
+      }, 200);
+    } catch (e) {
+      addLog(`Ошибка удаления: ${e.message}`, 'err');
+    }
+  }
+
+  async function deleteMailbox() {
+    if (!confirm('Удалить текущую почту и создать новую?')) return;
+    sset('tm_email', ''); sset('tm_sid', '');
+    generate();
+  }
+
+  function startAutoCheck() {
+    if (tmState.checkTimer) clearInterval(tmState.checkTimer);
+    if (tmState.countdownTimer) clearInterval(tmState.countdownTimer);
+    
+    let counter = 10;
+    if (timerEl) timerEl.textContent = `Автообновление через ${counter} сек...`;
+    
+    tmState.countdownTimer = setInterval(() => {
+      counter--;
+      if (counter <= 0) counter = 10;
+      if (timerEl) timerEl.textContent = `Автообновление через ${counter} сек...`;
+    }, 1000);
+
+    tmState.checkTimer = setInterval(() => {
+      counter = 10;
+      check(true);
+    }, 10000);
+  }
+
+  emailEl.addEventListener('click', () => {
+    if (!tmState.email) return;
+    navigator.clipboard.writeText(tmState.email).then(() => {
+      emailEl.classList.add('copied');
+      toast('Адрес скопирован');
+      setTimeout(() => emailEl.classList.remove('copied'), 800);
+    }).catch(() => toast('Не удалось скопировать'));
+  });
+
+  $('tmGen').addEventListener('click', generate);
+  $('tmCheck').addEventListener('click', () => check(false));
+  $('tmDel').addEventListener('click', deleteMailbox);
+
+  // Восстановление при загрузке
+  const savedEmail = sget('tm_email', ''), savedSid = sget('tm_sid', '');
+  if (savedEmail && savedSid) {
+    tmState.email = savedEmail; tmState.sidToken = savedSid; tmState.messages = [];
+    emailEl.innerHTML = `${savedEmail}<span>Нажмите, чтобы скопировать</span>`;
+    setStatus('Почта восстановлена. Проверяю...', 'info');
+    addLog('Почта восстановлена из localStorage.', 'info');
+    check(true);
+    startAutoCheck();
+  } else {
+    generate();
+  }
+})();
 
 /* =========================================================================
    ПАРОЛИ

@@ -975,36 +975,19 @@
 </style>
 
 <style id="animations-css">
-  /* Плавное появление контента при переключении разделов */
-  .main > section {
-    animation: fadeInUp 0.4s ease-out both;
-  }
+  .main > section { animation: fadeInUp 0.4s ease-out both; }
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  /* Плавное появление новых элементов (комментарии, письма, картинки) */
-  .comment, .image-card, .history-item, .tm-email-item {
-    animation: itemFadeIn 0.3s ease-out both;
-  }
+  .comment, .image-card, .history-item, .tm-email-item { animation: itemFadeIn 0.3s ease-out both; }
   @keyframes itemFadeIn {
     from { opacity: 0; transform: scale(0.98) translateY(4px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
-
-  /* Кнопки при наведении */
-  .btn, .mode-btn, .nav-link, .tab-text, .tab-image {
-    transition: all 0.2s ease;
-  }
-  .btn:hover:not(:disabled), .mode-btn:hover:not(.active), .nav-link:hover:not(.active) {
-    transform: translateY(-1px);
-  }
-
-  /* Легкое покачивание иконки онлайна */
-  .online-dot {
-    animation: pulseDot 2s infinite;
-  }
+  .btn, .mode-btn, .nav-link, .tab-text, .tab-image { transition: all 0.2s ease; }
+  .btn:hover:not(:disabled), .mode-btn:hover:not(.active), .nav-link:hover:not(.active) { transform: translateY(-1px); }
+  .online-dot { animation: pulseDot 2s infinite; }
   @keyframes pulseDot {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(0.9); }
@@ -1204,6 +1187,13 @@
 
   <section id="section-images" class="hidden">
     <h1>🎨 Генерация картинок</h1>
+
+    <div class="explain">
+      <div class="explain-title">💡 Зачем нужен ключ?</div>
+      <p>Генерация картинок в нейросетях — это тяжёлая вычислительная задача, которая требует мощных серверов. Провайдеры (например, Pollinations) не дают делать это бесплатно и анонимно, чтобы защитить свои серверы от перегрузки и спама.</p>
+      <p><b>Без API-ключа генерация не запустится.</b> Ключ — это ваш личный пропуск, который подтверждает, что запросы идут от реального пользователя. Он вводится один раз и сохраняется в браузере.</p>
+      <p>Получить ключ можно бесплатно по ссылке ниже. При регистрации сервис даёт небольшой стартовый баланс, которого хватит на первые картинки.</p>
+    </div>
 
     <div class="panel">
       <label class="label">API-ключ Pollinations</label>
@@ -2431,7 +2421,6 @@ $('btnClearImages').addEventListener('click', () => {
   $('tmCheck').addEventListener('click', () => check(false));
   $('tmDel').addEventListener('click', deleteMailbox);
 
-  // Восстановление при загрузке
   const savedEmail = sget('tm_email', ''), savedSid = sget('tm_sid', '');
   if (savedEmail && savedSid) {
     tmState.email = savedEmail; tmState.sidToken = savedSid; tmState.messages = [];

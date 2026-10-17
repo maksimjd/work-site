@@ -15,6 +15,7 @@
     --accent1: #6366f1;
     --accent2: #a855f7;
     --img-accent: #22d3ee;
+    --free-accent: #22c55e;
   }
 
   body.light {
@@ -38,7 +39,6 @@
     transition: background 0.25s, color 0.25s;
   }
 
-  /* ============ ВЕРХНЯЯ ПАНЕЛЬ ============ */
   .topbar {
     position: sticky;
     top: 0;
@@ -84,7 +84,6 @@
   }
   .theme-btn { padding: 8px 12px; font-size: 16px; min-width: 44px; }
 
-  /* ============ ОВЕРЛЕЙ ============ */
   .overlay {
     position: fixed;
     inset: 0;
@@ -96,7 +95,6 @@
   }
   .overlay.show { opacity: 1; pointer-events: auto; }
 
-  /* ============ БОКОВОЕ МЕНЮ ============ */
   .sidebar {
     position: fixed;
     top: 0;
@@ -205,7 +203,6 @@
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
   @keyframes sparkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-  /* ============ ОСНОВНОЙ КОНТЕНТ ============ */
   .main { max-width: 1400px; margin: 0 auto; padding: 24px; }
   h1 { font-size: 20px; margin-bottom: 18px; font-weight: 700; }
   .panel {
@@ -217,7 +214,6 @@
   }
   .label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 
-  /* ============ ГЛАВНАЯ ============ */
   .home-hero { text-align: center; padding: 28px 20px 20px; }
   .home-hero .home-icon { font-size: 44px; display: block; margin-bottom: 14px; }
   .home-hero h2 {
@@ -253,7 +249,6 @@
   }
   .home-status b { color: #c4b5fd; }
 
-  /* ============ ПОЯСНЕНИЕ ============ */
   .explain {
     background: var(--input-bg);
     border: 1px solid var(--border);
@@ -276,46 +271,73 @@
   .explain p { margin-bottom: 6px; }
   .explain p:last-child { margin-bottom: 0; }
 
-  /* ============ ВЫБОР ПРОВАЙДЕРА ============ */
-  .provider-switch {
+  .mode-switch {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 16px;
     padding: 6px;
     background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
+    flex-wrap: wrap;
   }
-  .provider-btn {
+  .mode-btn {
     flex: 1;
+    min-width: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 18px;
+    gap: 6px;
+    padding: 11px 14px;
     border-radius: 12px;
     border: 1px solid transparent;
     background: transparent;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .provider-btn .icon { font-size: 16px; }
-  .provider-btn:hover { color: var(--text); background: rgba(127,127,127,0.06); }
-  .provider-btn.active { color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-  .provider-btn.active[data-provider="deepseek"] {
+  .mode-btn .icon { font-size: 15px; }
+  .mode-btn:hover { color: var(--text); background: rgba(127,127,127,0.06); }
+  .mode-btn.active { color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .mode-btn.active[data-mode="free"] {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    box-shadow: 0 0 18px rgba(34, 197, 94, 0.45), 0 0 36px rgba(34, 197, 94, 0.2);
+  }
+  .mode-btn.active[data-mode="deepseek"] {
     background: linear-gradient(135deg, #3b6fd4, #4f8ef7);
     box-shadow: 0 0 18px rgba(79, 142, 247, 0.45), 0 0 36px rgba(79, 142, 247, 0.2);
   }
-  .provider-btn.active[data-provider="pollinations"] {
+  .mode-btn.active[data-mode="pollinations"] {
     background: linear-gradient(135deg, #ea580c, #f97316);
     box-shadow: 0 0 18px rgba(249, 115, 22, 0.45), 0 0 36px rgba(249, 115, 22, 0.2);
   }
 
-  /* ============ ВКЛАДКИ ============ */
+  .limit-warn {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-left: 3px solid #fbbf24;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .limit-warn .limit-title {
+    font-weight: 700;
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .limit-warn ul { margin: 6px 0 0 18px; color: var(--muted); }
+  .limit-warn li { margin-bottom: 2px; }
+
   .tabs { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
   .tab-text {
     display: inline-flex;
@@ -336,6 +358,8 @@
     color: #fff;
     font-weight: 600;
   }
+  .tab-text.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  
   .tab-image {
     display: inline-flex;
     align-items: center;
@@ -363,8 +387,8 @@
     background: linear-gradient(180deg, var(--accent1), var(--accent2));
   }
   .tab-image.active { border-color: var(--accent1); font-weight: 600; }
+  .tab-image.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 
-  /* ============ ИНПУТЫ ============ */
   input[type="text"],
   input[type="password"],
   input[type="number"],
@@ -492,7 +516,6 @@
   }
   .hint-note b { color: var(--img-accent); }
 
-  /* ============ КАРТИНКИ ============ */
   .image-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -549,7 +572,6 @@
   }
   .image-card .btn-download:disabled { opacity: 0.5; cursor: wait; }
 
-  /* ============ КОММЕНТАРИИ ============ */
   .comments { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
   .comment {
     background: var(--panel);
@@ -583,7 +605,6 @@
     box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
   }
 
-  /* ============ ИСТОРИЯ ============ */
   .history-box {
     margin-top: 18px;
     background: var(--input-bg);
@@ -670,7 +691,6 @@
   .history-item .history-copy:hover { border-color: var(--accent1); color: var(--text); }
   .history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 12px; }
 
-  /* ============ ЛОГИ ============ */
   .log-box {
     margin-top: 18px;
     background: var(--input-bg);
@@ -782,7 +802,6 @@
   body:not(.light) .img-log-item .log-time { color: #155e75; }
   .img-log-item:not(.info):not(.ok):not(.err):not(.warn) { border-left-color: #155e75; color: var(--text); }
 
-  /* ============ ПАРОЛИ ============ */
   .pwd-output { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
   .pwd-output input {
     font-family: "SF Mono", Consolas, monospace;
@@ -812,7 +831,6 @@
 
 <div class="overlay" id="overlay"></div>
 
-<!-- ============ БОКОВОЕ МЕНЮ ============ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <span class="sidebar-title">Разделы</span>
@@ -834,7 +852,6 @@
   </div>
 </aside>
 
-<!-- ============ ВЕРХНЯЯ ПАНЕЛЬ ============ -->
 <header class="topbar">
   <div class="topbar-inner">
     <div class="topbar-left">
@@ -845,10 +862,8 @@
   </div>
 </header>
 
-<!-- ============ ОСНОВНОЙ КОНТЕНТ ============ -->
 <main class="main">
 
-  <!-- ГЛАВНАЯ -->
   <section id="section-home">
     <h1>Главная</h1>
     <div class="panel">
@@ -865,7 +880,6 @@
     </div>
   </section>
 
-  <!-- КОММЕНТАРИИ -->
   <section id="section-comments" class="hidden">
     <h1>Генератор комментариев</h1>
 
@@ -875,17 +889,32 @@
       <p>Сайт может быть полезен не всем, а в некоторых случаях — например, когда нужно быстро оставить осмысленный отзыв или поддержать обсуждение. Если он вам не нужен — ничего страшного, просто закройте вкладку.</p>
     </div>
 
-    <div class="provider-switch">
-      <button class="provider-btn active" data-provider="deepseek">
+    <div class="mode-switch">
+      <button class="mode-btn active" data-mode="free">
+        <span class="icon">🆓</span> Бесплатно
+      </button>
+      <button class="mode-btn" data-mode="deepseek">
         <span class="icon">🤖</span> DeepSeek API
       </button>
-      <button class="provider-btn" data-provider="pollinations">
+      <button class="mode-btn" data-mode="pollinations">
         <span class="icon">🌸</span> Pollinations API
       </button>
     </div>
 
-    <!-- DeepSeek -->
-    <div class="panel" id="deepseekKeyBox">
+    <div class="limit-warn hidden" id="freeLimitWarn">
+      <div class="limit-title">⚠️ Бесплатный режим — с ограничениями</div>
+      <ul>
+        <li><b>1 запрос в 15 секунд</b> — не чаще.</li>
+        <li><b>Медленно</b> — иногда ответ приходит 10–30 секунд.</li>
+        <li><b>Только текст</b> — картинки недоступны.</li>
+        <li><b>Нестабильно</b> — сервер может отваливаться.</li>
+      </ul>
+      <div style="margin-top:8px; color: var(--text);">
+        Если нужна быстрая и надёжная работа — укажи свой API-ключ.
+      </div>
+    </div>
+
+    <div class="panel hidden" id="deepseekKeyBox">
       <label class="label">API-ключ DeepSeek</label>
       <input type="password" id="deepseekKey" placeholder="sk-...">
       <div class="status success" id="deepseekKeySaved" style="display:none;">✓ Сохранён</div>
@@ -894,7 +923,6 @@
       </div>
     </div>
 
-    <!-- Pollinations -->
     <div class="panel hidden" id="pollinationsKeyBox">
       <label class="label">API-ключ Pollinations</label>
       <input type="password" id="pollinationsKey" placeholder="sk_... или pk_...">
@@ -957,7 +985,6 @@
     </div>
   </section>
 
-  <!-- КАРТИНКИ -->
   <section id="section-images" class="hidden">
     <h1>🎨 Генерация картинок</h1>
 
@@ -1009,7 +1036,6 @@
     </div>
   </section>
 
-  <!-- ПАРОЛИ -->
   <section id="section-passwords" class="hidden">
     <h1>Генератор паролей</h1>
 
@@ -1079,146 +1105,69 @@ const randInt = (min, max) => Math.floor(rand(min, max + 1));
 const pick = (arr) => arr[randInt(0, arr.length - 1)];
 
 /* =========================================================================
-   РАСШИФРОВКА ОШИБОК — превращаем технические сообщения в понятные
+   РАСШИФРОВКА ОШИБОК
    ========================================================================= */
 
-/**
- * Принимает ошибку (Error или объект) и название провайдера.
- * Возвращает { short, detail, hint }:
- *   short  — короткое сообщение под кнопкой
- *   detail — подробное сообщение для лога (что произошло)
- *   hint   — подсказка «что делать»
- */
-function explainError(err, provider) {
+function explainError(err, mode) {
   const msg = (err && err.message) ? err.message : String(err);
-  const providerName = provider === 'deepseek' ? 'DeepSeek' :
-                       provider === 'pollinations' ? 'Pollinations' : 'сервис';
+  const modeName = mode === 'deepseek' ? 'DeepSeek' :
+                   mode === 'pollinations' ? 'Pollinations' : 'бесплатный сервис';
 
-  // Нет ключа
   if (msg.includes('Не указан ключ') || msg.includes('нет ключа')) {
     return {
       short: 'Не удалось сгенерировать',
-      detail: `Не указан API-ключ ${providerName}.`,
+      detail: `Не указан API-ключ ${modeName}.`,
       hint: 'Вставь ключ в поле выше. Ключ можно получить по ссылке рядом с полем.'
     };
   }
 
-  // HTTP-ошибки
+  if (msg.includes('Лимит') || msg.includes('лимит') || msg.includes('429')) {
+    return {
+      short: 'Не удалось сгенерировать',
+      detail: `Бесплатный режим: превышен лимит запросов (1 запрос в 15 секунд).`,
+      hint: 'Подожди 15 секунд и попробуй снова. Или укажи свой ключ для быстрой работы без лимитов.'
+    };
+  }
+
   const httpMatch = msg.match(/HTTP\s+(\d{3})/);
   if (httpMatch) {
     const code = parseInt(httpMatch[1]);
     switch (code) {
-      case 400:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 400 — неверный запрос к ${providerName}.`,
-          hint: 'Скорее всего, проблема в тексте поста или в промте. Попробуй изменить текст и повторить.'
-        };
       case 401:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 401 — неверный или просроченный API-ключ ${providerName}.`,
-          hint: 'Проверь ключ: возможно, он введён с ошибкой или его отозвали. Получи новый по ссылке рядом с полем и вставь заново.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP 401 — неверный или просроченный API-ключ ${modeName}.`, hint: 'Проверь ключ: возможно, он введён с ошибкой или его отозвали.' };
       case 402:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 402 — закончился баланс ${providerName}.`,
-          hint: 'Пополни счёт у провайдера или используй другой ключ с положительным балансом.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP 402 — закончился баланс ${modeName}.`, hint: 'Пополни счёт у провайдера или используй другой ключ.' };
       case 403:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 403 — доступ запрещён ${providerName}.`,
-          hint: 'Возможно, ключ не имеет прав на эту модель или у него ограничен доступ. Проверь настройки ключа у провайдера.'
-        };
-      case 404:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 404 — модель или эндпоинт не найдены у ${providerName}.`,
-          hint: 'Возможно, провайдер обновил API или временно убрал модель. Попробуй позже или выбери другого провайдера.'
-        };
-      case 408:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 408 — сервер ${providerName} не дождался запроса.`,
-          hint: 'Это временная проблема на стороне провайдера. Попробуй ещё раз через минуту.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP 403 — доступ запрещён ${modeName}.`, hint: 'Возможно, ключ не имеет прав на эту модель.' };
       case 429:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP 429 — превышен лимит запросов ${providerName}.`,
-          hint: 'Слишком много запросов за короткое время. Подожди 1–2 минуты и попробуй снова.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP 429 — превышен лимит запросов ${modeName}.`, hint: 'Подожди 15 секунд и попробуй снова.' };
       case 500:
       case 502:
       case 503:
       case 504:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP ${code} — сервер ${providerName} временно недоступен.`,
-          hint: 'Это проблема на стороне провайдера, не на твоей. Обычно проходит за несколько минут — попробуй позже.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP ${code} — сервер ${modeName} временно недоступен.`, hint: 'Это проблема на стороне провайдера. Попробуй позже.' };
       default:
-        return {
-          short: 'Не удалось сгенерировать',
-          detail: `HTTP ${code} — ошибка на стороне ${providerName}.`,
-          hint: 'Попробуй ещё раз. Если не помогает — проверь ключ и статус сервиса провайдера.'
-        };
+        return { short: 'Не удалось сгенерировать', detail: `HTTP ${code} — ошибка на стороне ${modeName}.`, hint: 'Попробуй ещё раз.' };
     }
   }
 
-  // Сетевые ошибки
-  if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ERR_NETWORK')) {
-    return {
-      short: 'Не удалось сгенерировать',
-      detail: `Не удалось связаться с сервером ${providerName}.`,
-      hint: 'Проверь интернет-соединение. Возможно, провайдер временно недоступен или блокирует запросы.'
-    };
+  if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+    return { short: 'Не удалось сгенерировать', detail: `Не удалось связаться с сервером ${modeName}.`, hint: 'Проверь интернет-соединение.' };
   }
-
-  // Таймаут
   if (msg.includes('Таймаут') || msg.includes('timeout')) {
-    return {
-      short: 'Не удалось сгенерировать',
-      detail: `Сервер ${providerName} не ответил за 60 секунд.`,
-      hint: 'Сервис перегружен или отвечает медленно. Попробуй ещё раз — часто со второго раза получается.'
-    };
+    return { short: 'Не удалось сгенерировать', detail: `Сервер ${modeName} не ответил за 60 секунд.`, hint: 'Сервис перегружен. Попробуй ещё раз.' };
   }
-
-  // Не удалось загрузить картинку
   if (msg.includes('Не удалось загрузить')) {
-    return {
-      short: 'Не удалось сгенерировать',
-      detail: 'Картинка не загрузилась с сервера Pollinations.',
-      hint: 'Возможные причины: промт отклонён модерацией, сервис перегружен или ключ недействителен. Попробуй изменить описание или повторить запрос.'
-    };
+    return { short: 'Не удалось сгенерировать', detail: 'Картинка не загрузилась с сервера Pollinations.', hint: 'Промт мог быть отклонён модерацией или сервис перегружен. Попробуй изменить описание.' };
   }
-
-  // Неизвестный формат ответа
   if (msg.includes('Неизвестный формат ответа')) {
-    return {
-      short: 'Не удалось сгенерировать',
-      detail: `Сервер ${providerName} вернул неожиданный ответ.`,
-      hint: 'Скорее всего, провайдер изменил формат API. Попробуй другого провайдера или повтори позже.'
-    };
+    return { short: 'Не удалось сгенерировать', detail: `Сервер ${modeName} вернул неожиданный ответ.`, hint: 'Попробуй позже.' };
+  }
+  if (msg.includes('пустой')) {
+    return { short: 'Не удалось сгенерировать', detail: `Сервер ${modeName} вернул пустой ответ.`, hint: 'Попробуй ещё раз или измени текст.' };
   }
 
-  // Парсинг комментариев — пустой ответ
-  if (msg.includes('пустой') || msg.includes('empty')) {
-    return {
-      short: 'Не удалось сгенерировать',
-      detail: `Сервер ${providerName} вернул пустой ответ.`,
-      hint: 'Попробуй ещё раз или измени текст поста. Иногда модель отвечает некорректно из-за слишком сложного запроса.'
-    };
-  }
-
-  // Всё остальное
-  return {
-    short: 'Не удалось сгенерировать',
-    detail: `Ошибка ${providerName}: ${msg}`,
-    hint: 'Попробуй ещё раз. Если не помогает — проверь ключ, интернет и статус сервиса провайдера.'
-  };
+  return { short: 'Не удалось сгенерировать', detail: `Ошибка ${modeName}: ${msg}`, hint: 'Попробуй ещё раз.' };
 }
 
 /* =========================================================================
@@ -1246,20 +1195,13 @@ const menuBtn = $('menuBtn');
 const sidebarClose = $('sidebarClose');
 const overlay = $('overlay');
 
-function openMenu() {
-  sidebar.classList.add('open');
-  overlay.classList.add('show');
-}
-function closeMenu() {
-  sidebar.classList.remove('open');
-  overlay.classList.remove('show');
-}
+function openMenu() { sidebar.classList.add('open'); overlay.classList.add('show'); }
+function closeMenu() { sidebar.classList.remove('open'); overlay.classList.remove('show'); }
 
 menuBtn.addEventListener('click', () => {
   if (sidebar.classList.contains('open')) closeMenu();
   else openMenu();
 });
-
 sidebarClose.addEventListener('click', closeMenu);
 overlay.addEventListener('click', closeMenu);
 
@@ -1276,10 +1218,7 @@ document.addEventListener('keydown', (e) => {
 
 let lastScrollY = window.scrollY;
 window.addEventListener('scroll', () => {
-  if (!sidebar.classList.contains('open')) {
-    lastScrollY = window.scrollY;
-    return;
-  }
+  if (!sidebar.classList.contains('open')) { lastScrollY = window.scrollY; return; }
   const currentY = window.scrollY;
   if (currentY > lastScrollY && currentY > 50) closeMenu();
   lastScrollY = currentY;
@@ -1290,7 +1229,6 @@ window.addEventListener('scroll', () => {
    ========================================================================= */
 
 const themeBtn = $('themeBtn');
-
 function applyTheme(theme) {
   if (theme === 'light') {
     document.body.classList.add('light');
@@ -1302,10 +1240,7 @@ function applyTheme(theme) {
     themeBtn.title = 'Включить светлую тему';
   }
 }
-
-const savedTheme = storage.get('theme', 'dark');
-applyTheme(savedTheme);
-
+applyTheme(storage.get('theme', 'dark'));
 themeBtn.addEventListener('click', () => {
   const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
   applyTheme(newTheme);
@@ -1335,7 +1270,6 @@ function handleHash() {
   if (SECTIONS.includes(section)) showSection(section);
   else showSection('home');
 }
-
 window.addEventListener('hashchange', handleHash);
 
 /* =========================================================================
@@ -1360,7 +1294,6 @@ try {
   announce();
   setInterval(announce, 5000);
 } catch (e) {}
-
 function updateOnline() { onlineCountEl.textContent = knownTabs.size; }
 
 /* =========================================================================
@@ -1369,37 +1302,31 @@ function updateOnline() { onlineCountEl.textContent = knownTabs.size; }
 
 const logList = $('logList');
 function addLog(text, type = '') {
+  if (!logList) return;
   const div = document.createElement('div');
   div.className = 'log-item ' + type;
   const t = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-  const ts = document.createElement('span');
-  ts.className = 'log-time';
-  ts.textContent = `[${t}]`;
-  const xs = document.createElement('span');
-  xs.textContent = text;
-  div.appendChild(ts);
-  div.appendChild(xs);
+  const ts = document.createElement('span'); ts.className = 'log-time'; ts.textContent = `[${t}]`;
+  const xs = document.createElement('span'); xs.textContent = text;
+  div.appendChild(ts); div.appendChild(xs);
   logList.appendChild(div);
   logList.scrollTop = logList.scrollHeight;
 }
-function clearLog() { logList.innerHTML = ''; }
+function clearLog() { if (logList) logList.innerHTML = ''; }
 
 const imgLogList = $('imgLogList');
 function addImgLog(text, type = '') {
+  if (!imgLogList) return;
   const div = document.createElement('div');
   div.className = 'img-log-item ' + type;
   const t = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-  const ts = document.createElement('span');
-  ts.className = 'log-time';
-  ts.textContent = `[${t}]`;
-  const xs = document.createElement('span');
-  xs.textContent = text;
-  div.appendChild(ts);
-  div.appendChild(xs);
+  const ts = document.createElement('span'); ts.className = 'log-time'; ts.textContent = `[${t}]`;
+  const xs = document.createElement('span'); xs.textContent = text;
+  div.appendChild(ts); div.appendChild(xs);
   imgLogList.appendChild(div);
   imgLogList.scrollTop = imgLogList.scrollHeight;
 }
-function clearImgLog() { imgLogList.innerHTML = ''; }
+function clearImgLog() { if (imgLogList) imgLogList.innerHTML = ''; }
 
 /* =========================================================================
    ГЕНЕРАТОР КОММЕНТАРИЕВ
@@ -1411,37 +1338,45 @@ const ANGLES = [
 ];
 
 let state = {
-  provider: storage.get('provider', 'deepseek'),
-  mode: 'text',
+  mode: storage.get('commentMode', 'free'),
+  tab: 'text',
   deepseekKey: storage.get('deepseekKey', ''),
   pollinationsKey: storage.get('pollinationsKey', ''),
   images: [],
   comments: [],
-  generating: false
+  generating: false,
+  lastFreeRequest: 0
 };
 
-function updateProviderUI() {
-  document.querySelectorAll('.provider-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.provider === state.provider);
+function updateModeUI() {
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === state.mode);
   });
-  const isDeep = state.provider === 'deepseek';
+  const isFree = state.mode === 'free';
+  const isDeep = state.mode === 'deepseek';
+  const isPoll = state.mode === 'pollinations';
+
   $('deepseekKeyBox').classList.toggle('hidden', !isDeep);
-  $('pollinationsKeyBox').classList.toggle('hidden', isDeep);
-  if (state.deepseekKey) {
-    $('deepseekKey').value = state.deepseekKey;
-    $('deepseekKeySaved').style.display = 'block';
-  }
-  if (state.pollinationsKey) {
-    $('pollinationsKey').value = state.pollinationsKey;
-    $('pollinationsKeySaved').style.display = 'block';
+  $('pollinationsKeyBox').classList.toggle('hidden', !isPoll);
+  $('freeLimitWarn').classList.toggle('hidden', !isFree);
+
+  if (state.deepseekKey) { $('deepseekKey').value = state.deepseekKey; $('deepseekKeySaved').style.display = 'block'; }
+  if (state.pollinationsKey) { $('pollinationsKey').value = state.pollinationsKey; $('pollinationsKeySaved').style.display = 'block'; }
+
+  $('tabImage').classList.toggle('disabled', isFree);
+  if (isFree && state.tab === 'image') {
+    state.tab = 'text';
+    $('tabText').classList.add('active');
+    $('tabImage').classList.remove('active');
+    $('imageBlock').classList.add('hidden');
   }
 }
 
-document.querySelectorAll('.provider-btn').forEach(btn => {
+document.querySelectorAll('.mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    state.provider = btn.dataset.provider;
-    storage.set('provider', state.provider);
-    updateProviderUI();
+    state.mode = btn.dataset.mode;
+    storage.set('commentMode', state.mode);
+    updateModeUI();
   });
 });
 
@@ -1451,9 +1386,8 @@ function restoreSettings() {
   $('countSentences').value = storage.get('countSentences', 3);
   $('optEmoji').checked = storage.get('optEmoji', true);
   $('optPositive').checked = storage.get('optPositive', false);
-  updateProviderUI();
+  updateModeUI();
 }
-
 function saveSettings() {
   storage.set('styleText', $('styleText').value);
   storage.set('countComments', $('countComments').value);
@@ -1474,13 +1408,14 @@ $('pollinationsKey').addEventListener('input', (e) => {
 });
 
 $('tabText').addEventListener('click', () => {
-  state.mode = 'text';
+  state.tab = 'text';
   $('tabText').classList.add('active');
   $('tabImage').classList.remove('active');
   $('imageBlock').classList.add('hidden');
 });
 $('tabImage').addEventListener('click', () => {
-  state.mode = 'image';
+  if (state.mode === 'free') return;
+  state.tab = 'image';
   $('tabImage').classList.add('active');
   $('tabText').classList.remove('active');
   $('imageBlock').classList.remove('hidden');
@@ -1496,7 +1431,6 @@ if (dropZone) {
   dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
   fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 }
-
 function handleFiles(files) {
   const arr = Array.from(files).slice(0, 5 - state.images.length);
   arr.forEach(file => {
@@ -1506,7 +1440,6 @@ function handleFiles(files) {
     reader.readAsDataURL(file);
   });
 }
-
 function renderThumbs() {
   thumbsEl.innerHTML = '';
   state.images.forEach((src, i) => {
@@ -1540,14 +1473,57 @@ function buildSystemPrompt(opts) {
   return p;
 }
 
-async function callProvider(systemPrompt, userContent, useImages) {
+async function callFreePollinations(systemPrompt, userContent) {
+  const now = Date.now();
+  const elapsed = now - state.lastFreeRequest;
+  const wait = 15000 - elapsed;
+  if (wait > 0) {
+    const sec = Math.ceil(wait / 1000);
+    addLog(`Бесплатный лимит: ждём ${sec} сек...`, 'warn');
+    await new Promise(r => setTimeout(r, wait));
+  }
+
+  const url = 'https://text.pollinations.ai/openai';
+  const body = JSON.stringify({
+    model: 'openai',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userContent }
+    ],
+    temperature: rand(0.9, 1.15)
+  });
+
+  let resp;
+  try {
+    resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+  } catch (networkErr) {
+    throw new Error('Failed to fetch: ' + networkErr.message);
+  }
+
+  if (!resp.ok) {
+    const errText = await resp.text().catch(() => '');
+    throw new Error(`HTTP ${resp.status}: ${resp.statusText}${errText ? ' — ' + errText.slice(0, 200) : ''}`);
+  }
+
+  state.lastFreeRequest = Date.now();
+  const data = await resp.json();
+  let raw = '';
+  if (data.choices && data.choices[0] && data.choices[0].message) raw = data.choices[0].message.content;
+  else if (typeof data === 'string') raw = data;
+  else if (data.text) raw = data.text;
+  else throw new Error('Неизвестный формат ответа');
+  if (!raw || !raw.trim()) throw new Error('пустой ответ');
+  return raw;
+}
+
+async function callWithKey(systemPrompt, userContent, useImages) {
   let url, headers, body;
-  if (state.provider === 'deepseek') {
+  if (state.mode === 'deepseek') {
     if (!state.deepseekKey) throw new Error('Не указан ключ DeepSeek');
     url = 'https://api.deepseek.com/chat/completions';
     headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.deepseekKey };
     const messages = [{ role: 'system', content: systemPrompt }];
-    if (useImages && state.images.length && state.mode === 'image') {
+    if (useImages && state.images.length && state.tab === 'image') {
       const c = [{ type: 'text', text: userContent }];
       state.images.forEach(src => c.push({ type: 'image_url', image_url: { url: src } }));
       messages.push({ role: 'user', content: c });
@@ -1559,7 +1535,7 @@ async function callProvider(systemPrompt, userContent, useImages) {
     url = 'https://gen.pollinations.ai/v1/chat/completions';
     headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + state.pollinationsKey };
     const messages = [{ role: 'system', content: systemPrompt }];
-    if (useImages && state.images.length && state.mode === 'image') {
+    if (useImages && state.images.length && state.tab === 'image') {
       const c = [{ type: 'text', text: userContent }];
       state.images.forEach(src => c.push({ type: 'image_url', image_url: { url: src } }));
       messages.push({ role: 'user', content: c });
@@ -1572,12 +1548,10 @@ async function callProvider(systemPrompt, userContent, useImages) {
   try {
     resp = await fetch(url, { method: 'POST', headers, body });
   } catch (networkErr) {
-    // Ошибка сети или CORS
     throw new Error('Failed to fetch: ' + networkErr.message);
   }
 
   if (!resp.ok) {
-    // Пытаемся достать тело ошибки (иногда там пояснение от провайдера)
     let errBody = '';
     try { errBody = await resp.text(); } catch (e) {}
     throw new Error(`HTTP ${resp.status}: ${resp.statusText}${errBody ? ' — ' + errBody.slice(0, 200) : ''}`);
@@ -1589,7 +1563,6 @@ async function callProvider(systemPrompt, userContent, useImages) {
   else if (typeof data === 'string') raw = data;
   else if (data.text) raw = data.text;
   else throw new Error('Неизвестный формат ответа');
-
   if (!raw || !raw.trim()) throw new Error('пустой ответ');
   return raw;
 }
@@ -1604,12 +1577,16 @@ async function generateComments() {
     return;
   }
 
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
-  if (!hasKey) {
+  if (state.mode === 'deepseek' && !state.deepseekKey) {
     setStatus('Не удалось сгенерировать', 'error');
-    const info = explainError(new Error('Не указан ключ'), state.provider);
-    addLog(info.detail, 'err');
-    addLog('Подсказка: ' + info.hint, 'warn');
+    const info = explainError(new Error('Не указан ключ'), 'deepseek');
+    addLog(info.detail, 'err'); addLog('Подсказка: ' + info.hint, 'warn');
+    return;
+  }
+  if (state.mode === 'pollinations' && !state.pollinationsKey) {
+    setStatus('Не удалось сгенерировать', 'error');
+    const info = explainError(new Error('Не указан ключ'), 'pollinations');
+    addLog(info.detail, 'err'); addLog('Подсказка: ' + info.hint, 'warn');
     return;
   }
 
@@ -1631,17 +1608,24 @@ async function generateComments() {
     const style = $('styleText').value.trim();
     const angle = pick(ANGLES);
     addLog(`Параметры: ${count} комм., ${sentences} предл., ракурс: ${angle}`, 'info');
+
     const systemPrompt = buildSystemPrompt({ count, sentences, emoji, positive, style });
     const userContent = cleanText || 'Опиши изображение и оставь комментарий.';
-    setStatus('Генерация...', 'loading');
-    const raw = await callProvider(systemPrompt, userContent, true);
+
+    let raw;
+    if (state.mode === 'free') {
+      addLog('Бесплатный режим: запрос к text.pollinations.ai (без ключа)...', 'info');
+      setStatus('Генерация...', 'loading');
+      raw = await callFreePollinations(systemPrompt, userContent);
+    } else {
+      setStatus('Генерация...', 'loading');
+      raw = await callWithKey(systemPrompt, userContent, true);
+    }
+
     addLog('Ответ получен, разбираю...', 'info');
     let list = parseComments(raw, count);
     list = list.map(c => stripLinks(c)).filter(Boolean);
-
-    if (!list.length) {
-      throw new Error('пустой ответ');
-    }
+    if (!list.length) throw new Error('пустой ответ');
 
     state.comments = list;
     renderComments();
@@ -1653,7 +1637,7 @@ async function generateComments() {
     }
   } catch (err) {
     console.error(err);
-    const info = explainError(err, state.provider);
+    const info = explainError(err, state.mode);
     setStatus(info.short, 'error');
     addLog(info.detail, 'err');
     addLog('Подсказка: ' + info.hint, 'warn');
@@ -1663,18 +1647,38 @@ async function generateComments() {
   }
 }
 
+// === ИСПРАВЛЕННЫЙ ПАРСЕР КОММЕНТАРИЕВ ===
 function parseComments(raw, count) {
+  // 1. Пытаемся распарсить как нормальный JSON
   let text = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
   const start = text.indexOf('[');
   const end = text.lastIndexOf(']');
   if (start !== -1 && end !== -1 && end > start) {
     try {
       const arr = JSON.parse(text.slice(start, end + 1));
-      if (Array.isArray(arr)) return arr.map(s => String(s).trim()).filter(Boolean);
+      if (Array.isArray(arr)) {
+        // Очищаем каждый элемент от случайных кавычек
+        return arr.map(s => String(s).trim().replace(/^["'[\]]+|["'[\]]+$/g, '')).filter(Boolean);
+      }
     } catch (e) {}
   }
-  return text.split('\n').map(s => s.replace(/^\s*[\d]+[\.\)]\s*/, '').trim()).filter(s => s.length > 3).slice(0, count);
+
+  // 2. Если JSON сломан — разбиваем по строкам и чистим от мусора
+  return text
+    .split('\n')
+    .map(line => {
+      let s = line.trim();
+      // Убираем в начале строки: [ " ' цифру с точкой/скобкой
+      s = s.replace(/^[\["']+/, '');
+      s = s.replace(/^\d+[\.\)]\s*/, '');
+      // Убираем в конце строки: ] " ' , 
+      s = s.replace(/[\]"',]+$/, '');
+      return s.trim();
+    })
+    .filter(s => s.length > 3)
+    .slice(0, count);
 }
+// ==========================================
 
 function renderComments() {
   const container = $('comments');
@@ -1709,14 +1713,19 @@ function escapeHtml(str) {
 }
 
 async function regenOne(index) {
-  const hasKey = state.provider === 'deepseek' ? state.deepseekKey : state.pollinationsKey;
-  if (!hasKey) {
+  if (state.mode === 'deepseek' && !state.deepseekKey) {
     setStatus('Не удалось сгенерировать', 'error');
-    const info = explainError(new Error('Не указан ключ'), state.provider);
-    addLog(info.detail, 'err');
-    addLog('Подсказка: ' + info.hint, 'warn');
+    const info = explainError(new Error('Не указан ключ'), 'deepseek');
+    addLog(info.detail, 'err'); addLog('Подсказка: ' + info.hint, 'warn');
     return;
   }
+  if (state.mode === 'pollinations' && !state.pollinationsKey) {
+    setStatus('Не удалось сгенерировать', 'error');
+    const info = explainError(new Error('Не указан ключ'), 'pollinations');
+    addLog(info.detail, 'err'); addLog('Подсказка: ' + info.hint, 'warn');
+    return;
+  }
+
   addLog(`Регенерация комментария ${index + 1}...`, 'info');
   setStatus('Генерация варианта...', 'loading');
   try {
@@ -1727,7 +1736,14 @@ async function regenOne(index) {
       emoji: $('optEmoji').checked, positive: $('optPositive').checked,
       style: $('styleText').value.trim()
     });
-    const raw = await callProvider(systemPrompt, cleanText || 'Оставь комментарий.', false);
+
+    let raw;
+    if (state.mode === 'free') {
+      raw = await callFreePollinations(systemPrompt, cleanText || 'Оставь комментарий.');
+    } else {
+      raw = await callWithKey(systemPrompt, cleanText || 'Оставь комментарий.', false);
+    }
+
     const list = parseComments(raw, 1);
     if (!list.length) throw new Error('пустой ответ');
     state.comments[index] = stripLinks(list[0]);
@@ -1735,7 +1751,7 @@ async function regenOne(index) {
     setStatus('Вариант обновлён', 'success');
     addLog(`✓ Комментарий ${index + 1} обновлён`, 'ok');
   } catch (err) {
-    const info = explainError(err, state.provider);
+    const info = explainError(err, state.mode);
     setStatus(info.short, 'error');
     addLog(info.detail, 'err');
     addLog('Подсказка: ' + info.hint, 'warn');
@@ -1760,9 +1776,7 @@ $('btnCopyAll').addEventListener('click', () => {
     btn.textContent = '✓ Скопировано';
     addLog(`Скопировано комментариев: ${state.comments.length}`, 'ok');
     setTimeout(() => btn.textContent = orig, 1500);
-  }).catch(err => {
-    addLog(`Ошибка копирования: ${err.message}`, 'err');
-  });
+  }).catch(err => { addLog(`Ошибка копирования: ${err.message}`, 'err'); });
 });
 
 $('btnDownload').addEventListener('click', () => {
@@ -1797,28 +1811,22 @@ if (imgState.apiKey) {
   $('imgApiKey').value = imgState.apiKey;
   $('imgKeySaved').style.display = 'block';
 }
-
 $('imgApiKey').addEventListener('input', (e) => {
   imgState.apiKey = e.target.value.trim();
   storage.set('imgApiKey', imgState.apiKey);
   $('imgKeySaved').style.display = imgState.apiKey ? 'block' : 'none';
 });
-
 $('imgCount').value = storage.get('imgCount', 4);
-$('imgCount').addEventListener('change', (e) => {
-  storage.set('imgCount', e.target.value);
-});
+$('imgCount').addEventListener('change', (e) => { storage.set('imgCount', e.target.value); });
 
 function setImgStatus(text, type = '') {
   const el = $('imgStatus');
   el.textContent = text;
   el.className = 'status ' + type;
 }
-
 function updateDownloadAllBtn() {
   $('btnDownloadAll').classList.toggle('hidden', imgState.images.length === 0);
 }
-
 function renderImgHistory() {
   const el = $('imgHistory');
   if (!imgState.history.length) {
@@ -1829,9 +1837,7 @@ function renderImgHistory() {
   imgState.history.forEach((entry, i) => {
     const row = document.createElement('div');
     row.className = 'history-item';
-    row.innerHTML = `
-      <span class="history-text">${escapeHtml(entry.prompt)}</span>
-      <button class="history-copy" data-i="${i}">↻ Повторить</button>`;
+    row.innerHTML = `<span class="history-text">${escapeHtml(entry.prompt)}</span><button class="history-copy" data-i="${i}">↻ Повторить</button>`;
     row.querySelector('button').addEventListener('click', () => {
       $('imgPrompt').value = entry.prompt;
       $('imgCount').value = entry.count || 4;
@@ -1839,7 +1845,6 @@ function renderImgHistory() {
     el.appendChild(row);
   });
 }
-
 function addImgHistory(prompt, count) {
   imgState.history = imgState.history.filter(h => h.prompt !== prompt);
   imgState.history.unshift({ prompt, count, ts: Date.now() });
@@ -1847,11 +1852,8 @@ function addImgHistory(prompt, count) {
   storage.set('imgHistory', imgState.history);
   renderImgHistory();
 }
-
 $('clearImgHistory').addEventListener('click', () => {
-  imgState.history = [];
-  storage.set('imgHistory', []);
-  renderImgHistory();
+  imgState.history = []; storage.set('imgHistory', []); renderImgHistory();
 });
 
 async function downloadSingle(url, filename, btn) {
@@ -1862,11 +1864,8 @@ async function downloadSingle(url, filename, btn) {
     const blob = await resp.blob();
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = blobUrl; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
     if (btn) {
       btn.textContent = '✓ Готово';
@@ -1928,24 +1927,19 @@ function renderImages() {
 
 async function generateImages() {
   if (imgState.generating) return;
-
   if (!imgState.apiKey) {
     setImgStatus('Не удалось сгенерировать', 'error');
     const info = explainError(new Error('Не указан ключ'), 'pollinations');
-    addImgLog(info.detail, 'err');
-    addImgLog('Подсказка: ' + info.hint, 'warn');
+    addImgLog(info.detail, 'err'); addImgLog('Подсказка: ' + info.hint, 'warn');
     return;
   }
-
   const prompt = $('imgPrompt').value.trim();
   if (!prompt) {
     setImgStatus('Введи описание картинки', 'error');
     addImgLog('Не удалось начать генерацию: пустое описание.', 'err');
     return;
   }
-
   const count = Math.max(1, parseInt($('imgCount').value) || 1);
-
   imgState.generating = true;
   $('btnGenerateImages').disabled = true;
   $('btnDownloadAll').classList.add('hidden');
@@ -1957,16 +1951,12 @@ async function generateImages() {
   setImgStatus('Генерация...', 'loading');
 
   let okCount = 0, errCount = 0;
-  let lastError = null;
-
   for (let i = 1; i <= count; i++) {
     try {
       addImgLog(`Генерирую картинку ${i} из ${count}...`, 'info');
       setImgStatus(`Картинка ${i} из ${count}...`, 'loading');
       const seed = randInt(1, 999999);
       const url = `https://gen.pollinations.ai/image/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&key=${encodeURIComponent(imgState.apiKey)}`;
-
-      // Предзагрузка картинки, чтобы отловить ошибку до отображения
       await new Promise((resolve, reject) => {
         const testImg = new Image();
         const timeout = setTimeout(() => reject(new Error('Таймаут загрузки (60 сек)')), 60000);
@@ -1974,7 +1964,6 @@ async function generateImages() {
         testImg.onerror = () => { clearTimeout(timeout); reject(new Error('Не удалось загрузить')); };
         testImg.src = url;
       });
-
       imgState.images.push({ url, prompt, id: i });
       renderImages();
       okCount++;
@@ -1982,7 +1971,6 @@ async function generateImages() {
       if (i < count) await new Promise(r => setTimeout(r, 1200));
     } catch (err) {
       errCount++;
-      lastError = err;
       const info = explainError(err, 'pollinations');
       addImgLog(`✗ Картинка ${i}: ${info.detail}`, 'err');
       addImgLog('Подсказка: ' + info.hint, 'warn');
@@ -1990,15 +1978,9 @@ async function generateImages() {
   }
   imgState.generating = false;
   $('btnGenerateImages').disabled = false;
-
   if (okCount > 0) {
-    if (errCount === 0) {
-      setImgStatus(`Готово: ${okCount} картинок`, 'success');
-      addImgLog(`✓ Завершено: ${okCount} успешно`, 'ok');
-    } else {
-      setImgStatus(`Готово: ${okCount} из ${count}`, 'success');
-      addImgLog(`Завершено: ${okCount} успешно, ${errCount} с ошибкой`, 'warn');
-    }
+    setImgStatus(`Готово: ${okCount} из ${count}`, 'success');
+    addImgLog(`Завершено: ${okCount} успешно, ${errCount} с ошибкой`, errCount === 0 ? 'ok' : 'warn');
     addImgHistory(prompt, count);
   } else {
     setImgStatus('Не удалось сгенерировать', 'error');
@@ -2046,9 +2028,7 @@ function renderPwdHistory() {
   pwdHistory.forEach((pwd, i) => {
     const row = document.createElement('div');
     row.className = 'history-item';
-    row.innerHTML = `
-      <span class="history-text">${escapeHtml(pwd)}</span>
-      <button class="history-copy" data-i="${i}">Копировать</button>`;
+    row.innerHTML = `<span class="history-text">${escapeHtml(pwd)}</span><button class="history-copy" data-i="${i}">Копировать</button>`;
     row.querySelector('button').addEventListener('click', () => {
       navigator.clipboard.writeText(pwd).then(() => {
         const btn = row.querySelector('button');
@@ -2059,7 +2039,6 @@ function renderPwdHistory() {
     el.appendChild(row);
   });
 }
-
 function addPwdHistory(pwd) {
   pwdHistory = pwdHistory.filter(p => p !== pwd);
   pwdHistory.unshift(pwd);
@@ -2067,11 +2046,8 @@ function addPwdHistory(pwd) {
   storage.set('pwdHistory', pwdHistory);
   renderPwdHistory();
 }
-
 $('clearPwdHistory').addEventListener('click', () => {
-  pwdHistory = [];
-  storage.set('pwdHistory', []);
-  renderPwdHistory();
+  pwdHistory = []; storage.set('pwdHistory', []); renderPwdHistory();
 });
 
 function generatePassword(saveToHistory = true) {
@@ -2116,16 +2092,10 @@ $('pwdLen').addEventListener('input', (e) => {
   generatePassword(false);
   storage.set('pwdLen', e.target.value);
 });
-
 ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous'].forEach(id => {
-  $(id).addEventListener('change', () => {
-    generatePassword(false);
-    storage.set(id, $(id).checked);
-  });
+  $(id).addEventListener('change', () => { generatePassword(false); storage.set(id, $(id).checked); });
 });
-
 $('btnGenPwd').addEventListener('click', () => generatePassword(true));
-
 $('btnCopyPwd').addEventListener('click', () => {
   if (!pwdOutput.value) return;
   navigator.clipboard.writeText(pwdOutput.value).then(() => {

@@ -818,80 +818,13 @@
     color: var(--accent2);
   }
 
-  /* ============ ВРЕМЕННАЯ ПОЧТА ============ */
-  .tempmail-box { display: flex; flex-direction: column; gap: 14px; }
-  .tempmail-address {
-    font-size: 18px; font-weight: 700; font-family: Consolas, monospace;
-    padding: 14px 18px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border);
-    cursor: pointer; text-align: center; transition: border-color .15s, background .15s; word-break: break-all;
-    position: relative; user-select: none;
-  }
-  .tempmail-address:hover { border-color: var(--accent1); background: var(--panel); }
-  .tempmail-address span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 4px; pointer-events: none; }
-  .tempmail-address.copied { border-color: #34d399; background: rgba(52, 211, 153, 0.08); }
-  
-  .tm-email-item { 
-    padding: 12px 14px; border-radius: 10px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 8px;
-    display: flex; flex-direction: column; gap: 4px; cursor: pointer; transition: border-color .15s, background .15s;
-  }
-  .tm-email-item:hover { border-color: var(--accent1); background: var(--panel); }
-  .tm-email-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .tm-email-info { flex: 1; min-width: 0; }
-  .tm-email-item .tm-from { font-size: 11px; color: var(--muted); }
-  .tm-email-item .tm-subj { font-weight: 600; font-size: 13px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tm-email-item .tm-body { font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; max-height: 60px; overflow: hidden; color: var(--muted); margin-top: 8px; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  
-  .tm-del-btn {
-    font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); 
-    background: var(--panel); color: var(--muted); cursor: pointer; flex-shrink: 0;
-    transition: border-color .15s, color .15s, background .15s;
-  }
-  .tm-del-btn:hover { border-color: #fb7185; color: #fb7185; background: rgba(251, 113, 133, 0.1); }
-  
-  .tm-refresh-timer { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
-
-  /* ============ МОДАЛЬНОЕ ОКНО ПИСЬМА ============ */
-  .mail-modal {
-    position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.7); padding: 20px; opacity: 0; transition: opacity 0.2s;
-  }
-  .mail-modal.open { display: flex; opacity: 1; }
-  .mail-modal-content {
-    width: min(700px, 100%); max-height: 85vh; background: var(--panel); border: 1px solid var(--border);
-    border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 20px 60px -10px rgba(0,0,0,0.8);
-    transform: translateY(20px); transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .mail-modal.open .mail-modal-content { transform: translateY(0); }
-  
-  .mail-modal-header {
-    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
-  }
-  .mail-modal-header-info { flex: 1; min-width: 0; }
-  .mail-modal-from { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .mail-modal-subj { font-size: 18px; font-weight: 700; line-height: 1.3; }
-  .mail-modal-close {
-    background: transparent; border: 1px solid var(--border); color: var(--muted);
-    width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .mail-modal-close:hover { border-color: #fb7185; color: #fb7185; }
-  
-  .mail-modal-body {
-    padding: 20px 24px; overflow-y: auto; flex: 1;
-    font-size: 14px; line-height: 1.7; word-break: break-word;
-    color: var(--text);
-  }
-  .mail-modal-body * { max-width: 100%; }
-
   /* ============ АНИМАЦИИ ============ */
   .main > section { animation: fadeInUp 0.4s ease-out both; }
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .comment, .image-card, .history-item, .tm-email-item { animation: itemFadeIn 0.3s ease-out both; }
+  .comment, .image-card, .history-item { animation: itemFadeIn 0.3s ease-out both; }
   @keyframes itemFadeIn {
     from { opacity: 0; transform: scale(0.98) translateY(4px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
@@ -909,9 +842,6 @@
   @media (max-width: 760px) {
     .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .main { padding: 16px; }
-    .mail-modal-header { padding: 16px; }
-    .mail-modal-body { padding: 16px; }
-    .mail-modal-subj { font-size: 16px; }
   }
 </style>
 </head>
@@ -929,7 +859,6 @@
     <li><button class="nav-link active" data-section="home"><span class="nav-icon">🏠</span> Главная</button></li>
     <li><button class="nav-link" data-section="comments"><span class="nav-icon">💬</span> Генератор комментариев</button></li>
     <li><button class="nav-link" data-section="images"><span class="nav-icon">🎨</span> Генерация картинок</button></li>
-    <li><button class="nav-link" data-section="tempmail"><span class="nav-icon">📬</span> Временная почта</button></li>
     <li><button class="nav-link" data-section="passwords"><span class="nav-icon">🔑</span> Генератор паролей</button></li>
   </ul>
 
@@ -1132,38 +1061,6 @@
     </div>
   </section>
 
-  <section id="section-tempmail" class="hidden">
-    <h1>Временная почта</h1>
-    <div class="explain">
-      <div class="explain-title">💡 Зачем это?</div>
-      <p>Временный ящик для регистраций на сайтах, чтобы не засорять основную почту. Почта живёт, пока вы не сгенерируете новую или не истечёт срок на сервере.</p>
-      <p>Работает через открытый API Guerrilla Mail (бесплатно, без ключей).</p>
-    </div>
-
-    <div class="panel">
-      <div class="tempmail-box">
-        <div id="tmEmail" class="tempmail-address">Генерация...</div>
-        <div class="buttons" style="margin-top:0;">
-          <button class="btn btn-primary" id="tmGen">✨ Сгенерировать новую</button>
-          <button class="btn" id="tmCheck">🔄 Проверить почту</button>
-          <button class="btn" id="tmDel" style="border-color: #fb7185; color: #fb7185;">🗑 Удалить почту</button>
-        </div>
-        <div class="status" id="tmStatus"></div>
-        <div class="tm-refresh-timer" id="tmTimer"></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="label" style="margin-bottom:12px;">Входящие письма</div>
-      <div id="tmList"></div>
-    </div>
-
-    <div class="log-box">
-      <h3>Лог работы</h3>
-      <div class="log-list" id="tmLog"></div>
-    </div>
-  </section>
-
   <section id="section-passwords" class="hidden">
     <h1>Генератор паролей</h1>
 
@@ -1210,20 +1107,6 @@
   </section>
 
 </main>
-
-<!-- МОДАЛЬНОЕ ОКНО ПИСЬМА -->
-<div class="mail-modal" id="mailModal">
-  <div class="mail-modal-content">
-    <div class="mail-modal-header">
-      <div class="mail-modal-header-info">
-        <div class="mail-modal-from" id="modalFrom"></div>
-        <div class="mail-modal-subj" id="modalSubj"></div>
-      </div>
-      <button class="mail-modal-close" id="modalClose">✕</button>
-    </div>
-    <div class="mail-modal-body" id="modalBody"></div>
-  </div>
-</div>
 
 <script>
 /* =========================================================================
@@ -1320,7 +1203,6 @@ const PAGE_TITLES = {
   home: 'Главная',
   comments: 'Генератор комментариев',
   images: 'Генерация картинок',
-  tempmail: 'Временная почта',
   passwords: 'Генератор паролей'
 };
 
@@ -1394,7 +1276,7 @@ themeBtn.addEventListener('click', () => {
    РОУТИНГ
    ========================================================================= */
 
-const SECTIONS = ['home', 'comments', 'images', 'tempmail', 'passwords'];
+const SECTIONS = ['home', 'comments', 'images', 'passwords'];
 
 function showSection(section) {
   SECTIONS.forEach(s => {
@@ -2133,302 +2015,6 @@ $('btnClearImages').addEventListener('click', () => {
   $('btnDownloadAll').classList.add('hidden');
   addImgLog('Очищено', 'info');
 });
-
-/* =========================================================================
-   ВРЕМЕННАЯ ПОЧТА (Guerrilla Mail) + МОДАЛЬНОЕ ОКНО
-   ========================================================================= */
-
-(function () {
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const sget = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } };
-  const sset = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const toastEl = document.querySelector('.toast'); let tt;
-  const toast = m => { if (!toastEl) return; toastEl.textContent = m; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('show'), 1800); };
-  const copy = t => navigator.clipboard.writeText(t).then(() => toast('Скопировано'), () => toast('Не удалось скопировать'));
-
-  const emailEl = $('tmEmail'), statusEl = $('tmStatus'), listEl = $('tmList'), logEl = $('tmLog'), timerEl = $('tmTimer');
-  const modal = $('mailModal'), modalClose = $('modalClose'), modalFrom = $('modalFrom'), modalSubj = $('modalSubj'), modalBody = $('modalBody');
-  
-  if (!emailEl) return;
-
-  let tmState = { email: '', sidToken: '', messages: [], checkTimer: null, countdownTimer: null };
-
-  function setStatus(t, type) { statusEl.textContent = t; statusEl.className = 'status' + (type ? ' ' + type : ''); }
-  function addLog(msg, type = '') {
-    if (!logEl) return;
-    const div = document.createElement('div'); div.className = 'log-item ' + type;
-    const now = new Date().toLocaleTimeString('ru-RU', { hour12: false });
-    const ts = document.createElement('span'); ts.className = 'log-time'; ts.textContent = `[${now}]`;
-    const xs = document.createElement('span'); xs.textContent = msg;
-    div.append(ts, xs); logEl.appendChild(div); logEl.scrollTop = logEl.scrollHeight;
-  }
-  function clearLog() { if (logEl) logEl.innerHTML = ''; }
-
-  // Звук при получении письма
-  let audioCtx;
-  function playNotificationSound() {
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
-      
-      gain.gain.setValueAtTime(0, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.02);
-      gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
-      
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.3);
-    } catch (e) {}
-  }
-
-  // Очистка тела письма: удаляем только скрипты и пустые теги, оставляя форматирование
-  function cleanBody(html) {
-    if (!html) return '';
-    // Удаляем опасные теги (script, style, iframe)
-    let clean = html.replace(/<(script|style|iframe|object|embed)[^>]*>[\s\S]*?<\/\1>/gi, '');
-    
-    // Создаём временный div, чтобы браузер сам распарсил HTML
-    const temp = document.createElement('div');
-    temp.innerHTML = clean;
-    
-    // Удаляем пустые div/spans/br, которые остались от вёрстки
-    // (но оставляем сами теги форматирования вроде p, b, i, a)
-    temp.querySelectorAll('div, span').forEach(el => {
-      if (!el.textContent.trim() && !el.querySelector('img')) {
-        el.remove();
-      }
-    });
-
-    // Убираем пустые параграфы
-    temp.querySelectorAll('p').forEach(el => {
-      if (!el.textContent.trim() && !el.querySelector('img')) {
-        el.remove();
-      }
-    });
-    
-    return temp.innerHTML.trim();
-  }
-
-  // Проверка на пустоту (после очистки)
-  function isEmptyHtml(html) {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    return !temp.textContent.trim() && !temp.querySelector('img');
-  }
-
-  function openModal(m) {
-    modalFrom.textContent = `От: ${m.mail_from || 'неизвестно'}`;
-    modalSubj.textContent = m.mail_subject || '(без темы)';
-    const clean = cleanBody(m.mail_body);
-    
-    if (isEmptyHtml(clean)) {
-      modalBody.innerHTML = '<span style="color: var(--muted); font-style: italic;">(пустое письмо)</span>';
-    } else {
-      modalBody.innerHTML = clean;
-    }
-    modal.classList.add('open');
-  }
-  function closeModal() { modal.classList.remove('open'); }
-
-  modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
-
-  function renderMessages() {
-    if (!listEl) return;
-    listEl.innerHTML = '';
-    if (!tmState.messages.length) {
-      listEl.innerHTML = '<div class="history-empty">Писем пока нет. Отправьте что-нибудь на этот адрес и нажмите «Проверить почту».</div>';
-      return;
-    }
-    tmState.messages.forEach(m => {
-      const div = document.createElement('div'); div.className = 'tm-email-item';
-      
-      const header = document.createElement('div'); header.className = 'tm-email-header';
-      const info = document.createElement('div'); info.className = 'tm-email-info';
-      info.innerHTML = `<div class="tm-from">От: ${m.mail_from || 'неизвестно'}</div>
-        <div class="tm-subj">${m.mail_subject || '(без темы)'}</div>`;
-      
-      const delBtn = document.createElement('button');
-      delBtn.className = 'tm-del-btn';
-      delBtn.textContent = '🗑 Удалить';
-      delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteMessage(m.mail_id, div); });
-      
-      header.append(info, delBtn);
-      
-      const body = document.createElement('div'); body.className = 'tm-body';
-      const clean = cleanBody(m.mail_body || m.mail_excerpt);
-      
-      if (isEmptyHtml(clean)) {
-        body.textContent = '(пустое письмо)';
-      } else {
-        // Для превью в списке оставляем только текст, убираем теги для компактности
-        const temp = document.createElement('div');
-        temp.innerHTML = clean;
-        body.textContent = temp.textContent.trim() || '(пустое письмо)';
-      }
-      
-      div.append(header, body);
-      div.addEventListener('click', () => openModal(m));
-      listEl.appendChild(div);
-    });
-  }
-
-  async function api(params) {
-    const url = new URL('https://api.guerrillamail.com/ajax.php');
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-    const res = await fetch(url.toString());
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Guerrilla Mail API ${res.status}: ${err.slice(0, 100)}`);
-    }
-    return res.json();
-  }
-
-  async function generate() {
-    if (tmState.checkTimer) { clearInterval(tmState.checkTimer); tmState.checkTimer = null; }
-    if (tmState.countdownTimer) { clearInterval(tmState.countdownTimer); tmState.countdownTimer = null; }
-    
-    emailEl.textContent = 'Генерация...';
-    emailEl.classList.remove('copied');
-    setStatus('Создаю почтовый ящик...', 'loading');
-    clearLog(); addLog('Запрос к Guerrilla Mail...', 'info');
-
-    try {
-      const data = await api({ f: 'get_email_address', ip: '127.0.0.1', agent: 'Mozilla/5.0' });
-      if (!data.email_addr) throw new Error('Не удалось получить адрес.');
-
-      tmState.email = data.email_addr;
-      tmState.sidToken = data.sid_token;
-      tmState.messages = [];
-      
-      emailEl.innerHTML = `${data.email_addr}<span>Нажмите, чтобы скопировать</span>`;
-      setStatus('Почта готова. Отправьте письмо и проверьте.', 'success');
-      addLog(`Почта ${data.email_addr} готова к работе.`, 'ok');
-      renderMessages();
-      sset('tm_email', data.email_addr); sset('tm_sid', data.sid_token);
-      
-      startAutoCheck();
-    } catch (e) {
-      setStatus('Не удалось создать почту: ' + e.message, 'error');
-      addLog(`Ошибка: ${e.message}`, 'err');
-      emailEl.innerHTML = 'Нажмите «Сгенерировать новую»';
-    }
-  }
-
-  async function check(silent = false) {
-    if (!tmState.sidToken) return;
-    if (!silent) { setStatus('Проверяю почту...', 'loading'); addLog('Запрос списка писем...', 'info'); }
-    try {
-      const data = await api({ f: 'check_email', seq: '0', sid_token: tmState.sidToken });
-      const msgs = data.list || [];
-      
-      if (!msgs.length) {
-        if (!silent) { setStatus('Почта работает, но писем пока нет.', 'success'); addLog('Почта работает. Писем нет.', 'ok'); }
-        return;
-      }
-      
-      if (!silent || msgs.length !== tmState.messages.length) {
-        setStatus(`Почта работает. Найдено писем: ${msgs.length}`, 'success');
-        addLog(`Найдено писем: ${msgs.length}`, 'ok');
-      }
-      
-      const newMessages = [];
-      let hasNew = false;
-      for (const m of msgs) {
-        const existing = tmState.messages.find(x => x.mail_id === m.mail_id);
-        if (existing) { newMessages.push(existing); } 
-        else {
-          const full = await api({ f: 'fetch_email', email_id: m.mail_id, sid_token: tmState.sidToken });
-          newMessages.push(full);
-          hasNew = true;
-          if (silent) addLog(`Пришло новое письмо от ${m.mail_from || 'неизвестно'}: ${m.mail_subject || '(без темы)'}`, 'ok');
-        }
-      }
-      tmState.messages = newMessages;
-      renderMessages();
-      
-      if (hasNew) playNotificationSound();
-    } catch (e) {
-      if (!silent) { setStatus('Проверка не удалась: ' + e.message, 'error'); addLog(`Ошибка проверки: ${e.message}`, 'err'); }
-    }
-  }
-
-  async function deleteMessage(mailId, el) {
-    if (!confirm('Удалить это письмо?')) return;
-    try {
-      await api({ f: 'del_email', email_ids: [mailId], sid_token: tmState.sidToken });
-      addLog('Письмо удалено', 'info');
-      el.style.opacity = '0';
-      setTimeout(() => {
-        tmState.messages = tmState.messages.filter(m => m.mail_id !== mailId);
-        renderMessages();
-      }, 200);
-    } catch (e) {
-      addLog(`Ошибка удаления: ${e.message}`, 'err');
-    }
-  }
-
-  async function deleteMailbox() {
-    if (!confirm('Удалить текущую почту и создать новую?')) return;
-    sset('tm_email', ''); sset('tm_sid', '');
-    generate();
-  }
-
-  function startAutoCheck() {
-    if (tmState.checkTimer) clearInterval(tmState.checkTimer);
-    if (tmState.countdownTimer) clearInterval(tmState.countdownTimer);
-    
-    let counter = 10;
-    if (timerEl) timerEl.textContent = `Автообновление через ${counter} сек...`;
-    
-    tmState.countdownTimer = setInterval(() => {
-      counter--;
-      if (counter <= 0) counter = 10;
-      if (timerEl) timerEl.textContent = `Автообновление через ${counter} сек...`;
-    }, 1000);
-
-    tmState.checkTimer = setInterval(() => {
-      counter = 10;
-      check(true);
-    }, 10000);
-  }
-
-  emailEl.addEventListener('click', () => {
-    if (!tmState.email) return;
-    navigator.clipboard.writeText(tmState.email).then(() => {
-      emailEl.classList.add('copied');
-      toast('Адрес скопирован');
-      setTimeout(() => emailEl.classList.remove('copied'), 800);
-    }).catch(() => toast('Не удалось скопировать'));
-  });
-
-  $('tmGen').addEventListener('click', generate);
-  $('tmCheck').addEventListener('click', () => check(false));
-  $('tmDel').addEventListener('click', deleteMailbox);
-
-  const savedEmail = sget('tm_email', ''), savedSid = sget('tm_sid', '');
-  if (savedEmail && savedSid) {
-    tmState.email = savedEmail; tmState.sidToken = savedSid; tmState.messages = [];
-    emailEl.innerHTML = `${savedEmail}<span>Нажмите, чтобы скопировать</span>`;
-    setStatus('Почта восстановлена. Проверяю...', 'info');
-    addLog('Почта восстановлена из localStorage.', 'info');
-    check(true);
-    startAutoCheck();
-  } else {
-    generate();
-  }
-})();
 
 /* =========================================================================
    ПАРОЛИ

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Главная — Сайт-помощник</title>
+<link rel="icon" href="data:,">
 <style>
   :root {
     --bg: #0a0c11;
@@ -36,6 +37,25 @@
     line-height: 1.5;
     min-height: 100vh;
     transition: background 0.25s, color 0.25s;
+    overflow-x: hidden;
+  }
+
+  /* ============ ЛЁГКИЙ СТАТИЧНЫЙ ФОН ============ */
+  /* Радиальный градиент рисуется один раз и не грузит процессор */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background: 
+      radial-gradient(circle at 15% 50%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  body.light::before {
+    background: 
+      radial-gradient(circle at 15% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
   }
 
   .topbar {
@@ -81,6 +101,7 @@
     border-color: var(--accent1);
     box-shadow: 0 0 10px rgba(99, 102, 241, 0.35);
   }
+  .menu-btn:active, .theme-btn:active { transform: scale(0.96); }
   .theme-btn { padding: 8px 12px; font-size: 16px; min-width: 44px; }
 
   .overlay {
@@ -178,6 +199,7 @@
     box-shadow: inset 3px 0 0 var(--accent1);
   }
   .nav-link .nav-icon { font-size: 17px; flex-shrink: 0; }
+
   .sidebar-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border);
@@ -197,12 +219,9 @@
     margin-right: 6px;
     animation: blink 2s infinite;
   }
-  .sidebar-footer a { color: var(--accent2); text-decoration: none; font-weight: 600; }
-  .tg-sparkle { animation: sparkle 1.6s infinite; display: inline-block; }
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-  @keyframes sparkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-  .main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  .main { max-width: 1400px; margin: 0 auto; padding: 24px; position: relative; }
   h1 { font-size: 20px; margin-bottom: 18px; font-weight: 700; }
   .panel {
     background: var(--panel);
@@ -211,6 +230,7 @@
     padding: 16px;
     margin-bottom: 16px;
   }
+
   .label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 
   .home-hero { text-align: center; padding: 28px 20px 20px; }
@@ -303,15 +323,12 @@
   .mode-btn.active { color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
   .mode-btn.active[data-mode="free"] {
     background: linear-gradient(135deg, #16a34a, #22c55e);
-    box-shadow: 0 0 18px rgba(34, 197, 94, 0.45), 0 0 36px rgba(34, 197, 94, 0.2);
   }
   .mode-btn.active[data-mode="deepseek"] {
     background: linear-gradient(135deg, #3b6fd4, #4f8ef7);
-    box-shadow: 0 0 18px rgba(79, 142, 247, 0.45), 0 0 36px rgba(79, 142, 247, 0.2);
   }
   .mode-btn.active[data-mode="pollinations"] {
     background: linear-gradient(135deg, #ea580c, #f97316);
-    box-shadow: 0 0 18px rgba(249, 115, 22, 0.45), 0 0 36px rgba(249, 115, 22, 0.2);
   }
 
   .limit-warn {
@@ -402,8 +419,12 @@
     font-size: 13px;
     font-family: inherit;
     outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
   }
-  input:focus, textarea:focus, select:focus { border-color: var(--accent1); }
+  input:focus, textarea:focus, select:focus { 
+    border-color: var(--accent1); 
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
   textarea { resize: vertical; min-height: 70px; }
 
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -418,6 +439,11 @@
     border-radius: 8px;
     padding: 4px 8px;
     width: 160px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .num-field:focus-within {
+    border-color: var(--accent1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
   }
   .num-field label { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .num-field input {
@@ -428,6 +454,7 @@
     font-size: 13px;
     text-align: center;
     padding: 4px 0;
+    box-shadow: none !important;
   }
 
   .checks { display: flex; gap: 18px; flex-wrap: wrap; margin: 12px 0; }
@@ -439,12 +466,15 @@
     color: var(--muted);
     cursor: pointer;
     user-select: none;
+    transition: color 0.2s;
   }
-  .check input { accent-color: var(--accent1); }
+  .check:hover { color: var(--text); }
+  .check input { accent-color: var(--accent1); cursor: pointer; }
 
   .btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: 10px 18px;
     border-radius: 10px;
@@ -454,24 +484,23 @@
     font-size: 13px;
     cursor: pointer;
     font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+    transition: all 0.2s ease;
   }
-  .btn:hover { border-color: var(--accent1); box-shadow: 0 0 10px rgba(99, 102, 241, 0.35); }
+  .btn:hover { border-color: var(--accent1); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); transform: translateY(-1px); }
   .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
 
   .btn-primary {
     background: linear-gradient(135deg, var(--accent1), var(--accent2));
     border-color: transparent;
     color: #fff;
     font-weight: 600;
-    box-shadow: 0 0 14px rgba(99, 102, 241, 0.45), 0 0 28px rgba(168, 85, 247, 0.25);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
   }
   .btn-primary:hover {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.7), 0 0 40px rgba(168, 85, 247, 0.45);
-    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
   }
-  .btn-primary:active { transform: scale(0.98); }
   .btn-primary:disabled { box-shadow: none; transform: none; }
 
   .buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
@@ -497,7 +526,7 @@
     color: #6366f1;
     text-decoration: none;
     border-bottom: 1px dashed rgba(99, 102, 241, 0.5);
-    transition: color 0.15s, border-color 0.15s;
+    transition: color 0.2s;
   }
   .key-links a:hover { color: var(--accent2); border-bottom-color: var(--accent2); }
   body.light .key-links a { color: #4338ca; }
@@ -528,11 +557,13 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    animation: cardPop 0.3s ease-out both;
   }
   .image-card:hover {
     border-color: var(--img-accent);
-    box-shadow: 0 0 14px rgba(34, 211, 238, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 211, 238, 0.15);
   }
   .image-card img {
     width: 100%;
@@ -562,12 +593,11 @@
     font-size: 11px;
     cursor: pointer;
     font-family: inherit;
-    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    transition: all 0.2s;
   }
   .image-card .btn-download:hover {
     border-color: var(--img-accent);
     color: var(--img-accent);
-    box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
   }
   .image-card .btn-download:disabled { opacity: 0.5; cursor: wait; }
 
@@ -577,6 +607,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px 14px;
+    animation: cardPop 0.3s ease-out both;
   }
   .comment-head {
     display: flex;
@@ -596,12 +627,11 @@
     color: var(--muted);
     cursor: pointer;
     font-family: inherit;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: all 0.2s;
   }
   .comment-actions button:hover {
     border-color: var(--accent1);
     color: var(--text);
-    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
   }
 
   .history-box {
@@ -648,7 +678,7 @@
     text-transform: none;
     letter-spacing: normal;
     font-weight: 400;
-    transition: border-color 0.15s, color 0.15s;
+    transition: all 0.2s;
   }
   .history-clear:hover { border-color: #fb7185; color: #fb7185; }
   .history-list {
@@ -668,7 +698,9 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 12px;
+    transition: border-color 0.2s;
   }
+  .history-item:hover { border-color: var(--accent1); }
   .history-item .history-text {
     font-family: "SF Mono", Consolas, monospace;
     flex: 1;
@@ -685,7 +717,7 @@
     cursor: pointer;
     font-family: inherit;
     flex-shrink: 0;
-    transition: border-color 0.15s, color 0.15s;
+    transition: all 0.2s;
   }
   .history-item .history-copy:hover { border-color: var(--accent1); color: var(--text); }
   .history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 12px; }
@@ -714,7 +746,6 @@
     height: 8px;
     border-radius: 50%;
     background: var(--accent2);
-    box-shadow: 0 0 8px var(--accent2);
   }
   .log-list {
     max-height: 300px;
@@ -771,7 +802,6 @@
     height: 8px;
     border-radius: 50%;
     background: var(--img-accent);
-    box-shadow: 0 0 8px var(--img-accent);
   }
   .img-log-list {
     max-height: 300px;
@@ -808,8 +838,8 @@
     letter-spacing: 0.5px;
   }
   .strength { display: flex; gap: 4px; margin: 10px 0 4px; }
-  .strength span { flex: 1; height: 5px; border-radius: 3px; background: var(--border); }
-  input[type="range"] { width: 100%; accent-color: var(--accent1); }
+  .strength span { flex: 1; height: 5px; border-radius: 3px; background: var(--border); transition: background 0.4s; }
+  input[type="range"] { width: 100%; accent-color: var(--accent1); cursor: pointer; }
   .slider-value {
     display: inline-block;
     min-width: 30px;
@@ -818,23 +848,18 @@
     color: var(--accent2);
   }
 
-  /* ============ АНИМАЦИИ ============ */
-  .main > section { animation: fadeInUp 0.4s ease-out both; }
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(12px); }
+  /* ============ ЛЁГКИЕ АНИМАЦИИ ПОЯВЛЕНИЯ ============ */
+  .main > section { 
+    animation: fadeUp 0.3s ease-out both; 
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .comment, .image-card, .history-item { animation: itemFadeIn 0.3s ease-out both; }
-  @keyframes itemFadeIn {
-    from { opacity: 0; transform: scale(0.98) translateY(4px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  .btn, .mode-btn, .nav-link, .tab-text, .tab-image { transition: all 0.2s ease; }
-  .btn:hover:not(:disabled), .mode-btn:hover:not(.active), .nav-link:hover:not(.active) { transform: translateY(-1px); }
-  .online-dot { animation: pulseDot 2s infinite; }
-  @keyframes pulseDot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.9); }
+
+  @keyframes cardPop {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .hidden { display: none !important; }
@@ -842,6 +867,15 @@
   @media (max-width: 760px) {
     .image-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     .main { padding: 16px; }
+  }
+
+  /* Уважение к настройкам ОС (для слабых устройств) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
@@ -864,9 +898,6 @@
 
   <div class="sidebar-footer">
     <span><span class="online-dot"></span>Онлайн: <b id="onlineCount">1</b></span>
-    <span><span class="tg-sparkle">✨</span>
-      <a href="https://t.me/guiiderr" target="_blank" rel="noopener">Телеграм канал проекта</a>
-    </span>
   </div>
 </aside>
 
@@ -1095,14 +1126,6 @@
       <div class="buttons">
         <button class="btn btn-primary" id="btnGenPwd">Сгенерировать</button>
       </div>
-    </div>
-
-    <div class="history-box">
-      <h3>
-        <span class="h3-text">Последние пароли</span>
-        <button class="history-clear" id="clearPwdHistory">Очистить</button>
-      </h3>
-      <div class="history-list" id="pwdHistory"></div>
     </div>
   </section>
 
@@ -1700,6 +1723,7 @@ function renderComments() {
   state.comments.forEach((text, i) => {
     const div = document.createElement('div');
     div.className = 'comment';
+    div.style.animationDelay = `${i * 0.03}s`;
     div.innerHTML = `
       <div class="comment-head"><span class="comment-num">#${i + 1}</span></div>
       <div class="comment-text">${escapeHtml(text)}</div>
@@ -1924,6 +1948,7 @@ function renderImages() {
   imgState.images.forEach((item, i) => {
     const card = document.createElement('div');
     card.className = 'image-card';
+    card.style.animationDelay = `${i * 0.03}s`;
     card.innerHTML = `
       <img src="${item.url}" alt="Сгенерированная картинка ${i + 1}" loading="lazy">
       <div class="image-footer">
@@ -2030,41 +2055,7 @@ const CHARS = {
 const SIMILAR = 'il1Lo0O';
 const AMBIGUOUS = '{}[]()/\\\'"`~,;:.<>';
 
-let pwdHistory = storage.get('pwdHistory', []);
-
-function renderPwdHistory() {
-  const el = $('pwdHistory');
-  if (!pwdHistory.length) {
-    el.innerHTML = '<div class="history-empty">Пока ничего не сгенерировано</div>';
-    return;
-  }
-  el.innerHTML = '';
-  pwdHistory.forEach((pwd, i) => {
-    const row = document.createElement('div');
-    row.className = 'history-item';
-    row.innerHTML = `<span class="history-text">${escapeHtml(pwd)}</span><button class="history-copy" data-i="${i}">Копировать</button>`;
-    row.querySelector('button').addEventListener('click', () => {
-      navigator.clipboard.writeText(pwd).then(() => {
-        const btn = row.querySelector('button');
-        btn.textContent = '✓';
-        setTimeout(() => btn.textContent = 'Копировать', 1200);
-      });
-    });
-    el.appendChild(row);
-  });
-}
-function addPwdHistory(pwd) {
-  pwdHistory = pwdHistory.filter(p => p !== pwd);
-  pwdHistory.unshift(pwd);
-  pwdHistory = pwdHistory.slice(0, 10);
-  storage.set('pwdHistory', pwdHistory);
-  renderPwdHistory();
-}
-$('clearPwdHistory').addEventListener('click', () => {
-  pwdHistory = []; storage.set('pwdHistory', []); renderPwdHistory();
-});
-
-function generatePassword(saveToHistory = true) {
+function generatePassword() {
   const len = parseInt($('pwdLen').value);
   let pool = '';
   if ($('pwdUpper').checked) pool += CHARS.upper;
@@ -2081,7 +2072,6 @@ function generatePassword(saveToHistory = true) {
   for (let i = 0; i < len; i++) pwd += pool[arr[i] % pool.length];
   pwdOutput.value = pwd;
   updateStrength(pwd);
-  if (saveToHistory) addPwdHistory(pwd);
 }
 
 function updateStrength(pwd) {
@@ -2103,13 +2093,13 @@ function updateStrength(pwd) {
 
 $('pwdLen').addEventListener('input', (e) => {
   $('pwdLenVal').textContent = e.target.value;
-  generatePassword(false);
+  generatePassword();
   storage.set('pwdLen', e.target.value);
 });
 ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous'].forEach(id => {
-  $(id).addEventListener('change', () => { generatePassword(false); storage.set(id, $(id).checked); });
+  $(id).addEventListener('change', () => { generatePassword(); storage.set(id, $(id).checked); });
 });
-$('btnGenPwd').addEventListener('click', () => generatePassword(true));
+$('btnGenPwd').addEventListener('click', generatePassword);
 $('btnCopyPwd').addEventListener('click', () => {
   if (!pwdOutput.value) return;
   navigator.clipboard.writeText(pwdOutput.value).then(() => {
@@ -2128,7 +2118,7 @@ function restorePwdSettings() {
     const def = id === 'pwdUpper' || id === 'pwdLower' || id === 'pwdDigits';
     $(id).checked = storage.get(id, def);
   });
-  generatePassword(false);
+  generatePassword();
 }
 
 /* =========================================================================
@@ -2138,7 +2128,6 @@ function restorePwdSettings() {
 restoreSettings();
 restorePwdSettings();
 renderImgHistory();
-renderPwdHistory();
 handleHash();
 
 if (!location.hash) history.replaceState(null, '', '#home');

@@ -877,6 +877,23 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* Компактный калькулятор */
+  .calculator-wrap { max-width: 560px; margin: 0 auto; }
+  .calculator-panel { padding: 16px; }
+  .calculator-display { width: 100%; min-height: 48px; font-size: 20px !important; text-align: right; font-family: Consolas, monospace !important; }
+  .calculator-result { min-height: 44px; display: flex; align-items: center; justify-content: flex-end; text-align: right; color: #fff; font-size: 25px; line-height: 1.25; font-weight: 800; overflow-wrap: anywhere; padding: 9px 12px; margin-top: 10px; border-radius: 10px; background: linear-gradient(135deg, var(--accent1), var(--accent2)); border: 1px solid var(--accent2); box-shadow: 0 4px 16px rgba(99, 102, 241, .24); } 
+  .calculator-keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+  .calculator-key { min-height: 38px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--input-bg); color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .calculator-key:hover { border-color: var(--accent1); }
+  .calculator-key.operator { color: #c4b5fd; }
+  .calculator-key.equals { background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: white; border: 0; }
+  .calculator-history { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 10px; }
+  .calculator-history-list { display: flex; flex-direction: column; gap: 5px; max-height: 130px; overflow: auto; }
+  .calculator-history-item { display: flex; justify-content: space-between; gap: 8px; padding: 6px 8px; border-radius: 7px; background: var(--input-bg); font-size: 12px; }
+  .calculator-history-item button { border: 0; background: none; color: var(--accent1); cursor: pointer; }
+  @media (max-width: 600px) { .calculator-wrap { max-width: 100%; } .calculator-panel { padding: 12px; } .calculator-key { min-height: 36px; } }
+
 </style>
 </head>
 <body>
@@ -894,6 +911,7 @@
     <li><button class="nav-link" data-section="comments"><span class="nav-icon">💬</span> Генератор комментариев</button></li>
     <li><button class="nav-link" data-section="images"><span class="nav-icon">🎨</span> Генерация картинок</button></li>
     <li><button class="nav-link" data-section="passwords"><span class="nav-icon">🔑</span> Генератор паролей</button></li>
+    <li><button class="nav-link" data-section="calculator"><span class="nav-icon">🧮</span> Калькулятор</button></li>
   </ul>
 
   <div class="sidebar-footer">
@@ -925,6 +943,30 @@
         <div class="home-status">
           <span>🛠</span> <b>Статус:</b> в активной разработке. Обновления выходят по мере готовности.
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="section-calculator" class="hidden">
+    <h1>Калькулятор</h1>
+    <div class="calculator-wrap">
+      <div class="panel calculator-panel">
+        <input id="calculatorExpression" class="calculator-display" type="text" inputmode="decimal" placeholder="Введите пример" autocomplete="off" aria-label="Математическое выражение">
+        <div class="label" style="margin-top:10px;">Результат</div>
+        <div class="calculator-result" id="calculatorResult" aria-live="polite">0</div>
+        <div class="calculator-keys" id="calculatorKeys">
+          <button class="calculator-key operator" data-action="clear">C</button><button class="calculator-key operator" data-action="back">⌫</button><button class="calculator-key operator" data-insert="%">%</button><button class="calculator-key operator" data-insert="/">÷</button>
+          <button class="calculator-key" data-insert="7">7</button><button class="calculator-key" data-insert="8">8</button><button class="calculator-key" data-insert="9">9</button><button class="calculator-key operator" data-insert="*">×</button>
+          <button class="calculator-key" data-insert="4">4</button><button class="calculator-key" data-insert="5">5</button><button class="calculator-key" data-insert="6">6</button><button class="calculator-key operator" data-insert="-">−</button>
+          <button class="calculator-key" data-insert="1">1</button><button class="calculator-key" data-insert="2">2</button><button class="calculator-key" data-insert="3">3</button><button class="calculator-key operator" data-insert="+">+</button>
+          <button class="calculator-key" data-insert="(">(</button><button class="calculator-key" data-insert="0">0</button><button class="calculator-key" data-insert=".">.</button><button class="calculator-key operator" data-insert="^">xʸ</button>
+          <button class="calculator-key" data-insert=")">)</button><button class="calculator-key" data-insert="sqrt(">√</button><button class="calculator-key" data-insert="pi">π</button><button class="calculator-key equals" data-action="equals">=</button>
+        </div>
+        <div class="calculator-history">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><b style="font-size:13px;">История вычислений</b><button class="btn" id="calculatorClearHistory" type="button">Очистить</button></div>
+          <div class="calculator-history-list" id="calculatorHistory"><span class="muted" style="font-size:12px;">Пока нет вычислений.</span></div>
+        </div>
+        <div class="status" id="calculatorStatus" role="status"></div>
       </div>
     </div>
   </section>
@@ -1226,7 +1268,8 @@ const PAGE_TITLES = {
   home: 'Главная',
   comments: 'Генератор комментариев',
   images: 'Генерация картинок',
-  passwords: 'Генератор паролей'
+  passwords: 'Генератор паролей',
+  calculator: 'Калькулятор'
 };
 
 function updatePageTitle(section) {
@@ -1299,7 +1342,7 @@ themeBtn.addEventListener('click', () => {
    РОУТИНГ
    ========================================================================= */
 
-const SECTIONS = ['home', 'comments', 'images', 'passwords'];
+const SECTIONS = ['home', 'comments', 'images', 'passwords', 'calculator'];
 
 function showSection(section) {
   SECTIONS.forEach(s => {
@@ -2121,12 +2164,69 @@ function restorePwdSettings() {
   generatePassword();
 }
 
+
+/* =========================================================================
+   КАЛЬКУЛЯТОР: безопасный разбор выражений без eval()
+   ========================================================================= */
+function evaluateCalculatorExpression(source) {
+  const input = source.replace(/,/g, '.').replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/π/g, 'pi').replace(/\s+/g, '');
+  if (!input) throw new Error('Введите пример');
+  let pos = 0;
+  function eat(ch) { if (input.slice(pos, pos + ch.length).toLowerCase() === ch.toLowerCase()) { pos += ch.length; return true; } return false; }
+  function expression() { let v = term(); while (true) { if (eat('+')) v += term(); else if (eat('-')) v -= term(); else break; } return v; }
+  function term() { let v = power(); while (true) { if (eat('*')) v *= power(); else if (eat('/')) { const d = power(); if (d === 0) throw new Error('На ноль делить нельзя'); v /= d; } else break; } return v; }
+  function power() { let v = unary(); if (eat('^')) v = Math.pow(v, power()); return v; }
+  function unary() { if (eat('+')) return unary(); if (eat('-')) return -unary(); return postfix(); }
+  function postfix() { let v = primary(); while (eat('%')) v /= 100; return v; }
+  function primary() {
+    if (eat('(')) { const v = expression(); if (!eat(')')) throw new Error('Не закрыта скобка'); return v; }
+    if (eat('sqrt(')) { const v = expression(); if (!eat(')')) throw new Error('Не закрыта скобка'); if (v < 0) throw new Error('Нельзя извлечь корень из отрицательного числа'); return Math.sqrt(v); }
+    if (eat('pi')) return Math.PI;
+    const m = input.slice(pos).match(/^(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?/i);
+    if (!m) throw new Error('Проверьте выражение');
+    pos += m[0].length; return Number(m[0]);
+  }
+  const result = expression();
+  if (pos !== input.length) throw new Error('Лишние символы в выражении');
+  if (!Number.isFinite(result)) throw new Error('Результат слишком большой или не определён');
+  return Number.parseFloat(result.toPrecision(12)).toString();
+}
+let calculatorHistory = storage.get('calculatorHistory', []);
+function renderCalculatorHistory() {
+  const el = $('calculatorHistory'); if (!el) return;
+  el.innerHTML = calculatorHistory.length ? calculatorHistory.map((x, i) => `<div class="calculator-history-item"><span>${x.expr} = <b>${x.result}</b></span><button type="button" data-history-index="${i}" title="Вернуть пример">↶</button></div>`).join('') : '<span class="muted" style="font-size:12px;">Пока нет вычислений.</span>';
+  el.querySelectorAll('[data-history-index]').forEach(b => b.addEventListener('click', () => { $('calculatorExpression').value = calculatorHistory[Number(b.dataset.historyIndex)].expr; calculateCalculator(); }));
+}
+function calculateCalculator() {
+  const expr = $('calculatorExpression').value.trim();
+  try {
+    const result = evaluateCalculatorExpression(expr); $('calculatorResult').textContent = result; $('calculatorStatus').textContent = '';
+    if (expr) { calculatorHistory = [{expr, result}, ...calculatorHistory.filter(x => x.expr !== expr)].slice(0, 20); storage.set('calculatorHistory', calculatorHistory); renderCalculatorHistory(); }
+    $('calculatorExpression').value = '';
+    return result;
+  } catch (e) { $('calculatorResult').textContent = '—'; $('calculatorStatus').textContent = e.message; return null; }
+}
+function insertCalculatorText(value) {
+  const input = $('calculatorExpression'); const start = input.selectionStart ?? input.value.length; const end = input.selectionEnd ?? input.value.length;
+  input.value = input.value.slice(0, start) + value + input.value.slice(end); input.focus(); input.setSelectionRange(start + value.length, start + value.length);
+}
+$('calculatorKeys')?.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.action === 'clear') { $('calculatorExpression').value = ''; $('calculatorResult').textContent = '0'; $('calculatorStatus').textContent = ''; }
+  else if (b.dataset.action === 'back') { const i = $('calculatorExpression'), a = i.selectionStart ?? i.value.length, z = i.selectionEnd ?? a; i.setRangeText('', a === z ? Math.max(0, a - 1) : a, z, 'end'); i.focus(); }
+  else if (b.dataset.action === 'equals') calculateCalculator();
+  else if (b.dataset.insert) insertCalculatorText(b.dataset.insert);
+});
+$('calculatorExpression')?.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculateCalculator(); } else if (e.key === 'Escape') { e.target.value = ''; $('calculatorResult').textContent = '0'; $('calculatorStatus').textContent = ''; } });
+$('calculatorClearHistory')?.addEventListener('click', () => { calculatorHistory = []; storage.set('calculatorHistory', calculatorHistory); renderCalculatorHistory(); });
+
 /* =========================================================================
    ИНИЦИАЛИЗАЦИЯ
    ========================================================================= */
 
 restoreSettings();
 restorePwdSettings();
+renderCalculatorHistory();
 renderImgHistory();
 handleHash();
 

@@ -837,6 +837,17 @@
     font-size: 15px;
     letter-spacing: 0.5px;
   }
+  .pwd-disclaimer { background: var(--input-bg); border: 1px solid var(--border); border-left: 3px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; line-height: 1.65; color: var(--text); }
+  .pwd-disclaimer b { display: block; margin-bottom: 4px; }
+  .notes-form { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 10px; align-items: end; }
+  .notes-form .label { display: block; margin-bottom: 4px; }
+  .notes-empty { margin-top: 14px; font-size: 13px; color: var(--muted); }
+  .notes-list { display: grid; gap: 8px; margin-top: 14px; }
+  .notes-item { display: grid; grid-template-columns: 1.2fr 1fr 1.2fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); font-size: 13px; }
+  .notes-item span { min-width: 0; overflow-wrap: anywhere; }
+  .notes-item .notes-pass { font-family: "SF Mono", Consolas, monospace; }
+  .notes-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  @media (max-width: 720px) { .notes-form { grid-template-columns: 1fr; } .notes-item { grid-template-columns: 1fr; } .notes-actions { justify-content: flex-start; } }
   .strength { display: flex; gap: 4px; margin: 10px 0 4px; }
   .strength span { flex: 1; height: 5px; border-radius: 3px; background: var(--border); transition: background 0.4s; }
   input[type="range"] { width: 100%; accent-color: var(--accent1); cursor: pointer; }
@@ -1206,6 +1217,18 @@
   #cookieGateAccept{color:#07111f;background:linear-gradient(110deg,#67e8f9,#818cf8,#c084fc)}
   #cookieGateClose{color:#f8fafc;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22)}
   .cookie-gate-note{display:block;margin-top:14px;color:#94a3b8;font-size:11px}
+  /* Окно лицензионного соглашения раздела «Скачать» */
+  .download-gate{position:fixed;inset:0;z-index:21000;display:grid;place-items:center;padding:22px;background:rgba(3,7,18,.9);backdrop-filter:blur(12px)}
+  .download-gate[hidden]{display:none!important}
+  .download-gate-card{width:min(620px,100%);max-height:88vh;overflow:auto;padding:clamp(22px,5vw,38px);border:1px solid rgba(96,165,250,.35);border-radius:22px;background:linear-gradient(145deg,#17243b,#17172d 65%,#292047);color:#f8fafc;box-shadow:0 24px 80px rgba(0,0,0,.55)}
+  .download-gate-card h2{font-size:clamp(20px,3vw,26px);margin:0 0 14px;color:#f8fafc}
+  .download-gate-card p{font-size:14px;line-height:1.65;color:#cbd5e1;margin:0 0 12px}
+  .download-gate-card p:last-of-type{margin-bottom:22px}
+  .download-gate-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .download-gate-actions button{flex:1 1 190px;padding:13px 18px;border:0;border-radius:12px;font:inherit;font-weight:750;cursor:pointer}
+  #downloadGateAccept{color:#07111f;background:linear-gradient(110deg,var(--accent1,#67e8f9),var(--accent2,#818cf8),#c084fc)}
+  #downloadGateReject{color:#f8fafc;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22)}
+  @media(max-width:520px){.download-gate{padding:12px}.download-gate-card{border-radius:16px;max-height:92vh}.download-gate-card p{font-size:13px}.download-gate-actions button{flex:1 1 100%}}
   @media(prefers-reduced-motion:reduce){.animations-enabled .weather-hero,.animations-enabled .weather-hero:after,.animations-enabled .home-hero{animation:none!important}}
 
   /* WEATHER — responsive dashboard */
@@ -1325,7 +1348,7 @@
 
 
   <section id="section-downloads" class="hidden">
-    <h1>📥 Скачать программы</h1>
+    <h1>📥 Скачать</h1>
     <div class="panel downloads-intro">
       <p>Подборка установочных образов Windows. Нажми кнопку, чтобы открыть прямую загрузку ISO-файла.</p>
       <p class="muted" style="margin-top:6px;font-size:12px;">Файлы размещены на Archive.org. Перед установкой проверь системные требования и совместимость оборудования.</p>
@@ -1657,6 +1680,11 @@
   <section id="section-passwords" class="hidden">
     <h1>Генератор паролей</h1>
 
+    <div class="pwd-disclaimer">
+      <b>🔒 Где хранятся ваши данные</b>
+      Все данные в этом разделе, включая настройки генератора и ваши заметки, хранятся только в локальном хранилище вашего браузера на этом компьютере. Они не передаются на сервер и не синхронизируются, поэтому на другом устройстве или в другом браузере вы их не увидите. Если вы очистите данные браузера или смените профиль, заметки будут удалены безвозвратно, так что сохраняйте важные пароли ещё и в надёжном месте.
+    </div>
+
     <div class="explain">
       <div class="explain-title">💡 Зачем это?</div>
       <p>В интернете почти везде нужны пароли. И чем сложнее пароль, тем труднее его подобрать — а значит, тем безопаснее твой аккаунт.</p>
@@ -1689,6 +1717,19 @@
         <button class="btn btn-primary" id="btnGenPwd">Сгенерировать</button>
       </div>
     </div>
+
+    <div class="panel" id="pwdNotesPanel">
+      <h2 style="font-size:16px;margin-bottom:6px;">📝 Заметки</h2>
+      <p class="muted" style="font-size:12px;margin-bottom:12px;">Сохраняйте здесь пароли от сайтов (лучше не самых важных). Записи лежат только в этом браузере.</p>
+      <div class="notes-form">
+        <div><label class="label" for="noteSite">Сайт</label><input type="text" id="noteSite" placeholder="example.com" maxlength="120" autocomplete="off"></div>
+        <div><label class="label" for="noteLogin">Логин</label><input type="text" id="noteLogin" placeholder="Логин или e-mail" maxlength="120" autocomplete="off"></div>
+        <div><label class="label" for="notePass">Пароль</label><input type="password" id="notePass" placeholder="Пароль" maxlength="200" autocomplete="off"></div>
+        <button class="btn btn-primary" id="btnNoteAdd" type="button">Добавить</button>
+      </div>
+      <div class="notes-empty" id="notesEmpty">Пока нет ни одной записи.</div>
+      <div class="notes-list" id="notesList"></div>
+    </div>
   </section>
 
   <section id="section-worldclock" class="hidden">
@@ -1707,6 +1748,33 @@
       <p class="muted" id="speedNote">Тест использует измерительные серверы Cloudflare. Результат зависит от маршрута до сервера.</p><div id="speedHistory" class="speed-history"></div>
     </div>
   </section>
+
+<div class="cookie-gate" id="cookieGate" role="dialog" aria-modal="true" aria-labelledby="cookieGateTitle" hidden>
+  <div class="cookie-gate-card">
+    <h2 id="cookieGateTitle">🍪 Подтвердите использование cookies</h2>
+    <p>Utility Hub использует локальное хранилище браузера, чтобы сохранять настройки сайта и игровой прогресс. Чтобы продолжить работу с сайтом, примите использование этих данных. Выбор сохранится на этом устройстве на 90 дней.</p>
+    <div class="cookie-gate-actions">
+      <button id="cookieGateAccept" type="button">Принять</button>
+      <button id="cookieGateClose" type="button">Закрыть вкладку</button>
+    </div>
+    <small class="cookie-gate-note">Нажатие «Закрыть вкладку» означает отказ от использования сайта.</small>
+  </div>
+</div>
+
+<div class="download-gate" id="downloadGate" role="dialog" aria-modal="true" aria-labelledby="downloadGateTitle" hidden>
+  <div class="download-gate-card">
+    <h2 id="downloadGateTitle">ВАЖНАЯ ИНФОРМАЦИЯ</h2>
+    <p>Образы операционных систем Windows, представленные в данном разделе, взяты из открытых источников, доступных в сети Интернет, и предоставляются исключительно в информационных целях по принципу «как есть».</p>
+    <p>Администрация сайта не является правообладателем Windows и не предоставляет лицензии или ключи активации.</p>
+    <p>Устанавливая Windows с использованием представленных образов, вы самостоятельно несёте ответственность за соблюдение законодательства и условий лицензирования Microsoft.</p>
+    <p>Для активации операционной системы рекомендуем приобретать лицензионные ключи исключительно у официальных продавцов и в авторизованных магазинах.</p>
+    <p>Нажимая кнопку «Согласен», вы подтверждаете, что ознакомились с данной информацией и принимаете указанные условия.</p>
+    <div class="download-gate-actions">
+      <button id="downloadGateAccept" type="button">Согласен</button>
+      <button id="downloadGateReject" type="button">Отказаться</button>
+    </div>
+  </div>
+</div>
 
 </main>
 
@@ -2812,6 +2880,57 @@ $('calculatorClearHistory')?.addEventListener('click', () => { calculatorHistory
    ========================================================================= */
 
 restoreSettings();
+/* ---- Заметки с паролями (только localStorage) ---- */
+const NOTES_KEY = 'uhPasswordNotes';
+let pwdNotes = storage.get(NOTES_KEY, []);
+if (!Array.isArray(pwdNotes)) pwdNotes = [];
+function renderNotes() {
+  const list = $('notesList');
+  list.textContent = '';
+  $('notesEmpty').hidden = pwdNotes.length > 0;
+  pwdNotes.forEach((n, i) => {
+    const row = document.createElement('div');
+    row.className = 'notes-item';
+    const site = document.createElement('span'); site.textContent = n.site;
+    const login = document.createElement('span'); login.textContent = n.login || '—';
+    const pass = document.createElement('span'); pass.className = 'notes-pass'; pass.textContent = '********';
+    let shown = false;
+    const actions = document.createElement('div'); actions.className = 'notes-actions';
+    const bShow = document.createElement('button'); bShow.className = 'btn'; bShow.type = 'button'; bShow.textContent = 'Показать';
+    bShow.onclick = () => { shown = !shown; pass.textContent = shown ? n.pass : '********'; bShow.textContent = shown ? 'Скрыть' : 'Показать'; };
+    const bCopy = document.createElement('button'); bCopy.className = 'btn'; bCopy.type = 'button'; bCopy.textContent = 'Копировать';
+    bCopy.onclick = () => {
+      navigator.clipboard.writeText(n.pass).then(() => {
+        bCopy.textContent = 'Скопировано';
+        setTimeout(() => { bCopy.textContent = 'Копировать'; }, 1500);
+      }).catch(() => {});
+    };
+    const bDel = document.createElement('button'); bDel.className = 'btn'; bDel.type = 'button'; bDel.textContent = 'Удалить';
+    bDel.onclick = () => {
+      if (!confirm('Удалить запись для «' + n.site + '»?')) return;
+      pwdNotes.splice(i, 1);
+      storage.set(NOTES_KEY, pwdNotes);
+      renderNotes();
+    };
+    actions.append(bShow, bCopy, bDel);
+    row.append(site, login, pass, actions);
+    list.appendChild(row);
+  });
+}
+function addNote() {
+  const site = $('noteSite').value.trim();
+  const login = $('noteLogin').value.trim();
+  const pass = $('notePass').value;
+  if (!site || !pass) { (!site ? $('noteSite') : $('notePass')).focus(); return; }
+  pwdNotes.push({ site, login, pass });
+  storage.set(NOTES_KEY, pwdNotes);
+  $('noteSite').value = ''; $('noteLogin').value = ''; $('notePass').value = '';
+  renderNotes();
+}
+$('btnNoteAdd').addEventListener('click', addNote);
+['noteSite', 'noteLogin', 'notePass'].forEach(id => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') addNote(); }));
+renderNotes();
+
 restorePwdSettings();
 renderCalculatorHistory();
 renderImgHistory();
@@ -3025,7 +3144,7 @@ addLog('Готов к работе', 'info');
       const until=Date.now()+90*24*60*60*1000;
       try{localStorage.setItem(KEY,String(until));localStorage.setItem('utilityHubCookieConsent','accepted')}catch(e){}
       document.cookie='utilityHubCookieConsent=accepted; Max-Age=7776000; Path=/; SameSite=Lax';
-      gate.hidden=true;document.documentElement.style.overflow='';document.body.style.overflow='';
+      gate.hidden=true;const dlGate=document.getElementById('downloadGate');const keepLock=dlGate&&!dlGate.hidden?'hidden':'';document.documentElement.style.overflow=keepLock;document.body.style.overflow=keepLock;
     });
     close.addEventListener('click',()=>{
       // Браузеры могут запрещать закрытие вкладок, открытых вручную. Пробуем закрыть её;
@@ -3035,6 +3154,51 @@ addLog('Готов к работе', 'info');
     });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initCookieGate,{once:true});else initCookieGate();
+})();
+
+/* =========================================================================
+   DOWNLOAD GATE — лицензионное предупреждение раздела «Скачать» (183 дня)
+   ========================================================================= */
+(() => {
+  function initDownloadGate(){
+    const gate=document.getElementById('downloadGate');
+    const accept=document.getElementById('downloadGateAccept');
+    const reject=document.getElementById('downloadGateReject');
+    if(!gate||!accept||!reject||gate.dataset.ready==='1')return;
+    gate.dataset.ready='1';
+    const KEY='utilityHubDownloadsAcceptedUntil';
+    function hasConsent(){
+      try{return Number(localStorage.getItem(KEY)||0)>Date.now()}catch(e){return false}
+    }
+    function currentSection(){
+      return (location.hash||'').replace(/^#/,'').split('/')[0];
+    }
+    function syncScroll(){
+      const cookie=document.getElementById('cookieGate');
+      const locked=!gate.hidden||(cookie&&!cookie.hidden);
+      const v=locked?'hidden':'';
+      document.documentElement.style.overflow=v;
+      document.body.style.overflow=v;
+    }
+    function evaluate(){
+      gate.hidden=!(currentSection()==='downloads'&&!hasConsent());
+      syncScroll();
+    }
+    accept.addEventListener('click',()=>{
+      try{localStorage.setItem(KEY,String(Date.now()+183*24*60*60*1000))}catch(e){}
+      gate.hidden=true;
+      syncScroll();
+    });
+    reject.addEventListener('click',()=>{
+      try{localStorage.removeItem(KEY)}catch(e){}
+      gate.hidden=true;
+      syncScroll();
+      if(currentSection()!=='home')location.hash='#home';
+    });
+    window.addEventListener('hashchange',evaluate);
+    setTimeout(evaluate,0);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initDownloadGate,{once:true});else initDownloadGate();
 })();
 
 
@@ -3051,9 +3215,119 @@ addLog('Готов к работе', 'info');
  function tickClocks(){if(!grid)return;grid.querySelectorAll('[data-zone]').forEach(el=>{try{el.textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:el.dataset.zone,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());const d=grid.querySelector(`[data-datezone="${el.dataset.zone}"]`);if(d)d.textContent=new Intl.DateTimeFormat('ru-RU',{timeZone:el.dataset.zone,weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date())}catch(e){}})}
  function saveCities(){localStorage.setItem('uhWorldCities',JSON.stringify(cities))}renderClocks();setInterval(tickClocks,1000);
  const add=document.getElementById('worldCityAdd'),inp=document.getElementById('worldCityInput'),st=document.getElementById('worldCityStatus');if(add)add.onclick=async()=>{const q=inp.value.trim();if(!q)return;st.textContent='Ищем город…';try{const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=1&language=ru&format=json');const j=await r.json();const x=j.results&&j.results[0];if(!x||!x.timezone)throw Error('Город не найден');if(cities.some(c=>c[1]===x.timezone)){st.textContent='Этот часовой пояс уже добавлен.';return}cities.push([x.name+(x.country?', '+x.country:''),x.timezone]);saveCities();renderClocks();inp.value='';st.textContent='Город добавлен.'}catch(e){st.textContent=e.message||'Не удалось найти город.'}};
- // Speed test uses Cloudflare's public measurement endpoints.
- const start=document.getElementById('speedStart');let running=false;async function timedFetch(url,opts){const t=performance.now();const r=await fetch(url,opts);if(!r.ok)throw Error('Сервер тестирования недоступен');await r.arrayBuffer();return performance.now()-t}
- if(start)start.onclick=async()=>{if(running)return;running=true;start.disabled=true;const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};const gauge=document.querySelector('.speed-gauge');try{put('speedPhase','Измеряем ping…');const p=[];for(let i=0;i<5;i++)p.push(await timedFetch('https://speed.cloudflare.com/__down?bytes=0&cache='+Math.random()));const avg=p.reduce((a,b)=>a+b,0)/p.length;put('speedPing',Math.round(avg));put('speedJitter',Math.round(Math.max(...p)-Math.min(...p)));put('speedPhase','Измеряем загрузку…');let t=await timedFetch('https://speed.cloudflare.com/__down?bytes=25000000&cache='+Math.random());let down=25*8/(t/1000);put('speedDownload',down.toFixed(1));put('speedMainValue',down.toFixed(1));if(gauge)gauge.style.background=`conic-gradient(var(--accent1) ${Math.min(360,down*2)}deg,rgba(100,116,139,.2) 0deg)`;put('speedPhase','Измеряем отдачу…');const data=new Uint8Array(5*1024*1024);crypto.getRandomValues(data.subarray(0,65536));for(let i=65536;i<data.length;i+=65536)data.set(data.subarray(0,65536),i);const t0=performance.now();const upRes=await fetch('https://speed.cloudflare.com/__up?measId='+Date.now(),{method:'POST',body:data});if(!upRes.ok)throw Error('Сервер не принял тест загрузки');await upRes.arrayBuffer();const up=5*8/((performance.now()-t0)/1000);put('speedUpload',up.toFixed(1));put('speedPhase','Проверка завершена');const h=document.getElementById('speedHistory');if(h)h.textContent='Последний результат: загрузка '+down.toFixed(1)+' Мбит/с · отдача '+up.toFixed(1)+' Мбит/с · ping '+Math.round(avg)+' мс.'}catch(e){put('speedPhase','Не удалось завершить тест');put('speedNote','Ошибка измерения: '+(e.message||'проверьте подключение или попробуйте позже.'));}finally{running=false;start.disabled=false;start.textContent='Повторить тест'}};
+// Speed test uses Cloudflare's public measurement endpoints (real measurements only, no fake numbers).
+ const start=document.getElementById('speedStart');let running=false;
+ const SPEED_HOST='https://speed.cloudflare.com';
+ const speedNoteEl=document.getElementById('speedNote');
+ const speedNoteDefault=speedNoteEl?speedNoteEl.textContent:'';
+ const speedPut=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+ const speedNote=(text,isError)=>{if(!speedNoteEl)return;speedNoteEl.textContent=text;speedNoteEl.style.color=isError?'#ef4444':''};
+ const speedGauge=mbps=>{const g=document.querySelector('.speed-gauge');if(g)g.style.background='conic-gradient(var(--accent1) '+Math.min(360,Math.max(0,mbps)*2)+'deg,rgba(100,116,139,.2) 0deg)'};
+ const speedRand=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+ const speedFmt=v=>v>=100?v.toFixed(0):v.toFixed(1);
+ function speedErrText(e){
+  if(e&&e.name==='AbortError')return 'превышено время ожидания ответа сервера';
+  return (e&&e.message)?e.message:'неизвестная ошибка';
+ }
+ async function speedMeasurePing(){
+  const samples=[];let lastErr=null;
+  for(let i=0;i<5;i++){
+   const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),5000);
+   try{
+    const t=performance.now();
+    const r=await fetch(SPEED_HOST+'/__down?bytes=0&cache='+speedRand(),{cache:'no-store',signal:ctrl.signal});
+    if(!r.ok)throw Error('сервер ответил HTTP '+r.status);
+    await r.arrayBuffer();
+    samples.push(performance.now()-t);
+   }catch(e){lastErr=e}finally{clearTimeout(to)}
+  }
+  if(!samples.length)throw Error('Не удалось измерить ping: нет подключения к сети, сервер speed.cloudflare.com заблокирован провайдером или запрос отклонён политикой CORS ('+speedErrText(lastErr)+').');
+  const sorted=samples.slice().sort((a,b)=>a-b);
+  const mid=Math.floor(sorted.length/2);
+  const median=sorted.length%2?sorted[mid]:(sorted[mid-1]+sorted[mid])/2;
+  return {ping:median,jitter:sorted[sorted.length-1]-sorted[0]};
+ }
+ async function speedMeasureDownload(onProgress){
+  const STREAMS=4,PER_STREAM=6250000; // 4 × 6,25 МБ = 25 МБ
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),60000);
+  let total=0,lastErr=null;const t0=performance.now();
+  const tick=setInterval(()=>{const sec=(performance.now()-t0)/1000;if(sec>0&&total>0)onProgress(total*8/sec/1e6)},150);
+  async function stream(){
+   const r=await fetch(SPEED_HOST+'/__down?bytes='+PER_STREAM+'&cache='+speedRand(),{cache:'no-store',signal:ctrl.signal});
+   if(!r.ok)throw Error('сервер ответил HTTP '+r.status);
+   if(!r.body||!r.body.getReader)throw Error('браузер не поддерживает потоковое чтение ответа');
+   const reader=r.body.getReader();
+   for(;;){const {done,value}=await reader.read();if(done)break;total+=value.length}
+  }
+  try{
+   const results=await Promise.allSettled(Array.from({length:STREAMS},stream));
+   results.forEach(x=>{if(x.status==='rejected')lastErr=x.reason});
+  }finally{clearInterval(tick);clearTimeout(to)}
+  const sec=(performance.now()-t0)/1000;
+  if(total<=0)throw Error('Не удалось измерить загрузку: получено 0 байт ('+speedErrText(lastErr)+').');
+  return total*8/sec/1e6;
+ }
+ async function speedMeasureUpload(){
+  const COUNT=8,SIZE=512*1024;const measId=speedRand();
+  const payload=new Uint8Array(SIZE);
+  for(let o=0;o<SIZE;o+=65536)crypto.getRandomValues(payload.subarray(o,Math.min(o+65536,SIZE)));
+  let sent=0,lastErr=null;const t0=performance.now();
+  async function one(){
+   const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),20000);
+   try{
+    const r=await fetch(SPEED_HOST+'/__up?measId='+measId,{method:'POST',body:payload,headers:{'Content-Type':'text/plain'},cache:'no-store',signal:ctrl.signal});
+    if(!r.ok)throw Error('сервер ответил HTTP '+r.status);
+    await r.arrayBuffer();
+    sent+=SIZE;
+   }finally{clearTimeout(to)}
+  }
+  const results=await Promise.allSettled(Array.from({length:COUNT},one));
+  results.forEach(x=>{if(x.status==='rejected')lastErr=x.reason});
+  const sec=(performance.now()-t0)/1000;
+  if(sent<=0)throw Error('Отдача недоступна: сервер отклонил запросы или их заблокировал CORS/провайдер ('+speedErrText(lastErr)+').');
+  return sent*8/sec/1e6;
+ }
+ function speedAddHistory(down,up,ping){
+  const h=document.getElementById('speedHistory');if(!h)return;
+  const row=document.createElement('div');
+  const upTxt=up==null?'недоступно':speedFmt(up)+' Мбит/с';
+  row.textContent=new Date().toLocaleString('ru-RU')+' · Загрузка: '+speedFmt(down)+' Мбит/с · Отдача: '+upTxt+' · Ping: '+Math.round(ping)+' мс';
+  h.insertBefore(row,h.firstChild);
+  while(h.children.length>10)h.removeChild(h.lastChild);
+ }
+ if(start)start.onclick=async()=>{
+  if(running)return;
+  running=true;start.disabled=true;start.textContent='… идёт тест';
+  ['speedPing','speedJitter','speedDownload','speedUpload'].forEach(id=>speedPut(id,'—'));
+  speedPut('speedMainValue','—');speedGauge(0);speedNote(speedNoteDefault,false);
+  let ping=null,down=null,up=null,uploadError=null;
+  try{
+   speedPut('speedPhase','Этап 1/3 · Измеряем Ping…');
+   const pj=await speedMeasurePing();ping=pj.ping;
+   speedPut('speedPing',String(Math.round(pj.ping)));speedPut('speedJitter',String(Math.round(pj.jitter)));
+   speedPut('speedPhase','Этап 2/3 · Измеряем загрузку…');
+   down=await speedMeasureDownload(v=>{speedPut('speedMainValue',speedFmt(v));speedGauge(v)});
+   speedPut('speedDownload',speedFmt(down));speedPut('speedMainValue',speedFmt(down));speedGauge(down);
+   speedPut('speedPhase','Этап 3/3 · Измеряем отдачу…');
+   try{
+    up=await speedMeasureUpload();
+    speedPut('speedUpload',speedFmt(up));
+   }catch(e){
+    uploadError=speedErrText(e);
+    speedPut('speedUpload','недоступно');
+   }
+   speedPut('speedMainValue',speedFmt(down));speedGauge(down);
+   speedPut('speedPhase','Проверка завершена');
+   if(uploadError)speedNote('Ping и загрузка измерены, но отдачу измерить не удалось: '+uploadError,true);
+   speedAddHistory(down,up,ping);
+  }catch(e){
+   speedPut('speedPhase','Ошибка теста');
+   if(down==null){speedPut('speedMainValue','—');speedGauge(0)}
+   speedNote('Ошибка измерения: '+speedErrText(e),true);
+  }finally{
+   running=false;start.disabled=false;start.textContent='Повторить проверку';
+  }
+ };
  // Settings: consent status, revoke confirmation, animations.
  const modal=document.createElement('div');modal.className='settings-modal';modal.id='settingsModal';modal.innerHTML=`<div class="settings-card" role="dialog" aria-modal="true"><h2>⚙️ Настройки Utility Hub</h2><div class="settings-row"><span>Согласие на локальные данные</span><b id="settingsConsentState">—</b></div><div class="settings-row"><span>Анимации интерфейса</span><button class="btn" id="settingsAnimToggle">Переключить</button></div><p class="muted" style="font-size:12px;margin-top:12px">Согласие хранится в этом браузере до 90 дней. Отзыв согласия удалит сохранённый выбор.</p><div class="settings-actions"><button class="btn" id="settingsRevoke">Отозвать согласие</button><button class="btn btn-primary" id="settingsClose">Готово</button></div></div>`;document.body.appendChild(modal);
  const settingsBtn=document.getElementById('settingsBtn');function consentActive(){try{return Number(localStorage.getItem('utilityHubCookieAcceptedUntil')||0)>Date.now()}catch(e){return false}}function openSettings(){document.getElementById('settingsConsentState').textContent=consentActive()?'Принято':'Не принято';modal.classList.add('open')}if(settingsBtn)settingsBtn.onclick=openSettings;document.getElementById('settingsClose').onclick=()=>modal.classList.remove('open');modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});document.getElementById('settingsAnimToggle').onclick=()=>document.getElementById('animationToggle')?.click();document.getElementById('settingsRevoke').onclick=()=>{if(!confirm('Отозвать согласие? Сайт перестанет работать в этой вкладке.'))return;try{localStorage.removeItem('utilityHubCookieAcceptedUntil');localStorage.removeItem('utilityHubCookieConsent');localStorage.removeItem('uhWorldCities')}catch(e){}modal.classList.remove('open');document.body.innerHTML='<main style="min-height:100vh;display:grid;place-items:center;background:#090d18;color:#e5e7eb;font:16px system-ui;text-align:center;padding:24px"><div><h2>Согласие отозвано</h2><p>Работа Utility Hub остановлена. Закройте эту вкладку браузера.</p></div></main>';};
@@ -3062,17 +3336,6 @@ addLog('Готов к работе', 'info');
 
 </script>
 
-<div class="cookie-gate" id="cookieGate" role="dialog" aria-modal="true" aria-labelledby="cookieGateTitle" hidden>
-  <div class="cookie-gate-card">
-    <h2 id="cookieGateTitle">🍪 Подтвердите использование cookies</h2>
-    <p>Utility Hub использует локальное хранилище браузера, чтобы сохранять настройки сайта и игровой прогресс. Чтобы продолжить работу с сайтом, примите использование этих данных. Выбор сохранится на этом устройстве на 90 дней.</p>
-    <div class="cookie-gate-actions">
-      <button id="cookieGateAccept" type="button">Принять</button>
-      <button id="cookieGateClose" type="button">Закрыть вкладку</button>
-    </div>
-    <small class="cookie-gate-note">Нажатие «Закрыть вкладку» означает отказ от использования сайта.</small>
-  </div>
-</div>
 
 </body>
 </html>

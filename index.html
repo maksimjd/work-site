@@ -1245,7 +1245,11 @@
   .weather-suggestion:last-child{border-bottom:0}
   .weather-suggestion:hover,.weather-suggestion:focus{background:color-mix(in srgb,#38bdf8 15%,var(--panel));outline:none}
   .weather-suggestion small{margin-left:auto;color:var(--muted);font-size:11px}
-  .weather-status{color:var(--muted);font-size:12px;min-height:16px;padding:0 3px}
+  .weather-status-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .weather-status{color:var(--muted);font-size:14px;line-height:1.45;min-height:20px;padding:0 3px;flex:1 1 240px}
+  .weather-status[data-state="error"]{color:#d85b50;font-weight:650}
+  .weather-retry{border:1px solid var(--border);border-radius:9px;background:var(--input-bg);color:var(--text);font:inherit;font-weight:700;padding:9px 14px;min-height:40px;cursor:pointer}
+  .weather-retry[hidden]{display:none}.weather-retry:focus-visible{outline:3px solid #38bdf8;outline-offset:2px}
   .weather-hero{position:relative;isolation:isolate;overflow:hidden;min-width:0;border-radius:22px;padding:clamp(20px,3vw,34px);color:#f8fbff;background:radial-gradient(circle at 82% 15%,#a78bfa66,transparent 28%),radial-gradient(circle at 10% 100%,#22d3ee55,transparent 35%),linear-gradient(125deg,#123b72 0%,#263b83 48%,#522d83 100%);border:1px solid #60a5fa66;box-shadow:0 16px 45px #2563eb24}
   .weather-hero:after{content:'☁';position:absolute;z-index:-1;right:5%;top:-35px;font-size:clamp(130px,20vw,240px);opacity:.09;line-height:1}
   .weather-place{font-size:clamp(21px,2.5vw,30px);font-weight:850;letter-spacing:-.5px;overflow-wrap:anywhere}
@@ -1472,7 +1476,7 @@
         <button id="weatherGeoBtn" type="button" title="Определить местоположение">📍 Моё местоположение</button>
       </div>
       <div class="weather-suggestions" id="weatherSuggestions" role="listbox" aria-label="Найденные города" hidden></div>
-      <div class="weather-status" id="weatherStatus" aria-live="polite">Загружаем погоду…</div>
+      <div class="weather-status-row"><div class="weather-status" id="weatherStatus" role="status" aria-live="polite">Загружаем погоду…</div><button class="weather-retry" id="weatherRetryBtn" type="button" hidden>Повторить</button></div>
       <div class="weather-hero">
         <div class="weather-place" id="weatherPlace">—</div>
         <div class="weather-date" id="weatherDate">—</div>
@@ -1681,15 +1685,15 @@
     <h1>Генератор паролей</h1>
 
     <div class="pwd-disclaimer">
-      <b>🔒 Где хранятся ваши данные</b>
-      Все данные в этом разделе, включая настройки генератора и ваши заметки, хранятся только в локальном хранилище вашего браузера на этом компьютере. Они не передаются на сервер и не синхронизируются, поэтому на другом устройстве или в другом браузере вы их не увидите. Если вы очистите данные браузера или смените профиль, заметки будут удалены безвозвратно, так что сохраняйте важные пароли ещё и в надёжном месте.
+      <b>🔒 Безопасность паролей</b>
+      Пароли создаются прямо в браузере и не отправляются на сервер. Сохраняйте их в надёжном менеджере паролей и используйте отдельный пароль для каждого аккаунта.
     </div>
 
     <div class="explain">
       <div class="explain-title">💡 Зачем это?</div>
       <p>В интернете почти везде нужны пароли. И чем сложнее пароль, тем труднее его подобрать — а значит, тем безопаснее твой аккаунт.</p>
       <p>Простые пароли вроде «123456», «qwerty» или «дата рождения» взламывают за секунды. А если ты используешь один и тот же пароль на разных сайтах — стоит утечь одному сервису, и под угрозой окажутся все остальные.</p>
-      <p>Генератор создаёт случайный пароль заданной длины с цифрами, буквами и символами. Скопируй его и используй — так надёжнее.</p>
+      <p>Генератор создаёт случайный пароль заданной длины из выбранных букв, цифр и символов. Скопируй его и используй — так надёжнее.</p>
     </div>
 
     <div class="panel">
@@ -1703,8 +1707,8 @@
       <div class="status" id="pwdStrengthLabel" style="margin-top:4px;">Надёжность</div>
     </div>
     <div class="panel">
-      <label class="label">Длина пароля: <span class="slider-value" id="pwdLenVal">16</span></label>
-      <input type="range" id="pwdLen" min="4" max="64" value="16">
+      <label class="label">Длина пароля: <span class="slider-value" id="pwdLenVal">30</span></label>
+      <input type="range" id="pwdLen" min="30" max="100" value="30">
       <div class="checks" style="margin-top:16px;">
         <label class="check"><input type="checkbox" id="pwdUpper" checked> Заглавные</label>
         <label class="check"><input type="checkbox" id="pwdLower" checked> Строчные</label>
@@ -1718,18 +1722,7 @@
       </div>
     </div>
 
-    <div class="panel" id="pwdNotesPanel">
-      <h2 style="font-size:16px;margin-bottom:6px;">📝 Заметки</h2>
-      <p class="muted" style="font-size:12px;margin-bottom:12px;">Сохраняйте здесь пароли от сайтов (лучше не самых важных). Записи лежат только в этом браузере.</p>
-      <div class="notes-form">
-        <div><label class="label" for="noteSite">Сайт</label><input type="text" id="noteSite" placeholder="example.com" maxlength="120" autocomplete="off"></div>
-        <div><label class="label" for="noteLogin">Логин</label><input type="text" id="noteLogin" placeholder="Логин или e-mail" maxlength="120" autocomplete="off"></div>
-        <div><label class="label" for="notePass">Пароль</label><input type="password" id="notePass" placeholder="Пароль" maxlength="200" autocomplete="off"></div>
-        <button class="btn btn-primary" id="btnNoteAdd" type="button">Добавить</button>
-      </div>
-      <div class="notes-empty" id="notesEmpty">Пока нет ни одной записи.</div>
-      <div class="notes-list" id="notesList"></div>
-    </div>
+
   </section>
 
   <section id="section-worldclock" class="hidden">
@@ -1871,46 +1864,121 @@ function explainError(err, mode) {
    ========================================================================= */
 (() => {
   const $w = id => document.getElementById(id);
+  const DEFAULT_PLACE = {name:'Москва', country:'Россия', latitude:55.75204, longitude:37.61781};
+  let citySearchTimer = null, citySearchToken = 0, cityResults = [];
+  let weatherToken = 0, weatherController = null, searchController = null;
+  let retryAction = null, lastLoadedPlace = '';
   const codeInfo = code => {
     if(code===0)return ['☀️','Ясно']; if(code===1)return ['🌤️','Преимущественно ясно']; if(code===2)return ['⛅','Переменная облачность']; if(code===3)return ['☁️','Пасмурно'];
     if([45,48].includes(code))return ['🌫️','Туман']; if([51,53,55,56,57].includes(code))return ['🌦️','Морось']; if([61,63,65,66,67,80,81,82].includes(code))return ['🌧️','Дождь'];
     if([71,73,75,77,85,86].includes(code))return ['🌨️','Снег']; if([95,96,99].includes(code))return ['⛈️','Гроза']; return ['🌡️','Переменная погода'];
   };
-  const setStatus = msg => { const el=$w('weatherStatus'); if(el)el.textContent=msg; };
+  function setStatus(message, type='info', retry=null){
+    const el=$w('weatherStatus'), btn=$w('weatherRetryBtn');
+    if(el){el.textContent=message;el.dataset.state=type;}
+    retryAction=retry; if(btn)btn.hidden=!retry;
+  }
+  function explainError(error, service){
+    if(!navigator.onLine)return 'Нет подключения к интернету. Проверь соединение и попробуй снова.';
+    if(error.code==='timeout')return `${service} не ответил вовремя. Проверь интернет и повтори попытку.`;
+    if(error.code==='invalid')return `${service} вернул неполные или некорректные данные. Попробуй позже.`;
+    if(error.status===429)return `${service} временно ограничил число запросов (HTTP 429). Подожди немного и повтори.`;
+    if(error.status===403 || error.status===401)return `${service} отклонил запрос (HTTP ${error.status}). Проверь доступ к сервису.`;
+    if(error.status>=500)return `${service} временно недоступен (HTTP ${error.status}). Попробуй позже.`;
+    if(error.status)return `${service} вернул ошибку HTTP ${error.status}. Попробуй позже.`;
+    return `Не удалось связаться с сервисом «${service}». Проверь интернет, доступ к Open-Meteo и блокировщики браузера, затем повтори.`;
+  }
+  async function fetchJson(url, outerSignal){
+    // Bound each request; retry one time only for transient server/timeout errors.
+    for(let attempt=0;attempt<2;attempt++){
+      if(outerSignal.aborted)throw new DOMException('Отменено','AbortError');
+      const controller=new AbortController(); let timedOut=false;
+      const abort=()=>controller.abort(); outerSignal.addEventListener('abort',abort,{once:true});
+      const timer=setTimeout(()=>{timedOut=true;controller.abort();},12000);
+      try{
+        const response=await fetch(url,{signal:controller.signal});
+        if(!response.ok){const err=new Error(`HTTP ${response.status}`);err.status=response.status;throw err;}
+        try{return await response.json();}catch(e){const err=new Error('Некорректный ответ');err.code='invalid';throw err;}
+      }catch(err){
+        if(outerSignal.aborted)throw new DOMException('Отменено','AbortError');
+        if(timedOut){err=new Error('Таймаут');err.code='timeout';}
+        if(attempt===0 && (err.code==='timeout' || err.status>=500)){await new Promise(resolve=>setTimeout(resolve,700));continue;}
+        throw err;
+      }finally{clearTimeout(timer);outerSignal.removeEventListener('abort',abort);}
+    }
+  }
+  const formatNumber = (v,suffix='',rounded=false) => Number.isFinite(v) ? `${rounded?Math.round(v):v}${suffix}` : '—';
+  function validPlace(place){return !!place && place.latitude !== null && place.latitude !== '' && place.latitude !== undefined && place.longitude !== null && place.longitude !== '' && place.longitude !== undefined && Number.isFinite(Number(place.latitude)) && Number.isFinite(Number(place.longitude)) && Math.abs(Number(place.latitude)) <= 90 && Math.abs(Number(place.longitude)) <= 180;}
+  function cancelWeather(){++weatherToken;if(weatherController)weatherController.abort();weatherController=null;}
+  function cancelSearch(){++citySearchToken;if(searchController)searchController.abort();searchController=null;clearTimeout(citySearchTimer);}
+  function hideCitySuggestions(){const box=$w('weatherSuggestions');if(box){box.hidden=true;box.textContent='';}cityResults=[];}
   async function loadWeather(place){
-    setStatus('Получаем прогноз…');
+    cancelWeather(); const token=weatherToken, controller=new AbortController();weatherController=controller;
+    const name=[place.name,place.admin1,place.country].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(', ') || 'Выбранное место';
+    setStatus(`Загружаем прогноз: ${name}…`);
     try{
+      if(!validPlace(place)) {const e=new Error('Нет координат');e.code='invalid';throw e;}
       const url=`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(place.latitude)}&longitude=${encodeURIComponent(place.longitude)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`;
-      const res=await fetch(url); if(!res.ok)throw new Error('Погодный сервис временно недоступен'); const d=await res.json();
-      const c=d.current, info=codeInfo(c.weather_code);
-      $w('weatherPlace').textContent=[place.name,place.admin1,place.country].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(', ');
-      $w('weatherDate').textContent=new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(new Date(c.time));
-      $w('weatherIcon').textContent=info[0]; $w('weatherTemp').textContent=`${Math.round(c.temperature_2m)}°`; $w('weatherDescription').textContent=info[1]; $w('weatherFeels').textContent=`Ощущается как ${Math.round(c.apparent_temperature)}°`;
-      $w('weatherHumidity').textContent=`${c.relative_humidity_2m}%`; $w('weatherWind').textContent=`${Math.round(c.wind_speed_10m)} км/ч`; $w('weatherPressure').textContent=`${Math.round(c.pressure_msl)} гПа`; $w('weatherCloud').textContent=`${c.cloud_cover}%`;
-      const now=new Date(c.time); let start=d.hourly.time.findIndex(t=>new Date(t)>=now); if(start<0)start=0;
-      $w('weatherHours').innerHTML=Array.from({length:24},(_,i)=>{const n=start+i;if(n>=d.hourly.time.length)return '';const dt=new Date(d.hourly.time[n]);const inf=codeInfo(d.hourly.weather_code[n]);return `<div class="weather-hour"><time>${i===0?'Сейчас':dt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</time><span class="ico">${inf[0]}</span><strong>${Math.round(d.hourly.temperature_2m[n])}°</strong><small>💧 ${d.hourly.precipitation_probability[n]??0}%</small></div>`}).join('');
-      $w('weatherDays').innerHTML=d.daily.time.map((t,i)=>{const dt=new Date(t+'T12:00:00');const inf=codeInfo(d.daily.weather_code[i]);return `<div class="weather-day"><b>${i===0?'Сегодня':dt.toLocaleDateString('ru-RU',{weekday:'short'})}</b><span class="ico">${inf[0]}</span><strong>${Math.round(d.daily.temperature_2m_max[i])}°</strong><small>${Math.round(d.daily.temperature_2m_min[i])}°</small></div>`}).join('');
-      setStatus('Прогноз обновлён. Данные могут немного отличаться от показаний ближайшей метеостанции.');
+      const d=await fetchJson(url,controller.signal);if(token!==weatherToken)return;
+      if(!d.current||!Number.isFinite(d.current.temperature_2m)||!d.current.time||!Array.isArray(d.hourly?.time)||!Array.isArray(d.daily?.time)){const e=new Error('Нет данных');e.code='invalid';throw e;}
+      const c=d.current, info=codeInfo(c.weather_code), date=new Date(c.time);
+      $w('weatherPlace').textContent=name;
+      $w('weatherDate').textContent=Number.isNaN(date.valueOf())?'Время обновления недоступно':new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(date);
+      $w('weatherIcon').textContent=info[0];$w('weatherTemp').textContent=formatNumber(c.temperature_2m,'°',true);$w('weatherDescription').textContent=info[1];
+      $w('weatherFeels').textContent='Ощущается как '+formatNumber(c.apparent_temperature,'°',true);
+      $w('weatherHumidity').textContent=formatNumber(c.relative_humidity_2m,'%');$w('weatherWind').textContent=formatNumber(c.wind_speed_10m,' км/ч',true);
+      $w('weatherPressure').textContent=formatNumber(c.pressure_msl,' гПа',true);$w('weatherCloud').textContent=formatNumber(c.cloud_cover,'%');
+      // Open-Meteo supplies both current and hourly timestamps in the location's timezone.
+      let start=d.hourly.time.findIndex(t=>t>=c.time);if(start<0)start=0;
+      $w('weatherHours').innerHTML=Array.from({length:24},(_,i)=>{const n=start+i,t=d.hourly.time[n];if(!t)return '';const time=String(t).slice(11,16);const inf=codeInfo(d.hourly.weather_code?.[n]);const temp=formatNumber(d.hourly.temperature_2m?.[n],'°',true);const rain=formatNumber(d.hourly.precipitation_probability?.[n],'%');return `<div class="weather-hour"><time>${/^\d\d:\d\d$/.test(time)?time:'—'}</time><span class="ico">${inf[0]}</span><strong>${temp}</strong><small>💧 ${rain}</small></div>`}).join('');
+      $w('weatherDays').innerHTML=d.daily.time.slice(0,7).map((t,i)=>{const dt=new Date(t+'T12:00:00');const day=Number.isNaN(dt.valueOf())?'—':dt.toLocaleDateString('ru-RU',{weekday:'short'});const inf=codeInfo(d.daily.weather_code?.[i]);return `<div class="weather-day"><b>${i===0?'Сегодня':day}</b><span class="ico">${inf[0]}</span><strong>${formatNumber(d.daily.temperature_2m_max?.[i],'°',true)}</strong><small>${formatNumber(d.daily.temperature_2m_min?.[i],'°',true)}</small></div>`}).join('');
+      lastLoadedPlace=name; setStatus('Прогноз обновлён. Данные могут немного отличаться от показаний ближайшей метеостанции.','success');
       try{localStorage.setItem('utilityHubWeatherPlace',JSON.stringify(place));}catch(e){}
-    }catch(e){setStatus('Не удалось загрузить погоду: '+e.message);}
+    }catch(e){
+      if(token!==weatherToken||e.name==='AbortError')return;
+      console.warn('Ошибка прогноза Open-Meteo:',e.message);
+      const stale=lastLoadedPlace?` На экране остался предыдущий прогноз: ${lastLoadedPlace}.`:'';
+      setStatus(explainError(e,'Погодный сервис')+stale,'error',()=>loadWeather(place));
+    }
   }
-  let citySearchTimer=null, citySearchToken=0, cityResults=[];
-  function hideCitySuggestions(){const box=$w('weatherSuggestions');if(box){box.hidden=true;box.innerHTML='';}cityResults=[];}
-  function chooseCity(place){hideCitySuggestions();$w('weatherCityInput').value=place.name;loadWeather(place);}
+  function chooseCity(place){cancelSearch();hideCitySuggestions();$w('weatherCityInput').value=place.name;loadWeather(place);}
   async function searchCity(q){
-    q=q.trim(); if(!q){hideCitySuggestions();setStatus('Введи название города.');return;}
-    const token=++citySearchToken; setStatus('Ищем город…');
+    q=q.trim();cancelSearch();cancelWeather();hideCitySuggestions();
+    if(q.length<2){setStatus('Введи не менее двух букв названия города.');return;}
+    const token=citySearchToken, controller=new AbortController();searchController=controller;setStatus('Ищем город…');
     try{
-      const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=ru&format=json`);
-      if(!r.ok)throw new Error('Ошибка поиска'); const d=await r.json(); if(token!==citySearchToken)return;
-      const box=$w('weatherSuggestions'); cityResults=d.results||[];
-      if(!cityResults.length){hideCitySuggestions();setStatus('Город не найден. Попробуй уточнить название.');return;}
-      box.innerHTML=cityResults.map((p,i)=>{const main=String(p.name||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const detail=[p.admin1,p.country].filter(Boolean).join(', ').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));return `<button type="button" class="weather-suggestion" role="option" data-city-index="${i}"><span>📍 ${main}</span><small>${detail}</small></button>`}).join('');
-      box.hidden=false; setStatus('Выбери город из списка.');
+      const d=await fetchJson(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=ru&format=json`,controller.signal);
+      if(token!==citySearchToken)return;
+      const box=$w('weatherSuggestions');cityResults=Array.isArray(d.results)?d.results.filter(p=>p.name&&Number.isFinite(p.latitude)&&Number.isFinite(p.longitude)):[];
+      if(!cityResults.length){hideCitySuggestions();setStatus('Город не найден. Проверь написание или попробуй другое название.');return;}
+      const escape=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      box.innerHTML=cityResults.map((p,i)=>`<button type="button" class="weather-suggestion" role="option" data-city-index="${i}"><span>📍 ${escape(p.name)}</span><small>${escape([p.admin1,p.country].filter(Boolean).join(', '))}</small></button>`).join('');
+      box.hidden=false;setStatus('Выбери город из списка.');
       box.querySelectorAll('[data-city-index]').forEach(el=>el.addEventListener('click',()=>{const p=cityResults[Number(el.dataset.cityIndex)];if(p)chooseCity(p);}));
-    }catch(e){if(token===citySearchToken){hideCitySuggestions();setStatus('Ошибка поиска города: '+e.message);}}
+    }catch(e){if(token===citySearchToken&&e.name!=='AbortError'){hideCitySuggestions();console.warn('Ошибка поиска города Open-Meteo:',e.message);setStatus(explainError(e,'Поиск городов'),'error',()=>searchCity(q));}}
   }
-  function init(){const input=$w('weatherCityInput'),btn=$w('weatherSearchBtn'),geo=$w('weatherGeoBtn'),box=$w('weatherSuggestions');if(!input||!btn||!geo||btn.dataset.ready)return;btn.dataset.ready='1';btn.addEventListener('click',()=>searchCity(input.value));input.addEventListener('input',()=>{clearTimeout(citySearchTimer);const q=input.value.trim();if(q.length<2){++citySearchToken;hideCitySuggestions();return;}citySearchTimer=setTimeout(()=>searchCity(q),350);});input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const first=box?.querySelector('[data-city-index]');if(first)first.click();else searchCity(input.value);}if(e.key==='Escape')hideCitySuggestions();});document.addEventListener('click',e=>{if(!e.target.closest('.weather-search')&&!e.target.closest('#weatherSuggestions'))hideCitySuggestions();});geo.addEventListener('click',()=>{hideCitySuggestions();if(!navigator.geolocation){setStatus('Браузер не поддерживает геолокацию.');return;}setStatus('Определяем местоположение…');navigator.geolocation.getCurrentPosition(async pos=>{try{const {latitude,longitude}=pos.coords;const r=await fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${latitude}&longitude=${longitude}&language=ru&format=json`);const d=await r.json();const p=d.results?.[0]||{name:'Моё местоположение',latitude,longitude};p.latitude=latitude;p.longitude=longitude;loadWeather(p);}catch(e){loadWeather({name:'Моё местоположение',latitude:pos.coords.latitude,longitude:pos.coords.longitude});}},()=>setStatus('Не удалось получить геопозицию. Разреши доступ в браузере.'),{enableHighAccuracy:false,timeout:10000});});let saved;try{saved=JSON.parse(localStorage.getItem('utilityHubWeatherPlace')||'null')}catch(e){}if(saved)loadWeather(saved);else searchCity('Москва');}
+  function findLocation(){
+    cancelSearch();cancelWeather();hideCitySuggestions();
+    if(!window.isSecureContext){setStatus('Геолокация требует HTTPS или localhost. Открой сайт по защищённой ссылке либо введи город вручную.','error',findLocation);return;}
+    if(!navigator.geolocation){setStatus('Браузер не поддерживает геолокацию. Введи город вручную.','error');return;}
+    setStatus('Определяем местоположение…');const token=weatherToken;
+    navigator.geolocation.getCurrentPosition(pos=>{if(token!==weatherToken)return;loadWeather({name:'Моё местоположение',latitude:pos.coords.latitude,longitude:pos.coords.longitude});},err=>{
+      if(token!==weatherToken)return;
+      const msg=err.code===1?'Доступ к геолокации запрещён. Разреши его в настройках браузера или введи город вручную.':err.code===3?'Не удалось определить местоположение вовремя. Повтори или введи город вручную.':'Не удалось определить местоположение. Проверь настройки устройства или введи город вручную.';
+      setStatus(msg,'error',findLocation);
+    },{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
+  }
+  function init(){
+    const input=$w('weatherCityInput'),btn=$w('weatherSearchBtn'),geo=$w('weatherGeoBtn'),box=$w('weatherSuggestions');if(!input||!btn||!geo||btn.dataset.ready)return;btn.dataset.ready='1';
+    $w('weatherRetryBtn').addEventListener('click',()=>{const action=retryAction;if(action)action();});
+    btn.addEventListener('click',()=>searchCity(input.value));
+    input.addEventListener('input',()=>{cancelSearch();cancelWeather();hideCitySuggestions();const q=input.value.trim();if(q.length<2){setStatus('Введи не менее двух букв названия города.');return;}setStatus('Подготовка поиска…');citySearchTimer=setTimeout(()=>searchCity(q),350);});
+    input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const first=box?.querySelector('[data-city-index]');if(first)first.click();else searchCity(input.value);}if(e.key==='Escape')hideCitySuggestions();});
+    document.addEventListener('click',e=>{if(!e.target.closest('.weather-search')&&!e.target.closest('#weatherSuggestions'))hideCitySuggestions();});geo.addEventListener('click',findLocation);
+    let saved;try{saved=JSON.parse(localStorage.getItem('utilityHubWeatherPlace')||'null')}catch(e){}
+    if(!validPlace(saved))saved=DEFAULT_PLACE;
+    input.value=saved.name||'';loadWeather(saved);
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 
@@ -2754,20 +2822,35 @@ const SIMILAR = 'il1Lo0O';
 const AMBIGUOUS = '{}[]()/\\\'"`~,;:.<>';
 
 function generatePassword() {
-  const len = parseInt($('pwdLen').value);
-  let pool = '';
-  if ($('pwdUpper').checked) pool += CHARS.upper;
-  if ($('pwdLower').checked) pool += CHARS.lower;
-  if ($('pwdDigits').checked) pool += CHARS.digits;
-  if ($('pwdSymbols').checked) pool += CHARS.symbols;
-  if (!pool) pool = CHARS.lower;
-  if ($('pwdNoSimilar').checked) pool = [...pool].filter(c => !SIMILAR.includes(c)).join('');
-  if ($('pwdNoAmbiguous').checked) pool = [...pool].filter(c => !AMBIGUOUS.includes(c)).join('');
-  if (!pool) pool = CHARS.lower;
-  const arr = new Uint32Array(len);
-  crypto.getRandomValues(arr);
-  let pwd = '';
-  for (let i = 0; i < len; i++) pwd += pool[arr[i] % pool.length];
+  const len = Math.max(30, Math.min(100, parseInt($('pwdLen').value, 10) || 30));
+  const groups = [
+    $('pwdUpper').checked ? CHARS.upper : '',
+    $('pwdLower').checked ? CHARS.lower : '',
+    $('pwdDigits').checked ? CHARS.digits : '',
+    $('pwdSymbols').checked ? CHARS.symbols : ''
+  ].map(group => [...group].filter(c =>
+    (!$('pwdNoSimilar').checked || !SIMILAR.includes(c)) &&
+    (!$('pwdNoAmbiguous').checked || !AMBIGUOUS.includes(c))
+  ).join('')).filter(Boolean);
+  if (!groups.length) {
+    pwdOutput.value = '';
+    $('pwdStrength').querySelectorAll('span').forEach(bar => bar.style.background = 'var(--border)');
+    $('pwdStrengthLabel').textContent = 'Выберите хотя бы один тип символов';
+    return;
+  }
+  // Криптографическая случайность без смещения и хотя бы один символ каждого типа.
+  const randomIndex = max => {
+    const values = new Uint32Array(1), limit = Math.floor(4294967296 / max) * max;
+    do { crypto.getRandomValues(values); } while (values[0] >= limit);
+    return values[0] % max;
+  };
+  const pool = groups.join('');
+  const chars = groups.map(group => group[randomIndex(group.length)]);
+  while (chars.length < len) chars.push(pool[randomIndex(pool.length)]);
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = randomIndex(i + 1); [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  const pwd = chars.join('');
   pwdOutput.value = pwd;
   updateStrength(pwd);
 }
@@ -2782,7 +2865,7 @@ function updateStrength(pwd) {
   if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
   if (/\d/.test(pwd)) score++;
   if (/[^A-Za-z0-9]/.test(pwd)) score++;
-  const level = Math.min(4, Math.floor(score / 1.5));
+  const level = score >= 5 ? 4 : score >= 4 ? 3 : score >= 2 ? 2 : 1;
   const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
   const labels = ['Очень слабый', 'Слабый', 'Средний', 'Надёжный'];
   bars.forEach((bar, i) => { bar.style.background = i < level ? colors[level - 1] : 'var(--border)'; });
@@ -2792,10 +2875,9 @@ function updateStrength(pwd) {
 $('pwdLen').addEventListener('input', (e) => {
   $('pwdLenVal').textContent = e.target.value;
   generatePassword();
-  storage.set('pwdLen', e.target.value);
 });
 ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous'].forEach(id => {
-  $(id).addEventListener('change', () => { generatePassword(); storage.set(id, $(id).checked); });
+  $(id).addEventListener('change', () => { generatePassword(); });
 });
 $('btnGenPwd').addEventListener('click', generatePassword);
 $('btnCopyPwd').addEventListener('click', () => {
@@ -2809,12 +2891,11 @@ $('btnCopyPwd').addEventListener('click', () => {
 });
 
 function restorePwdSettings() {
-  const len = storage.get('pwdLen', 16);
-  $('pwdLen').value = len;
-  $('pwdLenVal').textContent = len;
+  // При каждом открытии стандартная длина — 30, независимо от старых настроек.
+  $('pwdLen').value = 30;
+  $('pwdLenVal').textContent = '30';
   ['pwdUpper', 'pwdLower', 'pwdDigits', 'pwdSymbols', 'pwdNoSimilar', 'pwdNoAmbiguous'].forEach(id => {
-    const def = id === 'pwdUpper' || id === 'pwdLower' || id === 'pwdDigits';
-    $(id).checked = storage.get(id, def);
+    $(id).checked = id === 'pwdUpper' || id === 'pwdLower' || id === 'pwdDigits';
   });
   generatePassword();
 }
@@ -2880,57 +2961,6 @@ $('calculatorClearHistory')?.addEventListener('click', () => { calculatorHistory
    ========================================================================= */
 
 restoreSettings();
-/* ---- Заметки с паролями (только localStorage) ---- */
-const NOTES_KEY = 'uhPasswordNotes';
-let pwdNotes = storage.get(NOTES_KEY, []);
-if (!Array.isArray(pwdNotes)) pwdNotes = [];
-function renderNotes() {
-  const list = $('notesList');
-  list.textContent = '';
-  $('notesEmpty').hidden = pwdNotes.length > 0;
-  pwdNotes.forEach((n, i) => {
-    const row = document.createElement('div');
-    row.className = 'notes-item';
-    const site = document.createElement('span'); site.textContent = n.site;
-    const login = document.createElement('span'); login.textContent = n.login || '—';
-    const pass = document.createElement('span'); pass.className = 'notes-pass'; pass.textContent = '********';
-    let shown = false;
-    const actions = document.createElement('div'); actions.className = 'notes-actions';
-    const bShow = document.createElement('button'); bShow.className = 'btn'; bShow.type = 'button'; bShow.textContent = 'Показать';
-    bShow.onclick = () => { shown = !shown; pass.textContent = shown ? n.pass : '********'; bShow.textContent = shown ? 'Скрыть' : 'Показать'; };
-    const bCopy = document.createElement('button'); bCopy.className = 'btn'; bCopy.type = 'button'; bCopy.textContent = 'Копировать';
-    bCopy.onclick = () => {
-      navigator.clipboard.writeText(n.pass).then(() => {
-        bCopy.textContent = 'Скопировано';
-        setTimeout(() => { bCopy.textContent = 'Копировать'; }, 1500);
-      }).catch(() => {});
-    };
-    const bDel = document.createElement('button'); bDel.className = 'btn'; bDel.type = 'button'; bDel.textContent = 'Удалить';
-    bDel.onclick = () => {
-      if (!confirm('Удалить запись для «' + n.site + '»?')) return;
-      pwdNotes.splice(i, 1);
-      storage.set(NOTES_KEY, pwdNotes);
-      renderNotes();
-    };
-    actions.append(bShow, bCopy, bDel);
-    row.append(site, login, pass, actions);
-    list.appendChild(row);
-  });
-}
-function addNote() {
-  const site = $('noteSite').value.trim();
-  const login = $('noteLogin').value.trim();
-  const pass = $('notePass').value;
-  if (!site || !pass) { (!site ? $('noteSite') : $('notePass')).focus(); return; }
-  pwdNotes.push({ site, login, pass });
-  storage.set(NOTES_KEY, pwdNotes);
-  $('noteSite').value = ''; $('noteLogin').value = ''; $('notePass').value = '';
-  renderNotes();
-}
-$('btnNoteAdd').addEventListener('click', addNote);
-['noteSite', 'noteLogin', 'notePass'].forEach(id => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') addNote(); }));
-renderNotes();
-
 restorePwdSettings();
 renderCalculatorHistory();
 renderImgHistory();
